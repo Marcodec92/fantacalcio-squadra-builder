@@ -12,6 +12,8 @@ import BonusCalculator from './BonusCalculator';
 import GoalkeeperStats from './GoalkeeperStats';
 import OwnershipProgress from './OwnershipProgress';
 import PlusCategoriesSelector from './PlusCategoriesSelector';
+import FMVInput from './FMVInput';
+import TierSelect from './TierSelect';
 import { Player } from '@/types/Player';
 
 interface PlayerCardProps {
@@ -40,10 +42,13 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   const isGoalkeeper = player.roleCategory === 'Portiere';
 
+  // Calcolo del bonus totale per i giocatori non portieri
+  const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.malus;
+
   if (!isEditing) {
     return (
       <Card className="p-4 hover:shadow-md transition-shadow">
-        <div className="grid grid-cols-1 lg:grid-cols-8 gap-4 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-9 gap-4 items-center">
           <div className="lg:col-span-1">
             <div className="font-semibold text-gray-800">
               {player.name} {player.surname}
@@ -57,6 +62,18 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           
           <div className="lg:col-span-1">
             <CostCalculator percentage={player.costPercentage} readonly />
+          </div>
+          
+          <div className="lg:col-span-1">
+            <FMVInput value={player.fmv} readonly />
+          </div>
+          
+          <div className="lg:col-span-1">
+            <TierSelect 
+              roleCategory={player.roleCategory} 
+              value={player.tier} 
+              readonly 
+            />
           </div>
           
           <div className="lg:col-span-2">
@@ -86,13 +103,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 <>
                   <div>xG: {player.xG.toFixed(2)}</div>
                   <div>xA: {player.xA.toFixed(2)}</div>
+                  <div>Bonus: {bonusTotal}</div>
                 </>
               )}
             </div>
-          </div>
-          
-          <div className="lg:col-span-1">
-            <OwnershipProgress value={player.ownership} readonly />
           </div>
           
           <div className="lg:col-span-1 flex gap-2">
@@ -159,11 +173,27 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           </div>
         </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label>Costo (percentuale)</Label>
+            <CostCalculator
+              percentage={editedPlayer.costPercentage}
+              onChange={(percentage) => updateField('costPercentage', percentage)}
+            />
+          </div>
+          <div>
+            <FMVInput
+              value={editedPlayer.fmv}
+              onChange={(fmv) => updateField('fmv', fmv)}
+            />
+          </div>
+        </div>
+
         <div>
-          <Label>Costo (percentuale)</Label>
-          <CostCalculator
-            percentage={editedPlayer.costPercentage}
-            onChange={(percentage) => updateField('costPercentage', percentage)}
+          <TierSelect
+            roleCategory={editedPlayer.roleCategory}
+            value={editedPlayer.tier}
+            onChange={(tier) => updateField('tier', tier)}
           />
         </div>
 

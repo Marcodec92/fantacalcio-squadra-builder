@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -18,6 +19,8 @@ const Index = () => {
             role === 'Centrocampista' ? 'Mediano' : 'Attaccante centrale',
       roleCategory: role,
       costPercentage: 0,
+      fmv: 0,
+      tier: '',
       goals: 0,
       assists: 0,
       malus: 0,
@@ -26,7 +29,7 @@ const Index = () => {
       penaltiesSaved: 0,
       xG: 0,
       xA: 0,
-      xP: 0, // Nuovo campo inizializzato
+      xP: 0,
       ownership: 0,
       plusCategories: []
     };
