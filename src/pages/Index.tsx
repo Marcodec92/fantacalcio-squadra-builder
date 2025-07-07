@@ -14,14 +14,17 @@ const Index = () => {
       name: '',
       surname: '',
       team: '',
-      role: role === 'portiere' ? 'portiere' : 
-            role === 'difensore' ? 'difensore centrale' :
-            role === 'centrocampista' ? 'mediano' : 'attaccante centrale',
+      role: role === 'Portiere' ? 'Portiere' : 
+            role === 'Difensore' ? 'Difensore centrale' :
+            role === 'Centrocampista' ? 'Mediano' : 'Attaccante centrale',
       roleCategory: role,
       costPercentage: 0,
       goals: 0,
       assists: 0,
       malus: 0,
+      goalsConceded: 0,
+      yellowCards: 0,
+      penaltiesSaved: 0,
       xG: 0,
       xA: 0,
       ownership: 0,
@@ -51,57 +54,57 @@ const Index = () => {
         </div>
 
         <Card className="p-6 shadow-lg">
-          <Tabs defaultValue="portiere" className="w-full">
+          <Tabs defaultValue="Portiere" className="w-full">
             <TabsList className="grid w-full grid-cols-4 mb-6">
-              <TabsTrigger value="portiere" className="text-sm font-medium">
-                🥅 Portieri ({getPlayersByRole('portiere').length})
+              <TabsTrigger value="Portiere" className="text-sm font-medium">
+                🥅 Portieri ({getPlayersByRole('Portiere').length})
               </TabsTrigger>
-              <TabsTrigger value="difensore" className="text-sm font-medium">
-                🛡️ Difensori ({getPlayersByRole('difensore').length})
+              <TabsTrigger value="Difensore" className="text-sm font-medium">
+                🛡️ Difensori ({getPlayersByRole('Difensore').length})
               </TabsTrigger>
-              <TabsTrigger value="centrocampista" className="text-sm font-medium">
-                ⚡ Centrocampisti ({getPlayersByRole('centrocampista').length})
+              <TabsTrigger value="Centrocampista" className="text-sm font-medium">
+                ⚡ Centrocampisti ({getPlayersByRole('Centrocampista').length})
               </TabsTrigger>
-              <TabsTrigger value="attaccante" className="text-sm font-medium">
-                🎯 Attaccanti ({getPlayersByRole('attaccante').length})
+              <TabsTrigger value="Attaccante" className="text-sm font-medium">
+                🎯 Attaccanti ({getPlayersByRole('Attaccante').length})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="portiere">
+            <TabsContent value="Portiere">
               <PlayersList
-                players={getPlayersByRole('portiere')}
-                roleCategory="portiere"
-                onAddPlayer={() => addPlayer('portiere')}
+                players={getPlayersByRole('Portiere')}
+                roleCategory="Portiere"
+                onAddPlayer={() => addPlayer('Portiere')}
                 onUpdatePlayer={updatePlayer}
                 onDeletePlayer={deletePlayer}
               />
             </TabsContent>
 
-            <TabsContent value="difensore">
+            <TabsContent value="Difensore">
               <PlayersList
-                players={getPlayersByRole('difensore')}
-                roleCategory="difensore"
-                onAddPlayer={() => addPlayer('difensore')}
+                players={getPlayersByRole('Difensore')}
+                roleCategory="Difensore"
+                onAddPlayer={() => addPlayer('Difensore')}
                 onUpdatePlayer={updatePlayer}
                 onDeletePlayer={deletePlayer}
               />
             </TabsContent>
 
-            <TabsContent value="centrocampista">
+            <TabsContent value="Centrocampista">
               <PlayersList
-                players={getPlayersByRole('centrocampista')}
-                roleCategory="centrocampista"
-                onAddPlayer={() => addPlayer('centrocampista')}
+                players={getPlayersByRole('Centrocampista')}
+                roleCategory="Centrocampista"
+                onAddPlayer={() => addPlayer('Centrocampista')}
                 onUpdatePlayer={updatePlayer}
                 onDeletePlayer={deletePlayer}
               />
             </TabsContent>
 
-            <TabsContent value="attaccante">
+            <TabsContent value="Attaccante">
               <PlayersList
-                players={getPlayersByRole('attaccante')}
-                roleCategory="attaccante"
-                onAddPlayer={() => addPlayer('attaccante')}
+                players={getPlayersByRole('Attaccante')}
+                roleCategory="Attaccante"
+                onAddPlayer={() => addPlayer('Attaccante')}
                 onUpdatePlayer={updatePlayer}
                 onDeletePlayer={deletePlayer}
               />

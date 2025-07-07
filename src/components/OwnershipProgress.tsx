@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface OwnershipProgressProps {
@@ -26,19 +26,27 @@ const OwnershipProgress: React.FC<OwnershipProgressProps> = ({
     return 'text-green-600';
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = parseInt(e.target.value) || 0;
+    const clampedValue = Math.min(Math.max(inputValue, 0), 100);
+    onChange?.(clampedValue);
+  };
+
   return (
     <div className="space-y-2">
       {!readonly && (
-        <>
-          <Label>Titolarità: {value}%</Label>
-          <Slider
-            value={[value]}
-            onValueChange={(newValue) => onChange?.(newValue[0])}
-            max={100}
-            step={1}
-            className="w-full"
+        <div>
+          <Label htmlFor="ownership">Titolarità (%)</Label>
+          <Input
+            id="ownership"
+            type="number"
+            min="0"
+            max="100"
+            value={value}
+            onChange={handleInputChange}
+            placeholder="0-100"
           />
-        </>
+        </div>
       )}
       
       <div className="relative bg-gray-200 rounded-full h-3">

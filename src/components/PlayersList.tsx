@@ -22,10 +22,10 @@ const PlayersList: React.FC<PlayersListProps> = ({
 }) => {
   const getRoleTitle = (role: PlayerRole) => {
     switch (role) {
-      case 'portiere': return 'Portieri';
-      case 'difensore': return 'Difensori';
-      case 'centrocampista': return 'Centrocampisti';
-      case 'attaccante': return 'Attaccanti';
+      case 'Portiere': return 'Portieri';
+      case 'Difensore': return 'Difensori';
+      case 'Centrocampista': return 'Centrocampisti';
+      case 'Attaccante': return 'Attaccanti';
       default: return '';
     }
   };
@@ -36,15 +36,13 @@ const PlayersList: React.FC<PlayersListProps> = ({
         <h2 className="text-2xl font-bold text-gray-800">{getRoleTitle(roleCategory)}</h2>
         <Button onClick={onAddPlayer} className="bg-green-600 hover:bg-green-700">
           <Plus className="w-4 h-4 mr-2" />
-          Aggiungi {roleCategory === 'portiere' ? 'portiere' : 
-                   roleCategory === 'difensore' ? 'difensore' :
-                   roleCategory === 'centrocampista' ? 'centrocampista' : 'attaccante'}
+          Aggiungi {roleCategory.toLowerCase()}
         </Button>
       </div>
 
       {players.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
-          <p className="text-lg">Nessun {roleCategory} inserito</p>
+          <p className="text-lg">Nessun {roleCategory.toLowerCase()} inserito</p>
           <p className="text-sm">Clicca su "Aggiungi" per iniziare</p>
         </div>
       ) : (

@@ -9,6 +9,7 @@ import TeamSelect from './TeamSelect';
 import RoleSelect from './RoleSelect';
 import CostCalculator from './CostCalculator';
 import BonusCalculator from './BonusCalculator';
+import GoalkeeperStats from './GoalkeeperStats';
 import OwnershipProgress from './OwnershipProgress';
 import PlusCategoriesSelector from './PlusCategoriesSelector';
 import { Player } from '@/types/Player';
@@ -37,6 +38,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     setEditedPlayer({ ...editedPlayer, [field]: value });
   };
 
+  const isGoalkeeper = player.roleCategory === 'Portiere';
+
   if (!isEditing) {
     return (
       <Card className="p-4 hover:shadow-md transition-shadow">
@@ -57,12 +60,21 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           </div>
           
           <div className="lg:col-span-1">
-            <BonusCalculator 
-              goals={player.goals}
-              assists={player.assists}
-              malus={player.malus}
-              readonly
-            />
+            {isGoalkeeper ? (
+              <GoalkeeperStats 
+                goalsConceded={player.goalsConceded}
+                yellowCards={player.yellowCards}
+                penaltiesSaved={player.penaltiesSaved}
+                readonly
+              />
+            ) : (
+              <BonusCalculator 
+                goals={player.goals}
+                assists={player.assists}
+                malus={player.malus}
+                readonly
+              />
+            )}
           </div>
           
           <div className="lg:col-span-1">
@@ -157,13 +169,22 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
         </div>
 
         <div>
-          <Label>Statistiche bonus</Label>
-          <BonusCalculator
-            goals={editedPlayer.goals}
-            assists={editedPlayer.assists}
-            malus={editedPlayer.malus}
-            onChange={(field, value) => updateField(field, value)}
-          />
+          <Label>{isGoalkeeper ? 'Statistiche portiere' : 'Statistiche bonus'}</Label>
+          {isGoalkeeper ? (
+            <GoalkeeperStats
+              goalsConceded={editedPlayer.goalsConceded}
+              yellowCards={editedPlayer.yellowCards}
+              penaltiesSaved={editedPlayer.penaltiesSaved}
+              onChange={(field, value) => updateField(field, value)}
+            />
+          ) : (
+            <BonusCalculator
+              goals={editedPlayer.goals}
+              assists={editedPlayer.assists}
+              malus={editedPlayer.malus}
+              onChange={(field, value) => updateField(field, value)}
+            />
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

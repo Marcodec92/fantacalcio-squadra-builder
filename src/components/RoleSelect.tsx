@@ -4,10 +4,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { PlayerRole, SpecificRole } from '@/types/Player';
 
 const roleOptions: Record<PlayerRole, SpecificRole[]> = {
-  portiere: ['portiere'],
-  difensore: ['difensore centrale', 'esterno offensivo', 'braccetto'],
-  centrocampista: ['mediano', 'regista', 'mezzala', 'trequartista', 'ala offensiva'],
-  attaccante: ['attaccante centrale', 'seconda punta', 'mezzapunta', 'ala offensiva']
+  Portiere: ['Portiere'],
+  Difensore: ['Difensore centrale', 'Esterno offensivo', 'Braccetto'],
+  Centrocampista: ['Mediano', 'Regista', 'Mezzala', 'Trequartista', 'Ala offensiva'],
+  Attaccante: ['Attaccante centrale', 'Seconda punta', 'Mezzapunta', 'Ala offensiva']
 };
 
 interface RoleSelectProps {
