@@ -48,26 +48,25 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   if (!isEditing) {
     return (
       <Card className="p-4 hover:shadow-md transition-shadow">
-        <div className="grid grid-cols-1 lg:grid-cols-9 gap-4 items-center">
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+          {/* Nome e squadra */}
+          <div className="lg:col-span-2">
             <div className="font-semibold text-gray-800">
               {player.name} {player.surname}
             </div>
             <div className="text-sm text-gray-600">{player.team}</div>
+            <div className="text-xs text-gray-500 mt-1">{player.role}</div>
           </div>
           
-          <div className="lg:col-span-1 text-sm text-gray-600">
-            {player.role}
-          </div>
-          
-          <div className="lg:col-span-1">
+          {/* Costo e FMV */}
+          <div className="lg:col-span-2">
             <CostCalculator percentage={player.costPercentage} readonly />
+            <div className="mt-2">
+              <FMVInput value={player.fmv} readonly />
+            </div>
           </div>
           
-          <div className="lg:col-span-1">
-            <FMVInput value={player.fmv} readonly />
-          </div>
-          
+          {/* Tier */}
           <div className="lg:col-span-1">
             <TierSelect 
               roleCategory={player.roleCategory} 
@@ -76,6 +75,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             />
           </div>
           
+          {/* Statistiche principali */}
           <div className="lg:col-span-2">
             {isGoalkeeper ? (
               <GoalkeeperStats 
@@ -86,30 +86,57 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 readonly
               />
             ) : (
-              <BonusCalculator 
-                goals={player.goals}
-                assists={player.assists}
-                malus={player.malus}
-                readonly
-              />
+              <div className="space-y-1">
+                <div className="text-xs font-medium text-gray-700">Statistiche</div>
+                <div className="text-sm space-y-1">
+                  <div>Gol: {player.goals}</div>
+                  <div>Assist: {player.assists}</div>
+                  <div>Malus: {player.malus}</div>
+                </div>
+              </div>
             )}
           </div>
           
-          <div className="lg:col-span-1">
+          {/* Expected Stats e Bonus Totali */}
+          <div className="lg:col-span-2">
+            <div className="text-xs font-medium text-gray-700 mb-1">
+              {isGoalkeeper ? 'Performance' : 'Expected & Bonus'}
+            </div>
             <div className="text-sm space-y-1">
               {isGoalkeeper ? (
-                <div>xP: {player.xP.toFixed(2)}</div>
+                <div className="font-semibold text-blue-600">
+                  xP: {player.xP.toFixed(2)}
+                </div>
               ) : (
                 <>
                   <div>xG: {player.xG.toFixed(2)}</div>
                   <div>xA: {player.xA.toFixed(2)}</div>
-                  <div>Bonus: {bonusTotal}</div>
+                  <div className="font-semibold text-green-600">
+                    Bonus Totali: {bonusTotal}
+                  </div>
                 </>
               )}
             </div>
           </div>
           
-          <div className="lg:col-span-1 flex gap-2">
+          {/* Titolarità */}
+          <div className="lg:col-span-1">
+            <div className="text-xs font-medium text-gray-700 mb-1">Titolarità</div>
+            <OwnershipProgress value={player.ownership} readonly />
+          </div>
+          
+          {/* Categorie Plus */}
+          <div className="lg:col-span-1">
+            <div className="text-xs font-medium text-gray-700 mb-1">Plus</div>
+            <PlusCategoriesSelector 
+              selected={player.plusCategories} 
+              onChange={() => {}} 
+              readonly 
+            />
+          </div>
+          
+          {/* Azioni */}
+          <div className="lg:col-span-1 flex gap-2 justify-end">
             <Button
               variant="outline"
               size="sm"
