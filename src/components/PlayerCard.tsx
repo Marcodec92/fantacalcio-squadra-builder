@@ -59,12 +59,13 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             <CostCalculator percentage={player.costPercentage} readonly />
           </div>
           
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             {isGoalkeeper ? (
               <GoalkeeperStats 
                 goalsConceded={player.goalsConceded}
                 yellowCards={player.yellowCards}
                 penaltiesSaved={player.penaltiesSaved}
+                xP={player.xP}
                 readonly
               />
             ) : (
@@ -79,21 +80,19 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           
           <div className="lg:col-span-1">
             <div className="text-sm space-y-1">
-              <div>xG: {player.xG.toFixed(2)}</div>
-              <div>xA: {player.xA.toFixed(2)}</div>
+              {isGoalkeeper ? (
+                <div>xP: {player.xP.toFixed(2)}</div>
+              ) : (
+                <>
+                  <div>xG: {player.xG.toFixed(2)}</div>
+                  <div>xA: {player.xA.toFixed(2)}</div>
+                </>
+              )}
             </div>
           </div>
           
           <div className="lg:col-span-1">
             <OwnershipProgress value={player.ownership} readonly />
-          </div>
-          
-          <div className="lg:col-span-1">
-            <PlusCategoriesSelector 
-              selected={player.plusCategories}
-              onChange={() => {}}
-              readonly
-            />
           </div>
           
           <div className="lg:col-span-1 flex gap-2">
@@ -175,6 +174,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               goalsConceded={editedPlayer.goalsConceded}
               yellowCards={editedPlayer.yellowCards}
               penaltiesSaved={editedPlayer.penaltiesSaved}
+              xP={editedPlayer.xP}
               onChange={(field, value) => updateField(field, value)}
             />
           ) : (
@@ -187,30 +187,32 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="xG">xG (Expected Goals)</Label>
-            <Input
-              id="xG"
-              type="number"
-              step="0.01"
-              value={editedPlayer.xG}
-              onChange={(e) => updateField('xG', parseFloat(e.target.value) || 0)}
-              placeholder="0.00"
-            />
+        {!isGoalkeeper && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="xG">xG (Expected Goals)</Label>
+              <Input
+                id="xG"
+                type="number"
+                step="0.01"
+                value={editedPlayer.xG}
+                onChange={(e) => updateField('xG', parseFloat(e.target.value) || 0)}
+                placeholder="0.00"
+              />
+            </div>
+            <div>
+              <Label htmlFor="xA">xA (Expected Assists)</Label>
+              <Input
+                id="xA"
+                type="number"
+                step="0.01"
+                value={editedPlayer.xA}
+                onChange={(e) => updateField('xA', parseFloat(e.target.value) || 0)}
+                placeholder="0.00"
+              />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="xA">xA (Expected Assists)</Label>
-            <Input
-              id="xA"
-              type="number"
-              step="0.01"
-              value={editedPlayer.xA}
-              onChange={(e) => updateField('xA', parseFloat(e.target.value) || 0)}
-              placeholder="0.00"
-            />
-          </div>
-        </div>
+        )}
 
         <div>
           <Label>Titolarità</Label>

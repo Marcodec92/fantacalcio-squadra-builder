@@ -19,19 +19,28 @@ interface RoleSelectProps {
 const RoleSelect: React.FC<RoleSelectProps> = ({ roleCategory, value, onChange }) => {
   const availableRoles = roleOptions[roleCategory];
 
+  // Verifica se il valore corrente è valido per la categoria selezionata
+  const isValidValue = availableRoles.includes(value);
+  const displayValue = isValidValue ? value : '';
+
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
-        <SelectValue placeholder="Seleziona ruolo" />
-      </SelectTrigger>
-      <SelectContent>
-        {availableRoles.map((role) => (
-          <SelectItem key={role} value={role}>
-            {role}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="space-y-2">
+      <div className="text-sm font-medium text-gray-700">
+        Ruoli disponibili per {roleCategory}:
+      </div>
+      <Select value={displayValue} onValueChange={onChange}>
+        <SelectTrigger className="bg-white">
+          <SelectValue placeholder={`Seleziona ruolo specifico per ${roleCategory.toLowerCase()}`} />
+        </SelectTrigger>
+        <SelectContent className="bg-white border shadow-lg z-50">
+          {availableRoles.map((role) => (
+            <SelectItem key={role} value={role} className="hover:bg-gray-100">
+              {role}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 

@@ -7,21 +7,23 @@ interface GoalkeeperStatsProps {
   goalsConceded: number;
   yellowCards: number;
   penaltiesSaved: number;
-  onChange?: (field: 'goalsConceded' | 'yellowCards' | 'penaltiesSaved', value: number) => void;
+  xP: number;
+  onChange?: (field: 'goalsConceded' | 'yellowCards' | 'penaltiesSaved' | 'xP', value: number) => void;
   readonly?: boolean;
 }
 
 const GoalkeeperStats: React.FC<GoalkeeperStatsProps> = ({ 
   goalsConceded, 
   yellowCards, 
-  penaltiesSaved, 
+  penaltiesSaved,
+  xP,
   onChange, 
   readonly = false 
 }) => {
   return (
     <div className="space-y-3">
       {!readonly && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <div>
             <Label htmlFor="goalsConceded">Gol subiti</Label>
             <Input
@@ -55,12 +57,23 @@ const GoalkeeperStats: React.FC<GoalkeeperStatsProps> = ({
               placeholder="0"
             />
           </div>
+          <div>
+            <Label htmlFor="xP">xP (Expected Points)</Label>
+            <Input
+              id="xP"
+              type="number"
+              step="0.01"
+              value={xP}
+              onChange={(e) => onChange?.('xP', parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
+            />
+          </div>
         </div>
       )}
       
       {readonly && (
         <div className="bg-gradient-to-r from-blue-50 to-green-50 p-3 rounded-lg">
-          <div className="grid grid-cols-3 gap-3 text-center text-sm">
+          <div className="grid grid-cols-2 gap-3 text-center text-sm">
             <div>
               <div className="font-semibold text-gray-700">Gol subiti</div>
               <div className="text-red-600">{goalsConceded}</div>
@@ -72,6 +85,10 @@ const GoalkeeperStats: React.FC<GoalkeeperStatsProps> = ({
             <div>
               <div className="font-semibold text-gray-700">Rigori parati</div>
               <div className="text-green-600">{penaltiesSaved}</div>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-700">xP</div>
+              <div className="text-blue-600">{xP.toFixed(2)}</div>
             </div>
           </div>
         </div>

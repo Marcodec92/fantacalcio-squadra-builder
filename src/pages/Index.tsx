@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
@@ -27,6 +26,7 @@ const Index = () => {
       penaltiesSaved: 0,
       xG: 0,
       xA: 0,
+      xP: 0, // Nuovo campo inizializzato
       ownership: 0,
       plusCategories: []
     };

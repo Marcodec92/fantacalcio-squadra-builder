@@ -31,6 +31,7 @@ export interface Player {
   penaltiesSaved: number;
   xG: number;
   xA: number;
+  xP: number; // Nuovo campo per i portieri
   ownership: number;
   plusCategories: PlusCategory[];
 }
