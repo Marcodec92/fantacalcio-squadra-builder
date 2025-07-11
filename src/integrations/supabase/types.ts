@@ -96,6 +96,44 @@ export type Database = {
         }
         Relationships: []
       }
+      squad_selections: {
+        Row: {
+          created_at: string
+          id: string
+          player_id: string
+          position_slot: number
+          role_category: Database["public"]["Enums"]["player_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          player_id: string
+          position_slot: number
+          role_category: Database["public"]["Enums"]["player_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          player_id?: string
+          position_slot?: number
+          role_category?: Database["public"]["Enums"]["player_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "squad_selections_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

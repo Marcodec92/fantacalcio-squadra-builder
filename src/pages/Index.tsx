@@ -2,6 +2,9 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Users } from "lucide-react";
+import { Link } from "react-router-dom";
 import PlayersList from '@/components/PlayersList';
 import AuthForm from '@/components/AuthForm';
 import Header from '@/components/Header';
@@ -41,6 +44,16 @@ const Index = () => {
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-green-800 mb-2">⚽ FantaCalcio Manager</h1>
             <p className="text-gray-600">Gestisci la tua squadra del fantacalcio</p>
+            
+            {/* Squad Builder Button */}
+            <div className="mt-4">
+              <Link to="/squad-builder">
+                <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                  <Users className="w-5 h-5 mr-2" />
+                  Squad Builder
+                </Button>
+              </Link>
+            </div>
           </div>
 
           <Card className="p-6 shadow-lg">
