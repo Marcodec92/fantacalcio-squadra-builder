@@ -14,7 +14,88 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      players: {
+        Row: {
+          assists: number | null
+          cost_percentage: number | null
+          created_at: string | null
+          fmv: number | null
+          goals: number | null
+          goals_conceded: number | null
+          id: string
+          malus: number | null
+          name: string
+          ownership: number | null
+          penalties_saved: number | null
+          plus_categories: Database["public"]["Enums"]["plus_category"][] | null
+          role: Database["public"]["Enums"]["specific_role"]
+          role_category: Database["public"]["Enums"]["player_role"]
+          surname: string
+          team: Database["public"]["Enums"]["team_name"] | null
+          tier: string | null
+          updated_at: string | null
+          user_id: string
+          x_a: number | null
+          x_g: number | null
+          x_p: number | null
+          yellow_cards: number | null
+        }
+        Insert: {
+          assists?: number | null
+          cost_percentage?: number | null
+          created_at?: string | null
+          fmv?: number | null
+          goals?: number | null
+          goals_conceded?: number | null
+          id?: string
+          malus?: number | null
+          name: string
+          ownership?: number | null
+          penalties_saved?: number | null
+          plus_categories?:
+            | Database["public"]["Enums"]["plus_category"][]
+            | null
+          role: Database["public"]["Enums"]["specific_role"]
+          role_category: Database["public"]["Enums"]["player_role"]
+          surname: string
+          team?: Database["public"]["Enums"]["team_name"] | null
+          tier?: string | null
+          updated_at?: string | null
+          user_id: string
+          x_a?: number | null
+          x_g?: number | null
+          x_p?: number | null
+          yellow_cards?: number | null
+        }
+        Update: {
+          assists?: number | null
+          cost_percentage?: number | null
+          created_at?: string | null
+          fmv?: number | null
+          goals?: number | null
+          goals_conceded?: number | null
+          id?: string
+          malus?: number | null
+          name?: string
+          ownership?: number | null
+          penalties_saved?: number | null
+          plus_categories?:
+            | Database["public"]["Enums"]["plus_category"][]
+            | null
+          role?: Database["public"]["Enums"]["specific_role"]
+          role_category?: Database["public"]["Enums"]["player_role"]
+          surname?: string
+          team?: Database["public"]["Enums"]["team_name"] | null
+          tier?: string | null
+          updated_at?: string | null
+          user_id?: string
+          x_a?: number | null
+          x_g?: number | null
+          x_p?: number | null
+          yellow_cards?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +104,47 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      player_role: "Portiere" | "Difensore" | "Centrocampista" | "Attaccante"
+      plus_category:
+        | "Under 21"
+        | "Rigorista"
+        | "Calci piazzati"
+        | "Assistman"
+        | "Goleador"
+      specific_role:
+        | "Portiere"
+        | "Difensore centrale"
+        | "Esterno offensivo"
+        | "Braccetto"
+        | "Mediano"
+        | "Regista"
+        | "Mezzala"
+        | "Trequartista"
+        | "Ala offensiva"
+        | "Attaccante centrale"
+        | "Seconda punta"
+        | "Mezzapunta"
+      team_name:
+        | "Atalanta"
+        | "Bologna"
+        | "Cagliari"
+        | "Como"
+        | "Cremonese"
+        | "Fiorentina"
+        | "Genoa"
+        | "Hellas Verona"
+        | "Inter"
+        | "Juventus"
+        | "Lazio"
+        | "Lecce"
+        | "Milan"
+        | "Napoli"
+        | "Parma"
+        | "Pisa"
+        | "Roma"
+        | "Sassuolo"
+        | "Torino"
+        | "Udinese"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +271,51 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      player_role: ["Portiere", "Difensore", "Centrocampista", "Attaccante"],
+      plus_category: [
+        "Under 21",
+        "Rigorista",
+        "Calci piazzati",
+        "Assistman",
+        "Goleador",
+      ],
+      specific_role: [
+        "Portiere",
+        "Difensore centrale",
+        "Esterno offensivo",
+        "Braccetto",
+        "Mediano",
+        "Regista",
+        "Mezzala",
+        "Trequartista",
+        "Ala offensiva",
+        "Attaccante centrale",
+        "Seconda punta",
+        "Mezzapunta",
+      ],
+      team_name: [
+        "Atalanta",
+        "Bologna",
+        "Cagliari",
+        "Como",
+        "Cremonese",
+        "Fiorentina",
+        "Genoa",
+        "Hellas Verona",
+        "Inter",
+        "Juventus",
+        "Lazio",
+        "Lecce",
+        "Milan",
+        "Napoli",
+        "Parma",
+        "Pisa",
+        "Roma",
+        "Sassuolo",
+        "Torino",
+        "Udinese",
+      ],
+    },
   },
 } as const
