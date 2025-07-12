@@ -1,25 +1,33 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Edit2, Check, ArrowUpDown } from "lucide-react";
 import { Player, PlayerRole } from '@/types/Player';
 import { SquadSelection } from '@/hooks/useSquadSelections';
+import { usePlayers } from '@/hooks/usePlayers';
 
 interface SquadGridProps {
   squadSelections: SquadSelection[];
   players: Player[];
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (selectionId: string) => void;
+  calculateBonusTotal: (player: Player) => number;
 }
 
 const SquadGrid: React.FC<SquadGridProps> = ({
   squadSelections,
   players,
   onPositionClick,
-  onRemovePlayer
+  onRemovePlayer,
+  calculateBonusTotal
 }) => {
+  const [editingPercentage, setEditingPercentage] = useState<string | null>(null);
+  const [tempPercentage, setTempPercentage] = useState<string>('');
+  const { updatePlayer } = usePlayers();
+
   const getPlayerForPosition = (slot: number, role: PlayerRole) => {
     const selection = squadSelections.find(
       s => s.position_slot === slot && s.role_category === role
@@ -34,12 +42,30 @@ const SquadGrid: React.FC<SquadGridProps> = ({
     );
   };
 
+  const handleEditPercentage = (player: Player) => {
+    setEditingPercentage(player.id);
+    setTempPercentage(player.costPercentage.toString());
+  };
+
+  const handleSavePercentage = (player: Player) => {
+    const newPercentage = parseFloat(tempPercentage);
+    if (!isNaN(newPercentage) && newPercentage >= 0 && newPercentage <= 100) {
+      const updatedPlayer = { ...player, costPercentage: newPercentage };
+      updatePlayer(updatedPlayer);
+    }
+    setEditingPercentage(null);
+    setTempPercentage('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPercentage(null);
+    setTempPercentage('');
+  };
+
   const renderPosition = (slot: number, role: PlayerRole, label: string) => {
     const player = getPlayerForPosition(slot, role);
     const selection = getSelectionForPosition(slot, role);
-    const bonusTotal = player && player.roleCategory !== 'Portiere' 
-      ? player.goals * 3 + player.assists - player.malus 
-      : 0;
+    const bonusTotal = player ? calculateBonusTotal(player) : 0;
 
     return (
       <Card 
@@ -62,7 +88,62 @@ const SquadGrid: React.FC<SquadGridProps> = ({
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span>Budget:</span>
-                  <span className="font-semibold">{player.costPercentage}%</span>
+                  <div className="flex items-center gap-1">
+                    {editingPercentage === player.id ? (
+                      <div className="flex items-center gap-1">
+                        <Input
+                          type="number"
+                          value={tempPercentage}
+                          onChange={(e) => setTempPercentage(e.target.value)}
+                          className="w-12 h-5 text-xs p-1"
+                          min="0"
+                          max="100"
+                          step="0.1"
+                        />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-5 w-5 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSavePercentage(player);
+                          }}
+                        >
+                          <Check className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-5 w-5 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelEdit();
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <span className="font-semibold">{player.costPercentage}%</span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-4 w-4 p-0"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditPercentage(player);
+                          }}
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>FMV:</span>
+                  <span className="font-semibold">{player.fmv}M</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span>Tier:</span>
@@ -71,8 +152,22 @@ const SquadGrid: React.FC<SquadGridProps> = ({
                 {player.roleCategory !== 'Portiere' && (
                   <div className="flex justify-between text-xs">
                     <span>Bonus:</span>
-                    <span className="font-semibold text-green-600">{bonusTotal}</span>
+                    <span className={`font-semibold ${bonusTotal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                    </span>
                   </div>
+                )}
+                {player.roleCategory === 'Portiere' && (
+                  <>
+                    <div className="flex justify-between text-xs">
+                      <span>Gol subiti:</span>
+                      <span>{player.goalsConceded}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span>xP:</span>
+                      <span>{player.xP.toFixed(2)}</span>
+                    </div>
+                  </>
                 )}
                 <div className="flex justify-between text-xs">
                   <span>Titolarità:</span>

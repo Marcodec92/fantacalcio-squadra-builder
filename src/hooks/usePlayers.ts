@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,7 +27,8 @@ const convertDbPlayerToPlayer = (dbPlayer: any): Player => {
     xA: parseFloat(dbPlayer.x_a || 0),
     xP: parseFloat(dbPlayer.x_p || 0),
     ownership: dbPlayer.ownership || 0,
-    plusCategories: dbPlayer.plus_categories || []
+    plusCategories: dbPlayer.plus_categories || [],
+    isFavorite: dbPlayer.is_favorite || false
   };
 };
 
@@ -55,37 +55,73 @@ const convertPlayerToDbFormat = (player: Player, userId: string) => {
     x_a: player.xA,
     x_p: player.xP,
     ownership: player.ownership,
-    plus_categories: player.plusCategories
+    plus_categories: player.plusCategories,
+    is_favorite: player.isFavorite
   };
 };
 
-export const usePlayers = () => {
+export const usePlayers = (filters?: {
+  showFavoritesOnly?: boolean;
+  searchTerm?: string;
+  selectedTeams?: string[];
+  selectedTiers?: string[];
+  selectedPlusCategories?: string[];
+}) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Fetch players from Supabase
+  // Fetch players from Supabase with filters
   const { data: players = [], isLoading, error } = useQuery({
-    queryKey: ['players', user?.id],
+    queryKey: ['players', user?.id, filters],
     queryFn: async () => {
       if (!user) return [];
       
-      const { data, error } = await supabase
+      let query = supabase
         .from('players')
         .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+        .eq('user_id', user.id);
+
+      // Apply filters
+      if (filters?.showFavoritesOnly) {
+        query = query.eq('is_favorite', true);
+      }
+
+      if (filters?.searchTerm) {
+        const searchTerm = filters.searchTerm.toLowerCase();
+        query = query.or(`name.ilike.%${searchTerm}%,surname.ilike.%${searchTerm}%`);
+      }
+
+      if (filters?.selectedTeams && filters.selectedTeams.length > 0) {
+        query = query.in('team', filters.selectedTeams);
+      }
+
+      if (filters?.selectedTiers && filters.selectedTiers.length > 0) {
+        query = query.in('tier', filters.selectedTiers);
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching players:', error);
         throw error;
       }
 
-      return data.map(convertDbPlayerToPlayer);
+      let filteredData = data.map(convertDbPlayerToPlayer);
+
+      // Filter by plus categories (client-side because of array handling)
+      if (filters?.selectedPlusCategories && filters.selectedPlusCategories.length > 0) {
+        filteredData = filteredData.filter(player => 
+          filters.selectedPlusCategories!.some(category => 
+            player.plusCategories.includes(category as any)
+          )
+        );
+      }
+
+      return filteredData;
     },
     enabled: !!user,
   });
 
-  // Add player mutation
   const addPlayerMutation = useMutation({
     mutationFn: async (player: Player) => {
       if (!user) throw new Error('User not authenticated');
@@ -110,7 +146,6 @@ export const usePlayers = () => {
     },
   });
 
-  // Update player mutation
   const updatePlayerMutation = useMutation({
     mutationFn: async (player: Player) => {
       if (!user) throw new Error('User not authenticated');
@@ -137,7 +172,6 @@ export const usePlayers = () => {
     },
   });
 
-  // Delete player mutation
   const deletePlayerMutation = useMutation({
     mutationFn: async (playerId: string) => {
       if (!user) throw new Error('User not authenticated');
@@ -183,7 +217,8 @@ export const usePlayers = () => {
       xA: 0,
       xP: 0,
       ownership: 0,
-      plusCategories: []
+      plusCategories: [],
+      isFavorite: false
     };
     
     addPlayerMutation.mutate(newPlayer);
@@ -201,6 +236,12 @@ export const usePlayers = () => {
     return players.filter(p => p.roleCategory === role);
   };
 
+  // Funzione per calcolare i bonus con la nuova formula
+  const calculateBonusTotal = (player: Player) => {
+    if (player.roleCategory === 'Portiere') return 0;
+    return player.goals * 3 + player.assists - (player.malus * 0.5);
+  };
+
   return {
     players,
     isLoading,
@@ -209,5 +250,6 @@ export const usePlayers = () => {
     updatePlayer,
     deletePlayer,
     getPlayersByRole,
+    calculateBonusTotal,
   };
 };

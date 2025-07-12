@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import PlayerCard from './PlayerCard';
 import SortControls from './SortControls';
+import PlayerFilters from './PlayerFilters';
 import { Player, PlayerRole, SortOption } from '@/types/Player';
+import { usePlayers } from '@/hooks/usePlayers';
 
 interface PlayersListProps {
-  players: Player[];
   roleCategory: PlayerRole;
   onAddPlayer: () => void;
   onUpdatePlayer: (player: Player) => void;
@@ -15,7 +16,6 @@ interface PlayersListProps {
 }
 
 const PlayersList: React.FC<PlayersListProps> = ({
-  players,
   roleCategory,
   onAddPlayer,
   onUpdatePlayer,
@@ -23,6 +23,21 @@ const PlayersList: React.FC<PlayersListProps> = ({
 }) => {
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
+  const [selectedPlusCategories, setSelectedPlusCategories] = useState<string[]>([]);
+
+  const { players, calculateBonusTotal } = usePlayers({
+    showFavoritesOnly,
+    searchTerm,
+    selectedTeams,
+    selectedTiers,
+    selectedPlusCategories
+  });
+
+  const filteredPlayers = players.filter(p => p.roleCategory === roleCategory);
 
   const getRoleTitle = (role: PlayerRole) => {
     switch (role) {
@@ -35,7 +50,7 @@ const PlayersList: React.FC<PlayersListProps> = ({
   };
 
   const sortedPlayers = useMemo(() => {
-    const sorted = [...players].sort((a, b) => {
+    const sorted = [...filteredPlayers].sort((a, b) => {
       let aValue: any;
       let bValue: any;
 
@@ -53,13 +68,8 @@ const PlayersList: React.FC<PlayersListProps> = ({
           bValue = b.fmv;
           break;
         case 'bonusTotal':
-          if (roleCategory === 'Portiere') {
-            aValue = 0;
-            bValue = 0;
-          } else {
-            aValue = a.goals * 3 + a.assists - a.malus;
-            bValue = b.goals * 3 + b.assists - b.malus;
-          }
+          aValue = calculateBonusTotal(a);
+          bValue = calculateBonusTotal(b);
           break;
         case 'xG':
           aValue = a.xG;
@@ -92,7 +102,7 @@ const PlayersList: React.FC<PlayersListProps> = ({
     });
 
     return sorted;
-  }, [players, sortBy, sortDirection, roleCategory]);
+  }, [filteredPlayers, sortBy, sortDirection, calculateBonusTotal]);
 
   const handleSortChange = (newSortBy: SortOption, newDirection: 'asc' | 'desc') => {
     setSortBy(newSortBy);
@@ -109,7 +119,21 @@ const PlayersList: React.FC<PlayersListProps> = ({
         </Button>
       </div>
 
-      {players.length > 0 && (
+      <PlayerFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        showFavoritesOnly={showFavoritesOnly}
+        onFavoritesToggle={() => setShowFavoritesOnly(!showFavoritesOnly)}
+        selectedTeams={selectedTeams}
+        onTeamsChange={setSelectedTeams}
+        selectedTiers={selectedTiers}
+        onTiersChange={setSelectedTiers}
+        selectedPlusCategories={selectedPlusCategories}
+        onPlusCategoriesChange={setSelectedPlusCategories}
+        roleCategory={roleCategory}
+      />
+
+      {filteredPlayers.length > 0 && (
         <SortControls
           roleCategory={roleCategory}
           sortBy={sortBy}
@@ -120,8 +144,8 @@ const PlayersList: React.FC<PlayersListProps> = ({
 
       {sortedPlayers.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
-          <p className="text-lg">Nessun {roleCategory.toLowerCase()} inserito</p>
-          <p className="text-sm">Clicca su "Aggiungi" per iniziare</p>
+          <p className="text-lg">Nessun {roleCategory.toLowerCase()} trovato</p>
+          <p className="text-sm">Prova a modificare i filtri o aggiungi un nuovo giocatore</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -131,6 +155,7 @@ const PlayersList: React.FC<PlayersListProps> = ({
               player={player}
               onUpdate={onUpdatePlayer}
               onDelete={onDeletePlayer}
+              bonusTotal={calculateBonusTotal(player)}
             />
           ))}
         </div>

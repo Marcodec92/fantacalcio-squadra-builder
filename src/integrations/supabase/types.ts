@@ -23,6 +23,7 @@ export type Database = {
           goals: number | null
           goals_conceded: number | null
           id: string
+          is_favorite: boolean | null
           malus: number | null
           name: string
           ownership: number | null
@@ -48,6 +49,7 @@ export type Database = {
           goals?: number | null
           goals_conceded?: number | null
           id?: string
+          is_favorite?: boolean | null
           malus?: number | null
           name: string
           ownership?: number | null
@@ -75,6 +77,7 @@ export type Database = {
           goals?: number | null
           goals_conceded?: number | null
           id?: string
+          is_favorite?: boolean | null
           malus?: number | null
           name?: string
           ownership?: number | null
@@ -149,6 +152,8 @@ export type Database = {
         | "Calci piazzati"
         | "Assistman"
         | "Goleador"
+        | "Under 19"
+        | "Pararigori"
       specific_role:
         | "Portiere"
         | "Difensore centrale"
@@ -317,6 +322,8 @@ export const Constants = {
         "Calci piazzati",
         "Assistman",
         "Goleador",
+        "Under 19",
+        "Pararigori",
       ],
       specific_role: [
         "Portiere",

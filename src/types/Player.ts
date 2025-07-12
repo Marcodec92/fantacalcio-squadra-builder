@@ -12,7 +12,7 @@ export type Team =
   | 'Genoa' | 'Hellas Verona' | 'Inter' | 'Juventus' | 'Lazio' | 'Lecce'
   | 'Milan' | 'Napoli' | 'Parma' | 'Pisa' | 'Roma' | 'Sassuolo' | 'Torino' | 'Udinese';
 
-export type PlusCategory = 'Under 21' | 'Rigorista' | 'Calci piazzati' | 'Assistman' | 'Goleador';
+export type PlusCategory = 'Under 21' | 'Under 19' | 'Rigorista' | 'Calci piazzati' | 'Assistman' | 'Goleador' | 'Pararigori';
 
 export type GoalkeeperTier = '1ª fascia' | '2ª fascia' | '3ª fascia';
 export type DefenderMidfielderTier = '1ª fascia' | '2ª fascia' | '3ª fascia' | '4ª fascia' | '5ª fascia' | '6ª fascia' | '7ª fascia' | '8ª fascia';
@@ -54,4 +54,5 @@ export interface Player {
   xP: number;
   ownership: number;
   plusCategories: PlusCategory[];
+  isFavorite: boolean;
 }

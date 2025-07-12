@@ -2,27 +2,38 @@
 import React from 'react';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { PlusCategory } from '@/types/Player';
-
-const plusCategories: PlusCategory[] = [
-  'Under 21',
-  'Rigorista', 
-  'Calci piazzati',
-  'Assistman',
-  'Goleador'
-];
+import { PlusCategory, PlayerRole } from '@/types/Player';
 
 interface PlusCategoriesSelectorProps {
   selected: PlusCategory[];
   onChange: (categories: PlusCategory[]) => void;
   readonly?: boolean;
+  playerRole?: PlayerRole;
 }
 
 const PlusCategoriesSelector: React.FC<PlusCategoriesSelectorProps> = ({ 
   selected, 
   onChange, 
-  readonly = false 
+  readonly = false,
+  playerRole
 }) => {
+  // Categorie comuni per tutti i ruoli
+  const commonCategories: PlusCategory[] = [
+    'Under 21',
+    'Under 19',
+    'Rigorista', 
+    'Calci piazzati',
+    'Assistman',
+    'Goleador'
+  ];
+
+  // Categorie specifiche per portieri
+  const goalkeeperCategories: PlusCategory[] = ['Pararigori'];
+
+  const availableCategories = playerRole === 'Portiere' 
+    ? [...commonCategories, ...goalkeeperCategories]
+    : commonCategories;
+
   const toggleCategory = (category: PlusCategory) => {
     if (readonly) return;
     
@@ -56,7 +67,7 @@ const PlusCategoriesSelector: React.FC<PlusCategoriesSelectorProps> = ({
     <div className="space-y-2">
       <Label>Categorie Plus</Label>
       <div className="grid grid-cols-2 gap-2">
-        {plusCategories.map((category) => (
+        {availableCategories.map((category) => (
           <div key={category} className="flex items-center space-x-2">
             <Checkbox
               id={category}
