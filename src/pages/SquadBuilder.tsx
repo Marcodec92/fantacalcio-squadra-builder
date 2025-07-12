@@ -87,10 +87,13 @@ const SquadBuilder = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
-        <Card className="p-8 text-center">
-          <h2 className="text-2xl font-bold mb-4">Accesso richiesto</h2>
-          <p>Devi effettuare l'accesso per utilizzare il Squad Builder</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 flex items-center justify-center p-4">
+        <Card className="p-8 text-center shadow-xl bg-white/80 backdrop-blur-sm border-0 rounded-3xl">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Accesso richiesto</h2>
+          <p className="text-gray-600">Devi effettuare l'accesso per utilizzare il Squad Builder</p>
         </Card>
       </div>
     );
@@ -98,8 +101,11 @@ const SquadBuilder = () => {
 
   if (playersLoading || squadLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Caricamento...</p>
+        </div>
       </div>
     );
   }
@@ -107,42 +113,46 @@ const SquadBuilder = () => {
   const { roleBudgets, roleCounts } = calculateRoleBudgets();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 bg-white/60 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-white/20">
           <Button
             variant="outline"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-white/80 hover:bg-white border-gray-200 rounded-2xl shadow-sm font-medium"
           >
             <ArrowLeft className="w-4 h-4" />
             Torna al Database
           </Button>
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-green-800 mb-2">⚽ Squad Builder</h1>
-            <p className="text-gray-600">Costruisci la tua formazione ideale</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+              ⚽ Squad Builder
+            </h1>
+            <p className="text-gray-600 font-medium">Costruisci la tua formazione ideale</p>
           </div>
           <div className="w-32"></div> {/* Spacer for centering */}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Budget Wheels */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-6">
             {/* Total Budget Wheel */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 text-center">Budget Totale</h3>
+            <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
+              <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Budget Totale</h3>
               <BudgetWheel 
                 totalBudget={calculateTotalBudget()}
                 selectedCount={squadSelections.length}
               />
-              <div className="mt-4 text-center">
-                <p className="text-sm text-gray-600">
-                  Giocatori selezionati: {squadSelections.length}/25
-                </p>
-                <p className="text-sm text-gray-600">
-                  Budget utilizzato: {calculateTotalBudget().toFixed(1)}%
-                </p>
+              <div className="mt-4 text-center space-y-2">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3">
+                  <p className="text-sm text-gray-700 font-medium">
+                    Giocatori: <span className="font-bold text-blue-600">{squadSelections.length}/25</span>
+                  </p>
+                  <p className="text-sm text-gray-700 font-medium">
+                    Budget: <span className="font-bold text-purple-600">{calculateTotalBudget().toFixed(1)}%</span>
+                  </p>
+                </div>
               </div>
             </Card>
 
@@ -155,7 +165,7 @@ const SquadBuilder = () => {
 
           {/* Squad Grid */}
           <div className="lg:col-span-3">
-            <Card className="p-6">
+            <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
               <SquadGrid
                 squadSelections={squadSelections}
                 players={players}

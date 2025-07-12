@@ -70,29 +70,33 @@ const SquadGrid: React.FC<SquadGridProps> = ({
     return (
       <Card 
         key={`${role}-${slot}`}
-        className={`p-3 cursor-pointer transition-all hover:shadow-md min-h-[180px] flex flex-col ${
-          player ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-dashed border-gray-300'
+        className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[200px] flex flex-col backdrop-blur-sm border-0 ${
+          player 
+            ? 'bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 shadow-lg ring-1 ring-emerald-200/50' 
+            : 'bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:via-indigo-50 hover:to-blue-100'
         }`}
         onClick={() => onPositionClick(slot, role)}
       >
         <div className="text-center flex-1">
-          <div className="text-xs font-medium text-gray-600 mb-1">{label}</div>
+          <div className="text-sm font-bold text-gray-700 mb-3 px-3 py-1 bg-white/70 rounded-full shadow-sm">
+            {label}
+          </div>
           
           {player ? (
-            <div className="space-y-2 h-full flex flex-col">
-              <div>
-                <div className="font-semibold text-sm flex items-center justify-center gap-1">
+            <div className="space-y-3 h-full flex flex-col">
+              <div className="bg-white/60 rounded-xl p-3 shadow-sm">
+                <div className="font-bold text-sm flex items-center justify-center gap-2 text-gray-800">
                   {player.name} {player.surname}
                   {player.isFavorite && (
-                    <span className="text-yellow-500 text-xs">⭐</span>
+                    <span className="text-yellow-500 text-base drop-shadow-sm">⭐</span>
                   )}
                 </div>
-                <div className="text-xs text-gray-600">{player.team}</div>
+                <div className="text-xs text-gray-600 font-medium mt-1">{player.team}</div>
               </div>
               
-              <div className="space-y-1 flex-1">
+              <div className="space-y-2 flex-1 bg-white/40 rounded-xl p-3 shadow-sm">
                 <div className="flex justify-between text-xs">
-                  <span>Budget:</span>
+                  <span className="font-medium text-gray-600">Budget:</span>
                   <div className="flex items-center gap-1">
                     {editingPercentage === player.id ? (
                       <div className="flex items-center gap-1">
@@ -100,7 +104,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
                           type="number"
                           value={tempPercentage}
                           onChange={(e) => setTempPercentage(e.target.value)}
-                          className="w-12 h-5 text-xs p-1"
+                          className="w-12 h-6 text-xs p-1 rounded-lg border-gray-300"
                           min="0"
                           max="100"
                           step="0.1"
@@ -108,56 +112,58 @@ const SquadGrid: React.FC<SquadGridProps> = ({
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-5 w-5 p-0"
+                          className="h-6 w-6 p-0 hover:bg-green-100 rounded-lg"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleSavePercentage(player);
                           }}
                         >
-                          <Check className="h-3 w-3" />
+                          <Check className="h-3 w-3 text-green-600" />
                         </Button>
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-5 w-5 p-0"
+                          className="h-6 w-6 p-0 hover:bg-red-100 rounded-lg"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleCancelEdit();
                           }}
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3 w-3 text-red-500" />
                         </Button>
                       </div>
                     ) : (
                       <div className="flex items-center gap-1">
-                        <span className="font-semibold">{player.costPercentage}%</span>
+                        <span className="font-bold text-blue-600">{player.costPercentage}%</span>
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="h-4 w-4 p-0"
+                          className="h-5 w-5 p-0 hover:bg-blue-100 rounded-lg"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEditPercentage(player);
                           }}
                         >
-                          <Edit2 className="h-3 w-3" />
+                          <Edit2 className="h-3 w-3 text-blue-500" />
                         </Button>
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span>FMV:</span>
-                  <span className="font-semibold">{player.fmv}M</span>
+                  <span className="font-medium text-gray-600">FMV:</span>
+                  <span className="font-bold text-purple-600">{player.fmv}M</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span>Tier:</span>
-                  <span>{player.tier}</span>
+                  <span className="font-medium text-gray-600">Tier:</span>
+                  <Badge variant="secondary" className="text-xs h-5 bg-gray-200/80 text-gray-700">
+                    {player.tier}
+                  </Badge>
                 </div>
                 {player.roleCategory !== 'Portiere' && (
                   <div className="flex justify-between text-xs">
-                    <span>Bonus:</span>
-                    <span className={`font-semibold ${bonusTotal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <span className="font-medium text-gray-600">Bonus:</span>
+                    <span className={`font-bold text-sm ${bonusTotal < 0 ? 'text-red-500' : 'text-emerald-600'}`}>
                       {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
                     </span>
                   </div>
@@ -165,38 +171,40 @@ const SquadGrid: React.FC<SquadGridProps> = ({
                 {player.roleCategory === 'Portiere' && (
                   <>
                     <div className="flex justify-between text-xs">
-                      <span>Gol subiti:</span>
-                      <span>{player.goalsConceded}</span>
+                      <span className="font-medium text-gray-600">Gol subiti:</span>
+                      <span className="font-semibold text-orange-600">{player.goalsConceded}</span>
                     </div>
                     <div className="flex justify-between text-xs">
-                      <span>xP:</span>
-                      <span>{player.xP.toFixed(2)}</span>
+                      <span className="font-medium text-gray-600">xP:</span>
+                      <span className="font-semibold text-indigo-600">{player.xP.toFixed(2)}</span>
                     </div>
                   </>
                 )}
                 <div className="flex justify-between text-xs">
-                  <span>Titolarità:</span>
-                  <span>{player.ownership}%</span>
+                  <span className="font-medium text-gray-600">Titolarità:</span>
+                  <span className="font-semibold text-cyan-600">{player.ownership}%</span>
                 </div>
               </div>
 
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full text-red-600 hover:text-red-700 mt-auto"
+                className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 rounded-xl shadow-sm font-medium mt-auto"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (selection) onRemovePlayer(selection.id);
                 }}
               >
-                <X className="w-3 h-3 mr-1" />
+                <X className="w-4 h-4 mr-2" />
                 Rimuovi
               </Button>
             </div>
           ) : (
-            <div className="py-4 flex-1 flex flex-col items-center justify-center">
-              <Plus className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-              <div className="text-xs text-gray-500">Seleziona giocatore</div>
+            <div className="py-8 flex-1 flex flex-col items-center justify-center">
+              <div className="bg-white/60 rounded-full p-4 shadow-lg mb-3">
+                <Plus className="w-8 h-8 text-gray-400" />
+              </div>
+              <div className="text-sm text-gray-500 font-medium">Seleziona giocatore</div>
             </div>
           )}
         </div>
@@ -205,43 +213,43 @@ const SquadGrid: React.FC<SquadGridProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Portieri */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 flex items-center">
+        <h3 className="text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
           🥅 Portieri (3)
         </h3>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-4">
           {[1, 2, 3].map(slot => renderPosition(slot, 'Portiere', `P${slot}`))}
         </div>
       </div>
 
       {/* Difensori */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 flex items-center">
+        <h3 className="text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
           🛡️ Difensori (8)
         </h3>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map(slot => renderPosition(slot, 'Difensore', `D${slot}`))}
         </div>
       </div>
 
       {/* Centrocampisti */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 flex items-center">
+        <h3 className="text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           ⚡ Centrocampisti (8)
         </h3>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-4">
           {[1, 2, 3, 4, 5, 6, 7, 8].map(slot => renderPosition(slot, 'Centrocampista', `C${slot}`))}
         </div>
       </div>
 
       {/* Attaccanti */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 flex items-center">
+        <h3 className="text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
           🎯 Attaccanti (6)
         </h3>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-4">
           {[1, 2, 3, 4, 5, 6].map(slot => renderPosition(slot, 'Attaccante', `A${slot}`))}
         </div>
       </div>
