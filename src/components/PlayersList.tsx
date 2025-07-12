@@ -155,7 +155,6 @@ const PlayersList: React.FC<PlayersListProps> = ({
               player={player}
               onUpdate={onUpdatePlayer}
               onDelete={onDeletePlayer}
-              bonusTotal={calculateBonusTotal(player)}
             />
           ))}
         </div>

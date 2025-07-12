@@ -81,7 +81,6 @@ const Index = () => {
 
                 <TabsContent value="Portiere">
                   <PlayersList
-                    players={getPlayersByRole('Portiere')}
                     roleCategory="Portiere"
                     onAddPlayer={() => addPlayer('Portiere')}
                     onUpdatePlayer={updatePlayer}
@@ -91,7 +90,6 @@ const Index = () => {
 
                 <TabsContent value="Difensore">
                   <PlayersList
-                    players={getPlayersByRole('Difensore')}
                     roleCategory="Difensore"
                     onAddPlayer={() => addPlayer('Difensore')}
                     onUpdatePlayer={updatePlayer}
@@ -101,7 +99,6 @@ const Index = () => {
 
                 <TabsContent value="Centrocampista">
                   <PlayersList
-                    players={getPlayersByRole('Centrocampista')}
                     roleCategory="Centrocampista"
                     onAddPlayer={() => addPlayer('Centrocampista')}
                     onUpdatePlayer={updatePlayer}
@@ -111,7 +108,6 @@ const Index = () => {
 
                 <TabsContent value="Attaccante">
                   <PlayersList
-                    players={getPlayersByRole('Attaccante')}
                     roleCategory="Attaccante"
                     onAddPlayer={() => addPlayer('Attaccante')}
                     onUpdatePlayer={updatePlayer}

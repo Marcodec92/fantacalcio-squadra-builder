@@ -1,7 +1,8 @@
+
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Player, PlayerRole } from '@/types/Player';
+import { Player, PlayerRole, Team } from '@/types/Player';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -92,7 +93,8 @@ export const usePlayers = (filters?: {
       }
 
       if (filters?.selectedTeams && filters.selectedTeams.length > 0) {
-        query = query.in('team', filters.selectedTeams);
+        // Cast to Team[] to satisfy TypeScript
+        query = query.in('team', filters.selectedTeams as Team[]);
       }
 
       if (filters?.selectedTiers && filters.selectedTiers.length > 0) {
