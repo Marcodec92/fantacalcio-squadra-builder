@@ -70,22 +70,27 @@ const SquadGrid: React.FC<SquadGridProps> = ({
     return (
       <Card 
         key={`${role}-${slot}`}
-        className={`p-3 cursor-pointer transition-all hover:shadow-md ${
+        className={`p-3 cursor-pointer transition-all hover:shadow-md min-h-[180px] flex flex-col ${
           player ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-dashed border-gray-300'
         }`}
         onClick={() => onPositionClick(slot, role)}
       >
-        <div className="text-center">
+        <div className="text-center flex-1">
           <div className="text-xs font-medium text-gray-600 mb-1">{label}</div>
           
           {player ? (
-            <div className="space-y-2">
+            <div className="space-y-2 h-full flex flex-col">
               <div>
-                <div className="font-semibold text-sm">{player.name} {player.surname}</div>
+                <div className="font-semibold text-sm flex items-center justify-center gap-1">
+                  {player.name} {player.surname}
+                  {player.isFavorite && (
+                    <span className="text-yellow-500 text-xs">⭐</span>
+                  )}
+                </div>
                 <div className="text-xs text-gray-600">{player.team}</div>
               </div>
               
-              <div className="space-y-1">
+              <div className="space-y-1 flex-1">
                 <div className="flex justify-between text-xs">
                   <span>Budget:</span>
                   <div className="flex items-center gap-1">
@@ -178,7 +183,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full text-red-600 hover:text-red-700"
+                className="w-full text-red-600 hover:text-red-700 mt-auto"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (selection) onRemovePlayer(selection.id);
@@ -189,7 +194,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
               </Button>
             </div>
           ) : (
-            <div className="py-4">
+            <div className="py-4 flex-1 flex flex-col items-center justify-center">
               <Plus className="w-8 h-8 mx-auto text-gray-400 mb-2" />
               <div className="text-xs text-gray-500">Seleziona giocatore</div>
             </div>

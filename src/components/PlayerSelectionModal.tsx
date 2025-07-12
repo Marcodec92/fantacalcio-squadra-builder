@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Search, Check, Filter } from "lucide-react";
 import { Player, PlayerRole, PlayerTier } from '@/types/Player';
 import { SquadSelection } from '@/hooks/useSquadSelections';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface PlayerSelectionModalProps {
   isOpen: boolean;
@@ -91,6 +91,8 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
     setSelectedTiers([]);
   };
 
+  const hasActiveFilters = searchTerm || selectedTiers.length > 0;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
@@ -112,8 +114,8 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                 className="pl-10"
               />
             </div>
-            <Collapsible open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-              <CollapsibleTrigger asChild>
+            <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+              <PopoverTrigger asChild>
                 <Button variant="outline">
                   <Filter className="w-4 h-4 mr-2" />
                   Filtri
@@ -123,11 +125,11 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                     </Badge>
                   )}
                 </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="absolute top-full left-0 right-0 z-10 bg-white border rounded-lg p-4 shadow-lg mt-1">
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4" align="end">
                 <div>
                   <Label className="text-sm font-medium mb-2 block">Fasce</Label>
-                  <div className="grid grid-cols-4 gap-2 mb-4">
+                  <div className="grid grid-cols-2 gap-2 mb-4">
                     {getTiersForRole(selectedRole).map((tier) => (
                       <div key={tier} className="flex items-center space-x-2">
                         <Checkbox
@@ -141,14 +143,14 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                       </div>
                     ))}
                   </div>
-                  {(searchTerm || selectedTiers.length > 0) && (
+                  {hasActiveFilters && (
                     <Button variant="ghost" onClick={clearFilters} size="sm">
                       Rimuovi filtri
                     </Button>
                   )}
                 </div>
-              </CollapsibleContent>
-            </Collapsible>
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Players List */}
@@ -171,6 +173,9 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-semibold">{player.name} {player.surname}</h4>
+                          {player.isFavorite && (
+                            <span className="text-yellow-500">⭐</span>
+                          )}
                           <Badge variant="outline">{player.team}</Badge>
                           <Badge variant="secondary">{player.role}</Badge>
                           {player.tier && <Badge variant="outline">{player.tier}</Badge>}
