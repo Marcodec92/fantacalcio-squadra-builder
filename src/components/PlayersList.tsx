@@ -99,9 +99,17 @@ const PlayersList: React.FC<PlayersListProps> = ({
           bValue = b.fmv;
           break;
         case 'tier':
-          aValue = getTierValue(a.tier);
-          bValue = getTierValue(b.tier);
-          break;
+          // Ordinamento composto: prima per fascia, poi per MFV
+          const aTierValue = getTierValue(a.tier);
+          const bTierValue = getTierValue(b.tier);
+          
+          // Se le fasce sono diverse, ordina per fascia
+          if (aTierValue !== bTierValue) {
+            return sortDirection === 'asc' ? aTierValue - bTierValue : bTierValue - aTierValue;
+          }
+          
+          // Se le fasce sono uguali, ordina per MFV (più alto prima quando asc)
+          return sortDirection === 'asc' ? b.fmv - a.fmv : a.fmv - b.fmv;
         case 'bonusTotal':
           aValue = calculateBonusTotal(a);
           bValue = calculateBonusTotal(b);
