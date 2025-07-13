@@ -92,25 +92,25 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     return (
       <div className="glass-card p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
         <div className="space-y-3">
-          {/* Prima riga: Nome più grande, Fascia a destra e Azioni */}
+          {/* Prima riga: Nome più grande, Fascia spostata a sinistra e Azioni */}
           <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
-              <div>
-                <div className="font-bold text-xl text-gradient leading-tight break-words">
-                  {player.name} {player.surname}
-                </div>
-                <div className="text-sm text-muted-foreground mt-1">{player.team}</div>
-                <div className="glass-card px-2 py-1 text-xs font-medium text-gradient-secondary inline-block mt-1">
-                  {player.role}
-                </div>
-              </div>
-              {/* Fascia a destra del nome */}
-              <div>
+            <div className="flex items-start gap-2"> {/* Gap ridotto per avvicinare la fascia */}
+              {/* Fascia spostata più a sinistra */}
+              <div className="mt-1">
                 <TierSelect 
                   roleCategory={player.roleCategory} 
                   value={player.tier} 
                   readonly 
                 />
+              </div>
+              <div>
+                <div className="font-bold text-2xl text-gradient leading-tight break-words"> {/* Testo più grande */}
+                  {player.name} {player.surname}
+                </div>
+                <div className="text-lg text-muted-foreground mt-1 font-medium">{player.team}</div> {/* Squadra più grande */}
+                <div className="glass-card px-3 py-1 text-sm font-semibold text-gradient-secondary inline-block mt-1"> {/* Ruolo più grande */}
+                  {player.role}
+                </div>
               </div>
             </div>
             {/* Azioni */}
@@ -134,23 +134,26 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
 
-          {/* FMV e Budget compatti sotto il nome - FMV PRIMA */}
-          <div className="flex gap-2 text-xs">
-            <div className="glass-card px-3 py-1 text-gradient font-medium">
-              FMV: {player.fmv.toFixed(2)}
+          {/* FMV e Budget compatti sotto il nome - DIMENSIONI FISSE */}
+          <div className="relative">
+            <div className="flex gap-2 text-xs h-8"> {/* Altezza fissa */}
+              <div className="glass-card px-3 py-1 text-gradient font-medium min-w-[100px]"> {/* Larghezza minima fissa */}
+                FMV: {player.fmv.toFixed(2)}
+              </div>
+              <div 
+                className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors min-w-[120px]"
+                onClick={() => {
+                  console.log('🎯 BUDGET CLICKED!!!', player.name);
+                  setShowBudgetBreakdown(!showBudgetBreakdown);
+                }}
+                title="Clicca per vedere breakdown crediti"
+              >
+                {player.costPercentage}% del budget
+              </div>
             </div>
-            <div 
-              className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors"
-              onClick={() => {
-                console.log('🎯 BUDGET CLICKED!!!', player.name);
-                setShowBudgetBreakdown(!showBudgetBreakdown);
-              }}
-              title="Clicca per vedere breakdown crediti"
-            >
-              {player.costPercentage}% del budget
-            </div>
+            {/* Breakdown posizionato in absolute per non influenzare il layout */}
             {showBudgetBreakdown && (
-              <div className="flex gap-2 mt-2 animate-slide-in-right">
+              <div className="absolute top-10 left-0 z-10 flex gap-2 animate-slide-in-right">
                 <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
                   {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
                 </div>
