@@ -59,14 +59,15 @@ const PositionCard: React.FC<PositionCardProps> = ({
   };
 
   const toggleBudgetBreakdown = (playerId: string) => {
+    console.log('Toggle budget breakdown clicked for player:', playerId);
+    console.log('Current showBudgetBreakdown:', showBudgetBreakdown);
+    
     if (showBudgetBreakdown === playerId) {
-      // Inizia animazione di uscita
-      setIsExiting(playerId);
-      setTimeout(() => {
-        setShowBudgetBreakdown(null);
-        setIsExiting(null);
-      }, 300); // Durata dell'animazione di uscita
+      // Nasconde il breakdown
+      setShowBudgetBreakdown(null);
+      setIsExiting(null);
     } else {
+      // Mostra il breakdown
       setShowBudgetBreakdown(playerId);
       setIsExiting(null);
     }
@@ -159,28 +160,22 @@ const PositionCard: React.FC<PositionCardProps> = ({
                         >
                           {player.costPercentage}%
                         </span>
-                        {(showBudgetBreakdown === player.id || isExiting === player.id) && (() => {
-                          const breakdown = calculateCreditBreakdown(player.fmv);
-                          const isCurrentlyExiting = isExiting === player.id;
-                          return (
-                            <div className={`flex items-center gap-2 ml-2 overflow-hidden ${isCurrentlyExiting ? 'slide-out-left' : 'slide-in-right'}`}>
-                              <div className="flex items-center gap-2">
-                                <div className={`flex items-center gap-1 text-xs bg-green-50 px-2 py-1 rounded-lg border border-green-200 shadow-sm transform transition-all duration-300 ${isCurrentlyExiting ? 'slide-out-left' : 'slide-in-right opacity-0'}`} style={{animationDelay: isCurrentlyExiting ? '0s' : '0.1s', animationFillMode: 'forwards'}}>
-                                  <span className="text-green-600 font-medium">300:</span>
-                                  <span className="text-green-700 font-bold">{breakdown.credits300}%</span>
-                                </div>
-                                <div className={`flex items-center gap-1 text-xs bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 shadow-sm transform transition-all duration-300 ${isCurrentlyExiting ? 'slide-out-left' : 'slide-in-right opacity-0'}`} style={{animationDelay: isCurrentlyExiting ? '0.1s' : '0.2s', animationFillMode: 'forwards'}}>
-                                  <span className="text-amber-600 font-medium">500:</span>
-                                  <span className="text-amber-700 font-bold">{breakdown.credits500}%</span>
-                                </div>
-                                <div className={`flex items-center gap-1 text-xs bg-red-50 px-2 py-1 rounded-lg border border-red-200 shadow-sm transform transition-all duration-300 ${isCurrentlyExiting ? 'slide-out-left' : 'slide-in-right opacity-0'}`} style={{animationDelay: isCurrentlyExiting ? '0.2s' : '0.3s', animationFillMode: 'forwards'}}>
-                                  <span className="text-red-600 font-medium">650:</span>
-                                  <span className="text-red-700 font-bold">{breakdown.credits650}%</span>
-                                </div>
-                              </div>
+                        {showBudgetBreakdown === player.id && (
+                          <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
+                            <div className="flex items-center gap-1 text-xs bg-green-50 px-2 py-1 rounded-lg border border-green-200 shadow-sm">
+                              <span className="text-green-600 font-medium">300:</span>
+                              <span className="text-green-700 font-bold">{calculateCreditBreakdown(player.fmv).credits300}%</span>
                             </div>
-                          );
-                        })()}
+                            <div className="flex items-center gap-1 text-xs bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 shadow-sm">
+                              <span className="text-amber-600 font-medium">500:</span>
+                              <span className="text-amber-700 font-bold">{calculateCreditBreakdown(player.fmv).credits500}%</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs bg-red-50 px-2 py-1 rounded-lg border border-red-200 shadow-sm">
+                              <span className="text-red-600 font-medium">650:</span>
+                              <span className="text-red-700 font-bold">{calculateCreditBreakdown(player.fmv).credits650}%</span>
+                            </div>
+                          </div>
+                        )}
                         <Button
                           size="sm"
                           variant="ghost"
