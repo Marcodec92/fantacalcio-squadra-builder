@@ -247,6 +247,10 @@
     animation: slide-in-right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
+  .slide-out-left {
+    animation: slide-out-left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
   .fade-in-scale {
     animation: fade-in-scale 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
@@ -333,6 +337,17 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
   }
 }
 
