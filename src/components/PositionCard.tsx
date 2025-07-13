@@ -172,17 +172,15 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                          <div className="relative inline-block">
-                            <span className="font-bold text-blue-600">{player.costPercentage}%</span>
-                            <div
-                              className="absolute inset-0 cursor-pointer"
-                              onClick={() => {
-                                console.log('DIRECT CLICK TRIGGERED!', player.id);
-                                toggleBudgetBreakdown(player.id);
-                              }}
-                              title="Clicca per vedere breakdown crediti"
-                            />
-                          </div>
+                        <div 
+                          className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors px-2 py-1 rounded bg-blue-50 border border-blue-200"
+                          onClick={(e) => {
+                            console.log('BUDGET CLICKED!', player.id);
+                            toggleBudgetBreakdown(player.id);
+                          }}
+                        >
+                          {player.costPercentage}%
+                        </div>
                          <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
                         {showBudgetBreakdown === player.id && (
                           <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
