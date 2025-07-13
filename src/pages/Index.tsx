@@ -7,6 +7,7 @@ import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield } from "lucide-re
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
+import { usePlayersData } from '@/hooks/usePlayersData';
 import PlayersList from '@/components/PlayersList';
 import { Player, PlayerRole } from '@/types/Player';
 
@@ -14,8 +15,14 @@ const Index = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { addPlayer, updatePlayer, deletePlayer } = usePlayers();
+  const { data: allPlayers = [] } = usePlayersData();
   
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
+
+  // Conteggio giocatori per ruolo
+  const getPlayerCountByRole = (role: PlayerRole) => {
+    return allPlayers.filter(player => player.roleCategory === role).length;
+  };
 
   const handleAddPlayer = (role: PlayerRole) => {
     console.log('handleAddPlayer called with role:', role);
@@ -114,6 +121,7 @@ const Index = () => {
                   <div className="flex flex-col items-center space-y-2">
                     <Shield className="w-6 h-6" />
                     <span>Portieri</span>
+                    <span className="text-xs opacity-75">({getPlayerCountByRole('Portiere')} giocatori)</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
@@ -123,6 +131,7 @@ const Index = () => {
                   <div className="flex flex-col items-center space-y-2">
                     <Shield className="w-6 h-6" />
                     <span>Difensori</span>
+                    <span className="text-xs opacity-75">({getPlayerCountByRole('Difensore')} giocatori)</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
@@ -132,6 +141,7 @@ const Index = () => {
                   <div className="flex flex-col items-center space-y-2">
                     <Sparkles className="w-6 h-6" />
                     <span>Centrocampisti</span>
+                    <span className="text-xs opacity-75">({getPlayerCountByRole('Centrocampista')} giocatori)</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
@@ -141,6 +151,7 @@ const Index = () => {
                   <div className="flex flex-col items-center space-y-2">
                     <Target className="w-6 h-6" />
                     <span>Attaccanti</span>
+                    <span className="text-xs opacity-75">({getPlayerCountByRole('Attaccante')} giocatori)</span>
                   </div>
                 </TabsTrigger>
               </TabsList>
