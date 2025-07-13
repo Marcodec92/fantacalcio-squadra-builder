@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -84,6 +84,24 @@ const PositionCard: React.FC<PositionCardProps> = ({
     };
   };
 
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const budgetElement = target.closest('[data-action="budget-toggle"]');
+      
+      if (budgetElement) {
+        const playerId = budgetElement.getAttribute('data-player-id');
+        if (playerId) {
+          console.log('GLOBAL CLICK DETECTED for player:', playerId);
+          toggleBudgetBreakdown(playerId);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, [showBudgetBreakdown]);
+
   return (
     <Card 
       className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[320px] flex flex-col backdrop-blur-sm border-0 ${
@@ -154,18 +172,13 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                          <button 
-                            className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors inline-block budget-click bg-transparent border-none p-0 m-0"
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              console.log('BUDGET MOUSEDOWN TRIGGERED!', player.id);
-                              toggleBudgetBreakdown(player.id);
-                            }}
-                            type="button"
+                          <span 
+                            className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors"
+                            data-player-id={player.id}
+                            data-action="budget-toggle"
                           >
                             {player.costPercentage}%
-                          </button>
+                          </span>
                          <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
                         {showBudgetBreakdown === player.id && (
                           <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
