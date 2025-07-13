@@ -65,39 +65,63 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   if (!isEditing) {
     return (
       <div className="glass-card p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-          {/* Nome e squadra */}
-          <div className="lg:col-span-2">
-            <div className="font-bold text-base text-gradient leading-tight break-words">
-              {player.name} {player.surname}
-            </div>
-            <div className="text-xs text-muted-foreground truncate">{player.team}</div>
-            <div className="glass-card px-2 py-1 text-xs font-medium text-gradient-secondary inline-block mt-1">
-              {player.role}
-            </div>
-          </div>
-          
-          {/* Costo e FMV */}
-          <div className="lg:col-span-2">
-            <div className="glass-card p-3">
-              <CostCalculator percentage={player.costPercentage} readonly />
-              <div className="mt-2">
-                <FMVInput value={player.fmv} readonly />
+        <div className="space-y-3">
+          {/* Nome, squadra e ruolo */}
+          <div className="flex justify-between items-start">
+            <div>
+              <div className="font-bold text-base text-gradient leading-tight break-words">
+                {player.name} {player.surname}
+              </div>
+              <div className="text-xs text-muted-foreground">{player.team}</div>
+              <div className="glass-card px-2 py-1 text-xs font-medium text-gradient-secondary inline-block mt-1">
+                {player.role}
               </div>
             </div>
+            {/* Azioni */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsEditing(true)}
+                className="glass-button border-white/20 hover:border-white/30"
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onDelete(player.id)}
+                className="glass-button border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-          
-          {/* Tier */}
-          <div className="lg:col-span-1">
-            <TierSelect 
-              roleCategory={player.roleCategory} 
-              value={player.tier} 
-              readonly 
-            />
+
+          {/* FMV e Budget in orizzontale sotto il nome */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="glass-card p-3">
+              <CostCalculator percentage={player.costPercentage} readonly />
+            </div>
+            <div className="glass-card p-3">
+              <FMVInput value={player.fmv} readonly />
+            </div>
           </div>
+
+          {/* Resto delle informazioni in orizzontale */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           
-          {/* Statistiche principali */}
-          <div className="lg:col-span-2">
+            {/* Tier */}
+            <div>
+              <TierSelect 
+                roleCategory={player.roleCategory} 
+                value={player.tier} 
+                readonly 
+              />
+            </div>
+          
+            {/* Statistiche principali */}
+            <div>
             {isGoalkeeper ? (
               <div className="glass-card p-3">
                 <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
@@ -143,8 +167,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             )}
           </div>
           
-          {/* Expected Stats e Performance */}
-          <div className="lg:col-span-2">
+            {/* Expected Stats e Performance */}
+            <div>
             <div className="glass-card p-3">
               <div className="text-xs font-medium text-gradient mb-1">
                 {isGoalkeeper ? 'Performance' : 'Expected'}
@@ -173,10 +197,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
           
-          {/* Titolarità e Plus */}
-          <div className="lg:col-span-2">
-            <div className="space-y-3">
-              <div>
+            {/* Titolarità e Plus in orizzontale */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
                 <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
                 <OwnershipProgress value={player.ownership} readonly />
               </div>
@@ -189,26 +212,6 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 />
               </div>
             </div>
-          </div>
-          
-          {/* Azioni */}
-          <div className="lg:col-span-1 flex gap-2 justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsEditing(true)}
-              className="glass-button border-white/20 hover:border-white/30"
-            >
-              <Edit className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onDelete(player.id)}
-              className="glass-button border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
           </div>
         </div>
       </div>
