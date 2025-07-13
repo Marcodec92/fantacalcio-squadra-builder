@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,8 +23,21 @@ interface PlayerCardProps {
 }
 
 const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) => {
-  const [isEditing, setIsEditing] = useState(false);
+  // Determina se questo è un nuovo giocatore appena creato
+  const isNewPlayer = player.name === 'Nuovo' && player.surname === 'Giocatore' && player.costPercentage === 0;
+  
+  // Inizia in modalità editing se è un nuovo giocatore
+  const [isEditing, setIsEditing] = useState(isNewPlayer);
   const [editedPlayer, setEditedPlayer] = useState<Player>(player);
+
+  // Aggiorna lo stato quando cambiano i props del player
+  useEffect(() => {
+    setEditedPlayer(player);
+    // Se è un nuovo giocatore, assicurati che sia in editing
+    if (isNewPlayer && !isEditing) {
+      setIsEditing(true);
+    }
+  }, [player, isNewPlayer, isEditing]);
 
   const handleSave = () => {
     onUpdate(editedPlayer);
@@ -32,8 +45,13 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   };
 
   const handleCancel = () => {
-    setEditedPlayer(player);
-    setIsEditing(false);
+    // Per i nuovi giocatori, se cancellano, elimina il giocatore
+    if (isNewPlayer) {
+      onDelete(player.id);
+    } else {
+      setEditedPlayer(player);
+      setIsEditing(false);
+    }
   };
 
   const updateField = (field: keyof Player, value: any) => {
@@ -294,7 +312,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           </Button>
           <Button variant="outline" onClick={handleCancel}>
             <X className="w-4 h-4 mr-2" />
-            Annulla
+            {isNewPlayer ? 'Elimina' : 'Annulla'}
           </Button>
         </div>
       </div>
