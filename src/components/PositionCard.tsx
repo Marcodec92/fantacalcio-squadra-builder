@@ -38,7 +38,16 @@ const PositionCard: React.FC<PositionCardProps> = ({
 
   const bonusTotal = player ? calculateBonusTotal(player) : 0;
   
-  console.log('PositionCard rendered for player:', player?.name, 'ID:', player?.id);
+  console.log('🚨 POSITION CARD RENDERING!!! 🚨', {
+    playerName: player?.name,
+    playerId: player?.id,
+    timestamp: Date.now()
+  });
+  
+  // Alert per forzare l'attenzione
+  if (player) {
+    console.log('🎯 PLAYER DATA:', player);
+  }
 
   const handleEditPercentage = (player: Player) => {
     setEditingPercentage(player.id);
