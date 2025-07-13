@@ -22,12 +22,12 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
   };
 
   const getStatusColor = (budgetCredits: number, cost: number) => {
-    return isOverBudget(budgetCredits, cost) ? '#EF4444' : '#10B981'; // Red if over, Green if within
+    return isOverBudget(budgetCredits, cost) ? '#EF4444' : '#10B981';
   };
 
   return (
-    <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
-      <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Costo Squadra</h3>
+    <Card className="p-6 border-0 shadow-sm">
+      <h3 className="text-lg font-semibold mb-4 text-center text-gray-900">Costo Squadra</h3>
       <div className="space-y-4">
         {budgets.map(({ credits, label }) => {
           const cost = calculateCost(credits);
@@ -39,7 +39,7 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-gray-700">{label}</span>
                 <span 
-                  className="text-sm font-bold"
+                  className="text-sm font-semibold"
                   style={{ color }}
                 >
                   {cost}/{credits}
@@ -47,7 +47,7 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
               </div>
               
               {/* Progress bar */}
-              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500 ease-in-out"
                   style={{
@@ -60,9 +60,9 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
               {/* Status indicator */}
               <div className="mt-2 text-center">
                 <div 
-                  className="inline-block px-2 py-1 rounded-full text-xs font-medium"
+                  className="inline-block px-3 py-1 rounded-full text-xs font-medium"
                   style={{ 
-                    backgroundColor: `${color}20`, 
+                    backgroundColor: `${color}15`, 
                     color: color 
                   }}
                 >

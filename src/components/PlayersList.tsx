@@ -49,13 +49,23 @@ const PlayersList: React.FC<PlayersListProps> = ({
     }
   };
 
-  const getRoleGradient = (role: PlayerRole) => {
+  const getRoleColor = (role: PlayerRole) => {
     switch (role) {
-      case 'Portiere': return 'from-blue-500 to-cyan-600';
-      case 'Difensore': return 'from-green-500 to-emerald-600';
-      case 'Centrocampista': return 'from-purple-500 to-pink-600';
-      case 'Attaccante': return 'from-red-500 to-orange-600';
-      default: return 'from-gray-500 to-gray-600';
+      case 'Portiere': return 'text-blue-600';
+      case 'Difensore': return 'text-emerald-600';
+      case 'Centrocampista': return 'text-purple-600';
+      case 'Attaccante': return 'text-red-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  const getRoleBgColor = (role: PlayerRole) => {
+    switch (role) {
+      case 'Portiere': return 'bg-blue-600 hover:bg-blue-700';
+      case 'Difensore': return 'bg-emerald-600 hover:bg-emerald-700';
+      case 'Centrocampista': return 'bg-purple-600 hover:bg-purple-700';
+      case 'Attaccante': return 'bg-red-600 hover:bg-red-700';
+      default: return 'bg-gray-600 hover:bg-gray-700';
     }
   };
 
@@ -122,19 +132,19 @@ const PlayersList: React.FC<PlayersListProps> = ({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className={`text-2xl font-bold bg-gradient-to-r ${getRoleGradient(roleCategory)} bg-clip-text text-transparent`}>
+        <h2 className={`text-xl font-semibold ${getRoleColor(roleCategory)}`}>
           {getRoleTitle(roleCategory)}
         </h2>
         <Button 
           onClick={onAddPlayer} 
-          className={`bg-gradient-to-r ${getRoleGradient(roleCategory)} hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl font-medium`}
+          className={`${getRoleBgColor(roleCategory)} text-white font-medium px-4 py-2 rounded-lg shadow-sm`}
         >
           <Plus className="w-4 h-4 mr-2" />
           Aggiungi {roleCategory.toLowerCase()}
         </Button>
       </div>
 
-      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 shadow-sm">
+      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
         <PlayerFilters
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
@@ -151,7 +161,7 @@ const PlayersList: React.FC<PlayersListProps> = ({
       </div>
 
       {filteredPlayers.length > 0 && (
-        <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 shadow-sm">
+        <div className="bg-white rounded-lg p-4 border border-gray-200">
           <SortControls
             roleCategory={roleCategory}
             sortBy={sortBy}
@@ -162,15 +172,15 @@ const PlayersList: React.FC<PlayersListProps> = ({
       )}
 
       {sortedPlayers.length === 0 ? (
-        <div className="text-center py-16 bg-white/40 backdrop-blur-sm rounded-2xl shadow-sm">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center">
-            <span className="text-2xl">🔍</span>
+        <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+          <div className="w-12 h-12 mx-auto mb-4 bg-gray-100 rounded-lg flex items-center justify-center">
+            <span className="text-xl">🔍</span>
           </div>
-          <p className="text-lg font-medium text-gray-600 mb-2">Nessun {roleCategory.toLowerCase()} trovato</p>
+          <p className="text-lg font-medium text-gray-900 mb-2">Nessun {roleCategory.toLowerCase()} trovato</p>
           <p className="text-sm text-gray-500">Prova a modificare i filtri o aggiungi un nuovo giocatore</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {sortedPlayers.map((player) => (
             <PlayerCard
               key={player.id}
