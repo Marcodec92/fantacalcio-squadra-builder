@@ -28,6 +28,13 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   // Inizia in modalità editing se è un nuovo giocatore
   const [isEditing, setIsEditing] = useState(isNewPlayer);
   const [editedPlayer, setEditedPlayer] = useState<Player>(player);
+  const [showBudgetBreakdown, setShowBudgetBreakdown] = useState(false);
+
+  console.log('🚨 PLAYER CARD RENDERING!!! 🚨', {
+    playerName: player?.name,
+    playerId: player?.id,
+    timestamp: Date.now()
+  });
 
   // Aggiorna lo stato quando cambiano i props del player
   useEffect(() => {
@@ -58,6 +65,15 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   };
 
   const isGoalkeeper = player.roleCategory === 'Portiere';
+
+  // Funzione per calcolare il breakdown dei crediti
+  const calculateCreditBreakdown = (costPercentage: number) => {
+    return {
+      credits300: ((costPercentage / 100) * 300).toFixed(1),
+      credits500: ((costPercentage / 100) * 500).toFixed(1),
+      credits650: ((costPercentage / 100) * 650).toFixed(1)
+    };
+  };
 
   // Calcolo dei bonus totali per i giocatori non portieri - FORMULA CORRETTA
   const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.malus * 0.5;
@@ -113,9 +129,30 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             <div className="glass-card px-3 py-1 text-gradient font-medium">
               FMV: {player.fmv.toFixed(2)}
             </div>
-            <div className="glass-card px-2 py-1 text-xs text-muted-foreground">
-              {player.costPercentage}% del budget
+            <div 
+              className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors border-2 border-red-500"
+              onClick={() => {
+                console.log('🎯 BUDGET CLICKED!!!', player.name);
+                alert(`Budget clicked for ${player.name}!`);
+                setShowBudgetBreakdown(!showBudgetBreakdown);
+              }}
+              title="Clicca per vedere breakdown crediti"
+            >
+              {player.costPercentage}% del budget ← CLICK ME!
             </div>
+            {showBudgetBreakdown && (
+              <div className="flex gap-2 mt-2 animate-slide-in-right">
+                <div className="text-xs bg-green-100 px-2 py-1 rounded border border-green-300">
+                  300: {calculateCreditBreakdown(player.costPercentage).credits300}
+                </div>
+                <div className="text-xs bg-amber-100 px-2 py-1 rounded border border-amber-300">
+                  500: {calculateCreditBreakdown(player.costPercentage).credits500}
+                </div>
+                <div className="text-xs bg-red-100 px-2 py-1 rounded border border-red-300">
+                  650: {calculateCreditBreakdown(player.costPercentage).credits650}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Tutte le altre informazioni uniformemente in orizzontale */}
@@ -198,19 +235,39 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
           
-            {/* Titolarità e Plus in orizzontale */}
+            {/* Titolarità e Plus con BOX FORZATI */}
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
-                <OwnershipProgress value={player.ownership} readonly />
+                <div 
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                    border: '3px solid red'
+                  }}
+                >
+                  <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
+                  <OwnershipProgress value={player.ownership} readonly />
+                </div>
               </div>
               <div>
-                <div className="text-xs font-medium text-gradient mb-1">Plus</div>
-                <PlusCategoriesSelector 
-                  selected={player.plusCategories} 
-                  onChange={() => {}} 
-                  readonly 
-                />
+                <div 
+                  style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                    border: '3px solid blue'
+                  }}
+                >
+                  <div className="text-xs font-medium text-gradient mb-1">Plus</div>
+                  <PlusCategoriesSelector 
+                    selected={player.plusCategories} 
+                    onChange={() => {}} 
+                    readonly 
+                  />
+                </div>
               </div>
             </div>
           </div>
