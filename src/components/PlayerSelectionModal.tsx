@@ -166,7 +166,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                 return (
                   <div
                     key={player.id}
-                    className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="p-4 border border-border rounded-lg cursor-pointer hover:bg-accent/10 transition-colors"
                     onClick={() => handlePlayerClick(player.id)}
                   >
                     <div className="flex justify-between items-start">
