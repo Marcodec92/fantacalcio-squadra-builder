@@ -39,7 +39,7 @@ const TierSelect: React.FC<TierSelectProps> = ({ roleCategory, value, onChange, 
   if (readonly) {
     return (
       <div className="space-y-1">
-        <div className="text-xs font-medium text-gray-700">Fascia</div>
+        <div className="text-xs font-medium text-gradient">Fascia</div>
         <div className={`px-2 py-1 rounded text-xs font-medium ${colorClass || 'bg-gray-100 text-gray-600'}`}>
           {value || 'Non assegnata'}
         </div>
@@ -49,7 +49,7 @@ const TierSelect: React.FC<TierSelectProps> = ({ roleCategory, value, onChange, 
 
   return (
     <div className="space-y-2">
-      <div className="text-sm font-medium text-gray-700">Fascia</div>
+      <div className="text-sm font-medium text-gradient">Fascia</div>
       <Select value={value} onValueChange={onChange}>
         <SelectTrigger className={`bg-white ${colorClass}`}>
           <SelectValue placeholder="Seleziona fascia" />

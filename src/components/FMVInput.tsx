@@ -22,7 +22,7 @@ const FMVInput: React.FC<FMVInputProps> = ({ value, onChange, readonly = false }
   if (readonly) {
     return (
       <div className="space-y-1">
-        <div className="text-xs font-medium text-gray-700">FMV</div>
+        <div className="text-xs font-medium text-gradient">FMV</div>
         <div className={`px-3 py-2 rounded-md text-sm font-medium ${colorClass}`}>
           {value.toFixed(2)}
         </div>
