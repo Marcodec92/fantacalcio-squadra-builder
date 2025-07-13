@@ -92,25 +92,28 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     return (
       <div className="glass-card p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
         <div className="space-y-3">
-          {/* Prima riga: Nome più grande, Fascia a destra e Azioni */}
+          {/* Prima riga: Nome più grande, Fascia e MFV a destra e Azioni */}
           <div className="flex justify-between items-start">
-            <div className="flex items-start gap-6"> {/* Gap maggiore per separare nome e fascia */}
-              <div>
-                <div className="font-bold text-2xl text-gradient leading-tight break-words">
-                  {player.name} {player.surname}
-                </div>
-                <div className="text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
-                <div className="glass-card px-3 py-1 text-sm font-semibold text-gradient-secondary inline-block mt-1">
-                  {player.role}
-                </div>
+            <div className="flex-1">
+              <div className="font-bold text-2xl text-gradient leading-tight break-words">
+                {player.name} {player.surname}
               </div>
-              {/* Fascia posizionata a destra del nome con margine */}
-              <div className="mt-2 ml-4">
+              <div className="text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
+              <div className="glass-card px-3 py-1 text-sm font-semibold text-gradient-secondary inline-block mt-1">
+                {player.role}
+              </div>
+            </div>
+            {/* Fascia e MFV valorizzati a destra */}
+            <div className="flex items-center gap-4 mt-2 mr-4">
+              <div className="transform scale-125"> {/* Ingrandimento della fascia */}
                 <TierSelect 
                   roleCategory={player.roleCategory} 
                   value={player.tier} 
                   readonly 
                 />
+              </div>
+              <div className="glass-card px-4 py-2 text-base font-bold text-gradient"> {/* MFV ingrandito */}
+                MFV: {player.fmv.toFixed(2)}
               </div>
             </div>
             {/* Azioni */}
@@ -134,12 +137,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
 
-          {/* FMV e Budget compatti sotto il nome - DIMENSIONI FISSE */}
+          {/* Budget compatto sotto il nome - SOLO BUDGET */}
           <div className="relative">
-            <div className="flex gap-2 text-xs h-8"> {/* Altezza fissa */}
-              <div className="glass-card px-3 py-1 text-gradient font-medium min-w-[100px]"> {/* Larghezza minima fissa */}
-                FMV: {player.fmv.toFixed(2)}
-              </div>
+            <div className="flex gap-2 text-xs h-8"> {/* Altezza fissa - SOLO BUDGET */}
               <div 
                 className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors min-w-[120px]"
                 onClick={() => {
