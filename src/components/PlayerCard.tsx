@@ -64,24 +64,24 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   if (!isEditing) {
     return (
-      <div className="glass-card p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="glass-card p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
           {/* Nome e squadra */}
           <div className="lg:col-span-2">
-            <div className="font-bold text-lg text-gradient mb-1 leading-tight break-words">
+            <div className="font-bold text-base text-gradient leading-tight break-words">
               {player.name} {player.surname}
             </div>
-            <div className="text-sm text-muted-foreground mb-2 truncate">{player.team}</div>
-            <div className="glass-card px-3 py-1 text-xs font-medium text-gradient-secondary inline-block">
+            <div className="text-xs text-muted-foreground truncate">{player.team}</div>
+            <div className="glass-card px-2 py-1 text-xs font-medium text-gradient-secondary inline-block mt-1">
               {player.role}
             </div>
           </div>
           
           {/* Costo e FMV */}
           <div className="lg:col-span-2">
-            <div className="glass-card p-4">
+            <div className="glass-card p-3">
               <CostCalculator percentage={player.costPercentage} readonly />
-              <div className="mt-3">
+              <div className="mt-2">
                 <FMVInput value={player.fmv} readonly />
               </div>
             </div>
@@ -99,9 +99,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           {/* Statistiche principali */}
           <div className="lg:col-span-2">
             {isGoalkeeper ? (
-              <div className="glass-card p-4">
-                <div className="text-xs font-medium text-gradient mb-2">Statistiche</div>
-                <div className="text-sm space-y-2">
+              <div className="glass-card p-3">
+                <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
+                <div className="text-sm space-y-1">
                   <div className="flex justify-between">
                     <span className="text-xs">Gol subiti:</span>
                     <span className="font-bold text-red-400 text-sm">{player.goalsConceded}</span>
@@ -117,9 +117,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 </div>
               </div>
             ) : (
-              <div className="glass-card p-4">
-                <div className="text-xs font-medium text-gradient mb-2">Statistiche</div>
-                <div className="text-sm space-y-2">
+              <div className="glass-card p-3">
+                <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
+                <div className="text-sm space-y-1">
                   <div className="flex justify-between">
                     <span className="text-xs">Gol:</span>
                     <span className="font-bold text-gradient-accent text-sm">{player.goals}</span>
@@ -132,7 +132,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                     <span className="text-xs">Malus:</span>
                     <span className="font-bold text-red-400 text-sm">{player.malus}</span>
                   </div>
-                  <div className="flex justify-between border-t border-white/10 pt-2 mt-2">
+                  <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
                     <span className="text-xs font-medium">Bonus Totali:</span>
                     <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
@@ -143,17 +143,17 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             )}
           </div>
           
-          {/* Expected Stats e Bonus Totali */}
+          {/* Expected Stats e Performance */}
           <div className="lg:col-span-2">
-            <div className="glass-card p-4">
-              <div className="text-xs font-medium text-gradient mb-2">
+            <div className="glass-card p-3">
+              <div className="text-xs font-medium text-gradient mb-1">
                 {isGoalkeeper ? 'Performance' : 'Expected'}
               </div>
-              <div className="text-sm space-y-2">
+              <div className="text-sm space-y-1">
                 {isGoalkeeper ? (
                   <div className="flex items-center justify-center">
                     <Zap className="w-4 h-4 mr-2 text-blue-400" />
-                    <span className="font-bold text-gradient text-lg">
+                    <span className="font-bold text-gradient text-base">
                       {player.xP.toFixed(2)}
                     </span>
                   </div>
@@ -173,20 +173,22 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
           
-          {/* Titolarità */}
-          <div className="lg:col-span-1">
-            <div className="text-xs font-medium text-gradient mb-2">Titolarità</div>
-            <OwnershipProgress value={player.ownership} readonly />
-          </div>
-          
-          {/* Categorie Plus */}
-          <div className="lg:col-span-1">
-            <div className="text-xs font-medium text-gradient mb-2">Plus</div>
-            <PlusCategoriesSelector 
-              selected={player.plusCategories} 
-              onChange={() => {}} 
-              readonly 
-            />
+          {/* Titolarità e Plus */}
+          <div className="lg:col-span-2">
+            <div className="space-y-3">
+              <div>
+                <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
+                <OwnershipProgress value={player.ownership} readonly />
+              </div>
+              <div>
+                <div className="text-xs font-medium text-gradient mb-1">Plus</div>
+                <PlusCategoriesSelector 
+                  selected={player.plusCategories} 
+                  onChange={() => {}} 
+                  readonly 
+                />
+              </div>
+            </div>
           </div>
           
           {/* Azioni */}
