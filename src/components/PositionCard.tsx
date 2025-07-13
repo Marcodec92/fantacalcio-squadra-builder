@@ -32,6 +32,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
 }) => {
   const [editingPercentage, setEditingPercentage] = useState<string | null>(null);
   const [tempPercentage, setTempPercentage] = useState<string>('');
+  const [showBudgetBreakdown, setShowBudgetBreakdown] = useState<string | null>(null);
   const { updatePlayer } = usePlayers();
 
   const bonusTotal = player ? calculateBonusTotal(player) : 0;
@@ -56,9 +57,21 @@ const PositionCard: React.FC<PositionCardProps> = ({
     setTempPercentage('');
   };
 
+  const toggleBudgetBreakdown = (playerId: string) => {
+    setShowBudgetBreakdown(showBudgetBreakdown === playerId ? null : playerId);
+  };
+
+  const calculateCreditBreakdown = (fmv: number) => {
+    return {
+      credits300: ((fmv / 300) * 100).toFixed(1),
+      credits500: ((fmv / 500) * 100).toFixed(1),
+      credits650: ((fmv / 650) * 100).toFixed(1)
+    };
+  };
+
   return (
     <Card 
-      className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[250px] flex flex-col backdrop-blur-sm border-0 ${
+      className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[320px] flex flex-col backdrop-blur-sm border-0 ${
         player 
           ? 'bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 shadow-lg ring-1 ring-emerald-200/50' 
           : 'bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:via-indigo-50 hover:to-blue-100'
@@ -73,104 +86,216 @@ const PositionCard: React.FC<PositionCardProps> = ({
         {player ? (
           <div className="space-y-3 flex-1 flex flex-col pb-2">
             <div className="bg-white/60 rounded-xl p-3 shadow-sm">
-              <div className="font-bold text-sm flex items-center justify-center gap-2 text-gray-800">
+              <div className="font-bold text-lg flex items-center justify-center gap-2 text-gray-800">
                 {player.name} {player.surname}
                 {player.isFavorite && (
-                  <span className="text-yellow-500 text-base drop-shadow-sm">⭐</span>
+                  <span className="text-yellow-500 text-xl drop-shadow-sm">⭐</span>
                 )}
               </div>
-              <div className="text-xs text-gray-600 font-medium mt-1">{player.team}</div>
+              <div className="text-sm text-gray-600 font-medium mt-1 text-center">{player.team}</div>
+              
+              {/* FMV e Budget orizzontali */}
+              <div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-200/50">
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-medium text-gray-600">FMV:</span>
+                  <span className="font-bold text-purple-600 text-sm">{player.fmv}M</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs font-medium text-gray-600">Budget:</span>
+                  <div className="flex items-center gap-1">
+                    {editingPercentage === player.id ? (
+                      <div className="flex items-center gap-1">
+                        <Input
+                          type="number"
+                          value={tempPercentage}
+                          onChange={(e) => setTempPercentage(e.target.value)}
+                          className="w-16 h-6 text-xs p-1 rounded-lg border-gray-300"
+                          min="0"
+                          max="100"
+                          step="0.1"
+                        />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 w-6 p-0 hover:bg-green-100 rounded-lg"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSavePercentage(player);
+                          }}
+                        >
+                          <Check className="h-3 w-3 text-green-600" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 w-6 p-0 hover:bg-red-100 rounded-lg"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleCancelEdit();
+                          }}
+                        >
+                          <X className="h-3 w-3 text-red-500" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <span 
+                          className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleBudgetBreakdown(player.id);
+                          }}
+                        >
+                          {player.costPercentage}%
+                        </span>
+                        {showBudgetBreakdown === player.id && (
+                          <div className="animate-fade-in flex items-center gap-2 ml-2 overflow-hidden">
+                            {(() => {
+                              const breakdown = calculateCreditBreakdown(player.fmv);
+                              return (
+                                <>
+                                  <div className="flex items-center gap-1 text-xs animate-slide-in-right" style={{animationDelay: '0.1s'}}>
+                                    <span className="text-green-600 font-medium">300:</span>
+                                    <span className="text-green-700 font-bold">{breakdown.credits300}%</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-xs animate-slide-in-right" style={{animationDelay: '0.2s'}}>
+                                    <span className="text-amber-600 font-medium">500:</span>
+                                    <span className="text-amber-700 font-bold">{breakdown.credits500}%</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 text-xs animate-slide-in-right" style={{animationDelay: '0.3s'}}>
+                                    <span className="text-red-600 font-medium">650:</span>
+                                    <span className="text-red-700 font-bold">{breakdown.credits650}%</span>
+                                  </div>
+                                </>
+                              );
+                            })()}
+                          </div>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-5 w-5 p-0 hover:bg-blue-100 rounded-lg ml-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditPercentage(player);
+                          }}
+                        >
+                          <Edit2 className="h-3 w-3 text-blue-500" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 ml-auto">
+                  <span className="text-xs font-medium text-gray-600">Fascia:</span>
+                  <Badge variant="secondary" className="text-xs h-5 bg-gray-200/80 text-gray-700">
+                    {player.tier}
+                  </Badge>
+                </div>
+              </div>
             </div>
             
-            <div className="space-y-2 flex-1 bg-white/40 rounded-xl p-3 shadow-sm">
-              <div className="flex justify-between text-xs">
-                <span className="font-medium text-gray-600">Budget:</span>
-                <div className="flex items-center gap-1">
-                  {editingPercentage === player.id ? (
-                    <div className="flex items-center gap-1">
-                      <Input
-                        type="number"
-                        value={tempPercentage}
-                        onChange={(e) => setTempPercentage(e.target.value)}
-                        className="w-12 h-6 text-xs p-1 rounded-lg border-gray-300"
-                        min="0"
-                        max="100"
-                        step="0.1"
-                      />
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 w-6 p-0 hover:bg-green-100 rounded-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSavePercentage(player);
-                        }}
-                      >
-                        <Check className="h-3 w-3 text-green-600" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-6 w-6 p-0 hover:bg-red-100 rounded-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleCancelEdit();
-                        }}
-                      >
-                        <X className="h-3 w-3 text-red-500" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <span className="font-bold text-blue-600">{player.costPercentage}%</span>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-5 w-5 p-0 hover:bg-blue-100 rounded-lg"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditPercentage(player);
-                        }}
-                      >
-                        <Edit2 className="h-3 w-3 text-blue-500" />
-                      </Button>
+            {/* Sezioni allineate alla stessa altezza */}
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              {/* Statistiche */}
+              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+                <div className="text-xs font-bold text-gray-700 mb-2 text-center">Statistiche</div>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600">Gol:</span>
+                    <span className="font-semibold text-green-600">{player.goals || 0}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600">Assist:</span>
+                    <span className="font-semibold text-blue-600">{player.assists || 0}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600">Malus:</span>
+                    <span className="font-semibold text-red-600">{player.malus || 0}</span>
+                  </div>
+                  {player.roleCategory !== 'Portiere' && (
+                    <div className="flex justify-between text-xs">
+                      <span className="text-gray-600">Bonus:</span>
+                      <span className={`font-bold ${bonusTotal < 0 ? 'text-red-500' : 'text-emerald-600'}`}>
+                        {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                      </span>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="font-medium text-gray-600">FMV:</span>
-                <span className="font-bold text-purple-600">{player.fmv}M</span>
-              </div>
-              <div className="flex justify-between text-xs">
-                <span className="font-medium text-gray-600">Tier:</span>
-                <Badge variant="secondary" className="text-xs h-5 bg-gray-200/80 text-gray-700">
-                  {player.tier}
-                </Badge>
-              </div>
-              {player.roleCategory !== 'Portiere' && (
-                <div className="flex justify-between text-xs">
-                  <span className="font-medium text-gray-600">Bonus:</span>
-                  <span className={`font-bold text-sm ${bonusTotal < 0 ? 'text-red-500' : 'text-emerald-600'}`}>
-                    {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
-                  </span>
+
+              {/* Expected */}
+              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+                <div className="text-xs font-bold text-gray-700 mb-2 text-center">Expected</div>
+                <div className="space-y-1">
+                  {player.roleCategory === 'Portiere' ? (
+                    <>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">Gol subiti:</span>
+                        <span className="font-semibold text-orange-600">{player.goalsConceded || 0}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">xP:</span>
+                        <span className="font-semibold text-indigo-600">{(player.xP || 0).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">Rigori parati:</span>
+                        <span className="font-semibold text-purple-600">{player.penaltiesSaved || 0}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">xG:</span>
+                        <span className="font-semibold text-green-600">{(player.xG || 0).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">xA:</span>
+                        <span className="font-semibold text-blue-600">{(player.xA || 0).toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-600">Ammonizioni:</span>
+                        <span className="font-semibold text-yellow-600">{player.yellowCards || 0}</span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              )}
-              {player.roleCategory === 'Portiere' && (
-                <>
-                  <div className="flex justify-between text-xs">
-                    <span className="font-medium text-gray-600">Gol subiti:</span>
-                    <span className="font-semibold text-orange-600">{player.goalsConceded}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 mb-3">
+              {/* Titolarità */}
+              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+                <div className="text-xs font-bold text-gray-700 mb-2 text-center">Titolarità</div>
+                <div className="flex flex-col items-center">
+                  <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
+                    <div 
+                      className="bg-gradient-to-r from-amber-400 to-amber-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${player.ownership}%` }}
+                    ></div>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="font-medium text-gray-600">xP:</span>
-                    <span className="font-semibold text-indigo-600">{player.xP.toFixed(2)}</span>
-                  </div>
-                </>
-              )}
-              <div className="flex justify-between text-xs">
-                <span className="font-medium text-gray-600">Titolarità:</span>
-                <span className="font-semibold text-cyan-600">{player.ownership}%</span>
+                  <span className="text-xs font-bold text-amber-600">{player.ownership}% di titolarità</span>
+                </div>
+              </div>
+
+              {/* Categoria Plus */}
+              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+                <div className="text-xs font-bold text-gray-700 mb-2 text-center">Plus</div>
+                <div className="flex flex-wrap gap-1 justify-center">
+                  {player.plusCategories && player.plusCategories.length > 0 ? (
+                    player.plusCategories.map((category, index) => (
+                      <Badge 
+                        key={index} 
+                        variant="secondary" 
+                        className="text-xs bg-blue-100 text-blue-700 px-2 py-1"
+                      >
+                        {category}
+                      </Badge>
+                    ))
+                  ) : (
+                    <span className="text-xs text-gray-500">Nessuna</span>
+                  )}
+                </div>
               </div>
             </div>
             
