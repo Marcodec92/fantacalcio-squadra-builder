@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
 import PlayersList from '@/components/PlayersList';
-import PlayerFormModal from '@/components/PlayerFormModal';
 import { Player, PlayerRole } from '@/types/Player';
 
 const Index = () => {
@@ -15,8 +15,6 @@ const Index = () => {
   const { user, signOut } = useAuth();
   const { addPlayer, updatePlayer, deletePlayer } = usePlayers();
   
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
 
   const handleAddPlayer = (role: PlayerRole) => {
@@ -25,18 +23,9 @@ const Index = () => {
     addPlayer(role);
   };
 
-  const handleEditPlayer = (player: Player) => {
-    setEditingPlayer(player);
-    setIsModalOpen(true);
-  };
-
-  const handleSavePlayer = (playerData: Omit<Player, 'id' | 'userId'>) => {
-    if (editingPlayer) {
-      updatePlayer({ ...editingPlayer, ...playerData });
-    }
-    // Chiudi la modal e resetta lo stato
-    setIsModalOpen(false);
-    setEditingPlayer(null);
+  const handleUpdatePlayer = (player: Player) => {
+    console.log('handleUpdatePlayer called with player:', player);
+    updatePlayer(player);
   };
 
   const handleDeletePlayer = (playerId: string) => {
@@ -144,7 +133,7 @@ const Index = () => {
                       console.log('PlayersList onAddPlayer triggered for role:', role);
                       handleAddPlayer(role);
                     }}
-                    onUpdatePlayer={handleEditPlayer}
+                    onUpdatePlayer={handleUpdatePlayer}
                     onDeletePlayer={handleDeletePlayer}
                   />
                 </TabsContent>
@@ -153,20 +142,6 @@ const Index = () => {
           </Tabs>
         </Card>
       </div>
-
-      {/* Modal solo per modificare giocatori esistenti */}
-      {isModalOpen && editingPlayer && (
-        <PlayerFormModal
-          isOpen={isModalOpen}
-          onClose={() => {
-            setIsModalOpen(false);
-            setEditingPlayer(null);
-          }}
-          onSave={handleSavePlayer}
-          player={editingPlayer}
-          defaultRole={editingPlayer.roleCategory}
-        />
-      )}
     </div>
   );
 };
