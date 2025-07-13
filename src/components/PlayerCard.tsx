@@ -68,10 +68,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Nome e squadra */}
           <div className="lg:col-span-2">
-            <div className="font-bold text-lg text-gradient mb-1">
+            <div className="font-bold text-lg text-gradient mb-1 leading-tight break-words">
               {player.name} {player.surname}
             </div>
-            <div className="text-sm text-muted-foreground mb-2">{player.team}</div>
+            <div className="text-sm text-muted-foreground mb-2 truncate">{player.team}</div>
             <div className="glass-card px-3 py-1 text-xs font-medium text-gradient-secondary inline-block">
               {player.role}
             </div>
@@ -100,29 +100,37 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           <div className="lg:col-span-2">
             {isGoalkeeper ? (
               <div className="glass-card p-4">
-                <GoalkeeperStats 
-                  goalsConceded={player.goalsConceded}
-                  yellowCards={player.yellowCards}
-                  penaltiesSaved={player.penaltiesSaved}
-                  xP={player.xP}
-                  readonly
-                />
+                <div className="text-xs font-medium text-gradient mb-2">Statistiche</div>
+                <div className="text-sm space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-xs">Gol subiti:</span>
+                    <span className="font-bold text-red-400 text-sm">{player.goalsConceded}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs">Rigori parati:</span>
+                    <span className="font-bold text-green-400 text-sm">{player.penaltiesSaved}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs">Cartellini:</span>
+                    <span className="font-bold text-yellow-400 text-sm">{player.yellowCards}</span>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="glass-card p-4">
                 <div className="text-xs font-medium text-gradient mb-2">Statistiche</div>
                 <div className="text-sm space-y-2">
                   <div className="flex justify-between">
-                    <span>Gol:</span>
-                    <span className="font-bold text-gradient-accent">{player.goals}</span>
+                    <span className="text-xs">Gol:</span>
+                    <span className="font-bold text-gradient-accent text-sm">{player.goals}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Assist:</span>
-                    <span className="font-bold text-gradient-secondary">{player.assists}</span>
+                    <span className="text-xs">Assist:</span>
+                    <span className="font-bold text-gradient-secondary text-sm">{player.assists}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Malus:</span>
-                    <span className="font-bold text-red-400">{player.malus}</span>
+                    <span className="text-xs">Malus:</span>
+                    <span className="font-bold text-red-400 text-sm">{player.malus}</span>
                   </div>
                 </div>
               </div>
@@ -133,38 +141,37 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           <div className="lg:col-span-2">
             <div className="glass-card p-4">
               <div className="text-xs font-medium text-gradient mb-2">
-                {isGoalkeeper ? 'Performance' : 'Expected & Bonus'}
+                {isGoalkeeper ? 'Performance' : 'Expected'}
               </div>
               <div className="text-sm space-y-2">
                 {isGoalkeeper ? (
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-center">
                     <Zap className="w-4 h-4 mr-2 text-blue-400" />
-                    <span className="font-bold text-gradient">
-                      xP: {player.xP.toFixed(2)}
+                    <span className="font-bold text-gradient text-lg">
+                      {player.xP.toFixed(2)}
                     </span>
                   </div>
                 ) : (
                   <>
                     <div className="flex justify-between">
-                      <span>xG:</span>
-                      <span className="font-semibold">{player.xG.toFixed(2)}</span>
+                      <span className="text-xs">xG:</span>
+                      <span className="font-semibold text-sm">{player.xG.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>xA:</span>
-                      <span className="font-semibold">{player.xA.toFixed(2)}</span>
-                    </div>
-                    <div className="flex items-center justify-between pt-2 border-t border-white/10">
-                      <span className="text-xs">Bonus Totali:</span>
-                      <div className="flex items-center">
-                        <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                        <span className="font-bold text-gradient text-lg">
-                          {bonusTotal}
-                        </span>
-                      </div>
+                      <span className="text-xs">xA:</span>
+                      <span className="font-semibold text-sm">{player.xA.toFixed(2)}</span>
                     </div>
                   </>
                 )}
               </div>
+              {!isGoalkeeper && (
+                <div className="flex items-center justify-center pt-2 border-t border-white/10 mt-2">
+                  <Star className="w-4 h-4 mr-1 text-yellow-400" />
+                  <span className="font-bold text-gradient text-lg">
+                    {bonusTotal}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           
