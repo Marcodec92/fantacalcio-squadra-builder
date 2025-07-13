@@ -92,25 +92,25 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     return (
       <div className="glass-card p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
         <div className="space-y-3">
-          {/* Prima riga: Nome più grande, Fascia spostata a sinistra e Azioni */}
+          {/* Prima riga: Nome più grande, Fascia a destra e Azioni */}
           <div className="flex justify-between items-start">
-            <div className="flex items-start gap-2"> {/* Gap ridotto per avvicinare la fascia */}
-              {/* Fascia spostata più a sinistra */}
-              <div className="mt-1">
+            <div className="flex items-start gap-6"> {/* Gap maggiore per separare nome e fascia */}
+              <div>
+                <div className="font-bold text-2xl text-gradient leading-tight break-words">
+                  {player.name} {player.surname}
+                </div>
+                <div className="text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
+                <div className="glass-card px-3 py-1 text-sm font-semibold text-gradient-secondary inline-block mt-1">
+                  {player.role}
+                </div>
+              </div>
+              {/* Fascia posizionata a destra del nome con margine */}
+              <div className="mt-2 ml-4">
                 <TierSelect 
                   roleCategory={player.roleCategory} 
                   value={player.tier} 
                   readonly 
                 />
-              </div>
-              <div>
-                <div className="font-bold text-2xl text-gradient leading-tight break-words"> {/* Testo più grande */}
-                  {player.name} {player.surname}
-                </div>
-                <div className="text-lg text-muted-foreground mt-1 font-medium">{player.team}</div> {/* Squadra più grande */}
-                <div className="glass-card px-3 py-1 text-sm font-semibold text-gradient-secondary inline-block mt-1"> {/* Ruolo più grande */}
-                  {player.role}
-                </div>
               </div>
             </div>
             {/* Azioni */}
@@ -151,9 +151,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 {player.costPercentage}% del budget
               </div>
             </div>
-            {/* Breakdown posizionato in absolute per non influenzare il layout */}
+            {/* Breakdown posizionato a destra del budget percentage */}
             {showBudgetBreakdown && (
-              <div className="absolute top-10 left-0 z-10 flex gap-2 animate-slide-in-right">
+              <div className="absolute top-0 left-[250px] z-10 flex gap-2 animate-slide-in-right">
                 <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
                   {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
                 </div>
