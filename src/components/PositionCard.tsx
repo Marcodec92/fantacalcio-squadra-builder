@@ -172,13 +172,17 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                          <span 
-                            className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors"
-                            data-player-id={player.id}
-                            data-action="budget-toggle"
-                          >
-                            {player.costPercentage}%
-                          </span>
+                          <div className="relative inline-block">
+                            <span className="font-bold text-blue-600">{player.costPercentage}%</span>
+                            <div
+                              className="absolute inset-0 cursor-pointer"
+                              onClick={() => {
+                                console.log('DIRECT CLICK TRIGGERED!', player.id);
+                                toggleBudgetBreakdown(player.id);
+                              }}
+                              title="Clicca per vedere breakdown crediti"
+                            />
+                          </div>
                          <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
                         {showBudgetBreakdown === player.id && (
                           <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
@@ -220,7 +224,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
               </div>
             </div>
             
-            {/* Sezioni allineate alla stessa altezza */}
+            {/* Sezioni allineate alla stessa altezza - tutte e 4 insieme */}
             <div className="grid grid-cols-2 gap-3 mb-3">
               {/* Statistiche */}
               <div className="bg-white/40 rounded-xl p-3 shadow-sm">
@@ -286,39 +290,45 @@ const PositionCard: React.FC<PositionCardProps> = ({
                   )}
                 </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-3">
               {/* Titolarità */}
               <div className="bg-white/40 rounded-xl p-3 shadow-sm">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Titolarità</div>
-                <div className="flex flex-col items-center">
+                <div className="space-y-1">
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
                     <div 
                       className="bg-gradient-to-r from-amber-400 to-amber-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${player.ownership}%` }}
                     ></div>
                   </div>
-                  <span className="text-xs font-bold text-amber-600">{player.ownership}% di titolarità</span>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-gray-600">Percentuale:</span>
+                    <span className="font-bold text-amber-600">{player.ownership}%</span>
+                  </div>
                 </div>
               </div>
 
               {/* Categoria Plus */}
               <div className="bg-white/40 rounded-xl p-3 shadow-sm">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Plus</div>
-                <div className="flex flex-wrap gap-1 justify-center">
+                <div className="space-y-1">
                   {player.plusCategories && player.plusCategories.length > 0 ? (
-                    player.plusCategories.map((category, index) => (
-                      <Badge 
-                        key={index} 
-                        variant="secondary" 
-                        className="text-xs bg-blue-100 text-blue-700 px-2 py-1"
-                      >
-                        {category}
-                      </Badge>
-                    ))
+                    <div className="flex flex-wrap gap-1 justify-center">
+                      {player.plusCategories.map((category, index) => (
+                        <Badge 
+                          key={index} 
+                          variant="secondary" 
+                          className="text-xs bg-blue-100 text-blue-700 px-2 py-1"
+                        >
+                          {category}
+                        </Badge>
+                      ))}
+                    </div>
                   ) : (
-                    <span className="text-xs text-gray-500">Nessuna</span>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-gray-600">Categorie:</span>
+                      <span className="text-xs text-gray-500">Nessuna</span>
+                    </div>
                   )}
                 </div>
               </div>
