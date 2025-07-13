@@ -58,20 +58,20 @@ const PositionCard: React.FC<PositionCardProps> = ({
 
   return (
     <Card 
-      className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[200px] flex flex-col backdrop-blur-sm border-0 ${
+      className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[250px] flex flex-col backdrop-blur-sm border-0 ${
         player 
           ? 'bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 shadow-lg ring-1 ring-emerald-200/50' 
           : 'bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:via-indigo-50 hover:to-blue-100'
       }`}
       onClick={() => onPositionClick(slot, role)}
     >
-      <div className="text-center flex-1">
-        <div className="text-sm font-bold text-gray-700 mb-3 px-3 py-1 bg-white/70 rounded-full shadow-sm">
+      <div className="h-full flex flex-col">
+        <div className="text-sm font-bold text-gray-700 mb-3 px-3 py-1 bg-white/70 rounded-full shadow-sm text-center">
           {label}
         </div>
         
         {player ? (
-          <div className="space-y-3 h-full flex flex-col">
+          <div className="space-y-3 flex-1 flex flex-col pb-2">
             <div className="bg-white/60 rounded-xl p-3 shadow-sm">
               <div className="font-bold text-sm flex items-center justify-center gap-2 text-gray-800">
                 {player.name} {player.surname}
@@ -173,19 +173,22 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 <span className="font-semibold text-cyan-600">{player.ownership}%</span>
               </div>
             </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 rounded-xl shadow-sm font-medium mt-auto"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (selection) onRemovePlayer(selection.id);
-              }}
-            >
-              <X className="w-4 h-4 mr-2" />
-              Rimuovi
-            </Button>
+            
+            {/* Tasto Rimuovi posizionato sotto titolarità con distanza corretta */}
+            <div className="mt-3 pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 rounded-xl shadow-sm font-medium"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (selection) onRemovePlayer(selection.id);
+                }}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Rimuovi
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="py-8 flex-1 flex flex-col items-center justify-center">
