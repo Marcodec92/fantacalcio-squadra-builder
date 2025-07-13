@@ -106,10 +106,10 @@ const Index = () => {
         <div className="glass-card shadow-2xl overflow-hidden fade-in-scale">
           <Tabs value={selectedRole} onValueChange={(value) => setSelectedRole(value as PlayerRole)} className="w-full">
             <div className="glass-card border-b border-white/10 p-8">
-              <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <TabsList className="grid grid-cols-4 gap-4 max-w-4xl mx-auto h-auto bg-transparent p-0">
                 <TabsTrigger 
                   value="Portiere" 
-                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
                   <div className="flex flex-col items-center space-y-2">
                     <Shield className="w-6 h-6" />
@@ -118,7 +118,7 @@ const Index = () => {
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Difensore"
-                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
+                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
                   <div className="flex flex-col items-center space-y-2">
                     <Shield className="w-6 h-6" />
@@ -127,7 +127,7 @@ const Index = () => {
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Centrocampista"
-                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
+                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
                   <div className="flex flex-col items-center space-y-2">
                     <Sparkles className="w-6 h-6" />
@@ -136,14 +136,14 @@ const Index = () => {
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Attaccante"
-                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
                   <div className="flex flex-col items-center space-y-2">
                     <Target className="w-6 h-6" />
                     <span>Attaccanti</span>
                   </div>
                 </TabsTrigger>
-              </div>
+              </TabsList>
             </div>
 
             <div className="p-8">
