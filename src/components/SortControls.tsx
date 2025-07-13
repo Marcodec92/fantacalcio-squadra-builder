@@ -56,8 +56,8 @@ const SortControls: React.FC<SortControlsProps> = ({
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-foreground">Ordina per:</span>
         <Select value={sortBy} onValueChange={handleSortByChange}>
-          <SelectTrigger className="w-48 bg-white">
-            <SelectValue />
+          <SelectTrigger className="w-48 bg-white text-black border-gray-300">
+            <SelectValue className="text-black" />
           </SelectTrigger>
           <SelectContent className="bg-white border shadow-lg z-50">
             {sortOptions.map(option => (

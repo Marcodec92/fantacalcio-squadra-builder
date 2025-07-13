@@ -51,7 +51,7 @@ const TierSelect: React.FC<TierSelectProps> = ({ roleCategory, value, onChange, 
     <div className="space-y-2">
       <div className="text-sm font-medium text-gradient">Fascia</div>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className={`bg-white ${colorClass}`}>
+        <SelectTrigger className={`bg-white text-black border-gray-300 ${colorClass}`}>
           <SelectValue placeholder="Seleziona fascia" />
         </SelectTrigger>
         <SelectContent className="bg-white border shadow-lg z-50">
@@ -59,7 +59,7 @@ const TierSelect: React.FC<TierSelectProps> = ({ roleCategory, value, onChange, 
             <SelectItem 
               key={tier} 
               value={tier} 
-              className={`hover:bg-gray-100 ${getTierColor(tier)}`}
+              className={`hover:bg-gray-100 font-medium ${getTierColor(tier)}`}
             >
               {tier}
             </SelectItem>

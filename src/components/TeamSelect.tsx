@@ -17,12 +17,12 @@ interface TeamSelectProps {
 const TeamSelect: React.FC<TeamSelectProps> = ({ value, onChange }) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
+      <SelectTrigger className="bg-white text-black border-gray-300">
         <SelectValue placeholder="Seleziona squadra" />
       </SelectTrigger>
       <SelectContent>
         {teams.map((team) => (
-          <SelectItem key={team} value={team}>
+          <SelectItem key={team} value={team} className="text-black font-medium hover:bg-gray-100">
             {team}
           </SelectItem>
         ))}

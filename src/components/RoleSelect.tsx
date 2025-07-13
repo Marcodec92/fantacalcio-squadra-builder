@@ -25,16 +25,16 @@ const RoleSelect: React.FC<RoleSelectProps> = ({ roleCategory, value, onChange }
 
   return (
     <div className="space-y-2">
-      <div className="text-sm font-medium text-gray-700">
+      <div className="text-sm font-medium text-foreground">
         Ruoli disponibili per {roleCategory}:
       </div>
       <Select value={displayValue} onValueChange={onChange}>
-        <SelectTrigger className="bg-white">
+        <SelectTrigger className="bg-white text-black border-gray-300">
           <SelectValue placeholder={`Seleziona ruolo specifico per ${roleCategory.toLowerCase()}`} />
         </SelectTrigger>
         <SelectContent className="bg-white border shadow-lg z-50">
           {availableRoles.map((role) => (
-            <SelectItem key={role} value={role} className="hover:bg-gray-100">
+            <SelectItem key={role} value={role} className="hover:bg-gray-100 text-black font-medium">
               {role}
             </SelectItem>
           ))}
