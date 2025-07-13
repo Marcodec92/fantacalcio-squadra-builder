@@ -2,7 +2,7 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Player, PlayerRole, Team } from '@/types/Player';
+import { Player, PlayerRole, Team, SpecificRole } from '@/types/Player';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -139,6 +139,22 @@ export const usePlayers = (filters?: {
       // Genera un ID unico per il nuovo giocatore
       const playerId = crypto.randomUUID();
       
+      // Map PlayerRole to SpecificRole with proper typing
+      const getSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
+        switch (roleCategory) {
+          case 'Portiere':
+            return 'Portiere';
+          case 'Difensore':
+            return 'Difensore centrale';
+          case 'Centrocampista':
+            return 'Mediano';
+          case 'Attaccante':
+            return 'Attaccante centrale';
+          default:
+            return 'Portiere';
+        }
+      };
+      
       // Crea i dati del giocatore per il database
       const dbPlayerData = {
         id: playerId,
@@ -146,9 +162,7 @@ export const usePlayers = (filters?: {
         name: 'Nuovo',
         surname: 'Giocatore',
         team: null,
-        role: role === 'Portiere' ? 'Portiere' : 
-              role === 'Difensore' ? 'Difensore centrale' :
-              role === 'Centrocampista' ? 'Mediano' : 'Attaccante centrale',
+        role: getSpecificRole(role),
         role_category: role,
         cost_percentage: 0,
         fmv: 0,
@@ -171,7 +185,7 @@ export const usePlayers = (filters?: {
       
       const { data, error } = await supabase
         .from('players')
-        .insert([dbPlayerData])
+        .insert(dbPlayerData)
         .select()
         .single();
 
