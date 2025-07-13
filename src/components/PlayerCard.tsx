@@ -64,7 +64,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   if (!isEditing) {
     return (
-      <div className="glass-card p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale hover:bg-white/5 hover:border-white/25">
+      <div className="glass-card p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Nome e squadra */}
           <div className="lg:col-span-2">
