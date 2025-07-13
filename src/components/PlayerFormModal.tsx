@@ -71,7 +71,7 @@ const PlayerFormModal: React.FC<PlayerFormModalProps> = ({
         xA: player.xA,
         xP: player.xP,
         ownership: player.ownership,
-        plusCategories: player.plusCategories,
+        plusCategories: player.plusCategories || [],
         isFavorite: player.isFavorite
       });
     } else {
@@ -293,10 +293,10 @@ const PlayerFormModal: React.FC<PlayerFormModalProps> = ({
           </div>
 
           <div>
-            <Label>Categorie Plus</Label>
             <PlusCategoriesSelector
-              selectedCategories={formData.plusCategories}
+              selected={formData.plusCategories || []}
               onChange={(categories) => handleInputChange('plusCategories', categories)}
+              playerRole={formData.roleCategory}
             />
           </div>
 
