@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Trash2, Edit, Check, X } from "lucide-react";
+import { Trash2, Edit, Check, X, Star, Zap } from "lucide-react";
 import TeamSelect from './TeamSelect';
 import RoleSelect from './RoleSelect';
 import CostCalculator from './CostCalculator';
@@ -65,22 +64,26 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   if (!isEditing) {
     return (
-      <Card className="p-4 hover:shadow-md transition-shadow">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+      <div className="glass-card p-6 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Nome e squadra */}
           <div className="lg:col-span-2">
-            <div className="font-semibold text-gray-800">
+            <div className="font-bold text-lg text-gradient mb-1">
               {player.name} {player.surname}
             </div>
-            <div className="text-sm text-gray-600">{player.team}</div>
-            <div className="text-xs text-gray-500 mt-1">{player.role}</div>
+            <div className="text-sm text-muted-foreground mb-2">{player.team}</div>
+            <div className="glass-card px-3 py-1 text-xs font-medium text-gradient-secondary inline-block">
+              {player.role}
+            </div>
           </div>
           
           {/* Costo e FMV */}
           <div className="lg:col-span-2">
-            <CostCalculator percentage={player.costPercentage} readonly />
-            <div className="mt-2">
-              <FMVInput value={player.fmv} readonly />
+            <div className="glass-card p-4">
+              <CostCalculator percentage={player.costPercentage} readonly />
+              <div className="mt-3">
+                <FMVInput value={player.fmv} readonly />
+              </div>
             </div>
           </div>
           
@@ -96,20 +99,31 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           {/* Statistiche principali */}
           <div className="lg:col-span-2">
             {isGoalkeeper ? (
-              <GoalkeeperStats 
-                goalsConceded={player.goalsConceded}
-                yellowCards={player.yellowCards}
-                penaltiesSaved={player.penaltiesSaved}
-                xP={player.xP}
-                readonly
-              />
+              <div className="glass-card p-4">
+                <GoalkeeperStats 
+                  goalsConceded={player.goalsConceded}
+                  yellowCards={player.yellowCards}
+                  penaltiesSaved={player.penaltiesSaved}
+                  xP={player.xP}
+                  readonly
+                />
+              </div>
             ) : (
-              <div className="space-y-1">
-                <div className="text-xs font-medium text-gray-700">Statistiche</div>
-                <div className="text-sm space-y-1">
-                  <div>Gol: {player.goals}</div>
-                  <div>Assist: {player.assists}</div>
-                  <div>Malus: {player.malus}</div>
+              <div className="glass-card p-4">
+                <div className="text-xs font-medium text-gradient mb-2">Statistiche</div>
+                <div className="text-sm space-y-2">
+                  <div className="flex justify-between">
+                    <span>Gol:</span>
+                    <span className="font-bold text-gradient-accent">{player.goals}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Assist:</span>
+                    <span className="font-bold text-gradient-secondary">{player.assists}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Malus:</span>
+                    <span className="font-bold text-red-400">{player.malus}</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -117,35 +131,52 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           
           {/* Expected Stats e Bonus Totali */}
           <div className="lg:col-span-2">
-            <div className="text-xs font-medium text-gray-700 mb-1">
-              {isGoalkeeper ? 'Performance' : 'Expected & Bonus'}
-            </div>
-            <div className="text-sm space-y-1">
-              {isGoalkeeper ? (
-                <div className="font-semibold text-blue-600">
-                  xP: {player.xP.toFixed(2)}
-                </div>
-              ) : (
-                <>
-                  <div>xG: {player.xG.toFixed(2)}</div>
-                  <div>xA: {player.xA.toFixed(2)}</div>
-                  <div className="font-semibold text-green-600">
-                    Bonus Totali: {bonusTotal}
+            <div className="glass-card p-4">
+              <div className="text-xs font-medium text-gradient mb-2">
+                {isGoalkeeper ? 'Performance' : 'Expected & Bonus'}
+              </div>
+              <div className="text-sm space-y-2">
+                {isGoalkeeper ? (
+                  <div className="flex items-center">
+                    <Zap className="w-4 h-4 mr-2 text-blue-400" />
+                    <span className="font-bold text-gradient">
+                      xP: {player.xP.toFixed(2)}
+                    </span>
                   </div>
-                </>
-              )}
+                ) : (
+                  <>
+                    <div className="flex justify-between">
+                      <span>xG:</span>
+                      <span className="font-semibold">{player.xG.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>xA:</span>
+                      <span className="font-semibold">{player.xA.toFixed(2)}</span>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-white/10">
+                      <span className="text-xs">Bonus Totali:</span>
+                      <div className="flex items-center">
+                        <Star className="w-4 h-4 mr-1 text-yellow-400" />
+                        <span className="font-bold text-gradient text-lg">
+                          {bonusTotal}
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
           
           {/* Titolarità */}
           <div className="lg:col-span-1">
-            <div className="text-xs font-medium text-gray-700 mb-1">Titolarità</div>
+            <div className="text-xs font-medium text-gradient mb-2">Titolarità</div>
             <OwnershipProgress value={player.ownership} readonly />
           </div>
           
           {/* Categorie Plus */}
           <div className="lg:col-span-1">
-            <div className="text-xs font-medium text-gray-700 mb-1">Plus</div>
+            <div className="text-xs font-medium text-gradient mb-2">Plus</div>
             <PlusCategoriesSelector 
               selected={player.plusCategories} 
               onChange={() => {}} 
@@ -159,6 +190,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               variant="outline"
               size="sm"
               onClick={() => setIsEditing(true)}
+              className="glass-button border-white/20 hover:border-white/30"
             >
               <Edit className="w-4 h-4" />
             </Button>
@@ -166,41 +198,43 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               variant="outline"
               size="sm"
               onClick={() => onDelete(player.id)}
-              className="text-red-600 hover:text-red-700"
+              className="glass-button border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="p-6 border-2 border-blue-200">
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="glass-card p-8 border-2 border-white/20 fade-in-scale">
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="name">Nome</Label>
+            <Label htmlFor="name" className="text-gradient font-medium">Nome</Label>
             <Input
               id="name"
               value={editedPlayer.name}
               onChange={(e) => updateField('name', e.target.value)}
               placeholder="Nome giocatore"
+              className="glass-button border-white/20 mt-2"
             />
           </div>
           <div>
-            <Label htmlFor="surname">Cognome</Label>
+            <Label htmlFor="surname" className="text-gradient font-medium">Cognome</Label>
             <Input
               id="surname"
               value={editedPlayer.surname}
               onChange={(e) => updateField('surname', e.target.value)}
               placeholder="Cognome giocatore"
+              className="glass-button border-white/20 mt-2"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label>Squadra</Label>
             <TeamSelect
@@ -218,7 +252,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label>Costo (percentuale)</Label>
             <CostCalculator
@@ -263,7 +297,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
         </div>
 
         {!isGoalkeeper && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="xG">xG (Expected Goals)</Label>
               <Input
@@ -305,18 +339,25 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           />
         </div>
 
-        <div className="flex gap-2 pt-4">
-          <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-            <Check className="w-4 h-4 mr-2" />
+        <div className="flex gap-4 pt-6 border-t border-white/10">
+          <Button 
+            onClick={handleSave} 
+            className="glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-8 py-3"
+          >
+            <Check className="w-5 h-5 mr-2" />
             Salva
           </Button>
-          <Button variant="outline" onClick={handleCancel}>
-            <X className="w-4 h-4 mr-2" />
+          <Button 
+            variant="outline" 
+            onClick={handleCancel}
+            className="glass-button border-white/20 hover:border-white/30 font-medium px-8 py-3"
+          >
+            <X className="w-5 h-5 mr-2" />
             {isNewPlayer ? 'Elimina' : 'Annulla'}
           </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 

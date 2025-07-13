@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Zap, Target, Users, Trophy } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
@@ -88,24 +88,34 @@ const SquadBuilder = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 flex items-center justify-center p-4">
-        <Card className="p-8 text-center shadow-xl bg-white/80 backdrop-blur-sm border-0 rounded-3xl">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl flex items-center justify-center">
-            <span className="text-2xl">🔒</span>
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        
+        <div className="glass-card p-12 text-center max-w-md w-full fade-in-scale">
+          <div className="w-20 h-20 mx-auto mb-8 gradient-accent rounded-3xl flex items-center justify-center pulse-glow">
+            <span className="text-3xl">🔒</span>
           </div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">Accesso richiesto</h2>
-          <p className="text-gray-600">Devi effettuare l'accesso per utilizzare il Squad Builder</p>
-        </Card>
+          <h2 className="text-3xl font-bold mb-6 text-gradient-secondary">Accesso richiesto</h2>
+          <p className="text-muted-foreground text-lg">Devi effettuare l'accesso per utilizzare il Squad Builder</p>
+        </div>
       </div>
     );
   }
 
   if (playersLoading || squadLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Caricamento...</p>
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        
+        <div className="text-center fade-in-scale">
+          <div className="w-20 h-20 mx-auto mb-8 glass-card rounded-3xl flex items-center justify-center pulse-glow">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-transparent border-t-white/60"></div>
+          </div>
+          <p className="text-muted-foreground font-medium text-xl">Caricamento...</p>
         </div>
       </div>
     );
@@ -115,48 +125,56 @@ const SquadBuilder = () => {
   const totalBudget = calculateTotalBudget();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 p-4">
+    <div className="min-h-screen relative overflow-hidden p-4">
+      <div className="floating-orb"></div>
+      <div className="floating-orb"></div>
+      <div className="floating-orb"></div>
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 bg-white/60 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-white/20">
-          <Button
-            variant="outline"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 bg-white/80 hover:bg-white border-gray-200 rounded-2xl shadow-sm font-medium"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Torna al Database
-          </Button>
-          <div className="text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-              ⚽ Squad Builder
-            </h1>
-            <p className="text-gray-600 font-medium">Costruisci la tua formazione ideale</p>
+        <div className="glass-card mb-8 p-8 shadow-2xl slide-in-up">
+          <div className="flex items-center justify-between">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/')}
+              className="glass-button border-white/20 hover:border-white/30 font-medium px-6 py-3 slide-in-left"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2" />
+              Torna al Database
+            </Button>
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-gradient mb-3">
+                ⚽ Squad Builder
+              </h1>
+              <p className="text-muted-foreground font-medium text-lg">Costruisci la tua formazione ideale</p>
+            </div>
+            <div className="w-40"></div> {/* Spacer for centering */}
           </div>
-          <div className="w-32"></div> {/* Spacer for centering */}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Budget Wheels */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-8 slide-in-left">
             {/* Total Budget Wheel */}
-            <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
-              <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Budget Totale</h3>
+            <div className="glass-card p-8 shadow-xl pulse-glow">
+              <h3 className="text-xl font-bold mb-6 text-center text-gradient">Budget Totale</h3>
               <BudgetWheel 
                 totalBudget={totalBudget}
                 selectedCount={squadSelections.length}
               />
-              <div className="mt-4 text-center space-y-2">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3">
-                  <p className="text-sm text-gray-700 font-medium">
-                    Giocatori: <span className="font-bold text-blue-600">{squadSelections.length}/25</span>
+              <div className="mt-6 text-center space-y-3">
+                <div className="glass-card p-4">
+                  <p className="text-sm font-medium flex items-center justify-between">
+                    <span className="text-muted-foreground">Giocatori:</span>
+                    <span className="text-gradient font-bold text-lg">{squadSelections.length}/25</span>
                   </p>
-                  <p className="text-sm text-gray-700 font-medium">
-                    Budget: <span className="font-bold text-purple-600">{totalBudget.toFixed(1)}%</span>
+                  <p className="text-sm font-medium flex items-center justify-between mt-2">
+                    <span className="text-muted-foreground">Budget:</span>
+                    <span className="text-gradient-secondary font-bold text-lg">{totalBudget.toFixed(1)}%</span>
                   </p>
                 </div>
               </div>
-            </Card>
+            </div>
 
             {/* Role Budget Wheels */}
             <RoleBudgetWheels 
@@ -169,8 +187,8 @@ const SquadBuilder = () => {
           </div>
 
           {/* Squad Grid */}
-          <div className="lg:col-span-3">
-            <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
+          <div className="lg:col-span-3 slide-in-right">
+            <div className="glass-card p-8 shadow-2xl">
               <SquadGrid
                 squadSelections={squadSelections}
                 players={players}
@@ -178,7 +196,7 @@ const SquadBuilder = () => {
                 onRemovePlayer={(selectionId) => deleteSelection(selectionId)}
                 calculateBonusTotal={calculateBonusTotal}
               />
-            </Card>
+            </div>
           </div>
         </div>
 

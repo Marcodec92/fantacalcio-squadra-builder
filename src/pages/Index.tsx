@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileSpreadsheet, Users } from "lucide-react";
+import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
@@ -19,7 +19,6 @@ const Index = () => {
 
   const handleAddPlayer = (role: PlayerRole) => {
     console.log('handleAddPlayer called with role:', role);
-    // Crea direttamente il giocatore nel database
     addPlayer(role);
   };
 
@@ -34,55 +33,66 @@ const Index = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 flex items-center justify-center p-4">
-        <Card className="p-8 text-center shadow-xl bg-white/80 backdrop-blur-sm border-0 rounded-3xl max-w-md w-full">
-          <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center">
-            <Users className="w-8 h-8 text-white" />
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center p-4">
+        {/* Floating orbs */}
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        
+        <div className="glass-card p-12 text-center max-w-md w-full fade-in-scale">
+          <div className="w-20 h-20 mx-auto mb-8 gradient-primary rounded-3xl flex items-center justify-center pulse-glow">
+            <Users className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-6 text-gradient">
             ⚽ FantaCalcio Database
           </h1>
-          <p className="text-gray-600 mb-6 leading-relaxed">
+          <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
             Accedi per gestire i tuoi giocatori e costruire la tua formazione perfetta
           </p>
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4">
-            <p className="text-sm text-gray-700">
+          <div className="glass-card p-6">
+            <p className="text-sm text-muted-foreground">
               Utilizza l'autenticazione per iniziare
             </p>
           </div>
-        </Card>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Floating orbs */}
+      <div className="floating-orb"></div>
+      <div className="floating-orb"></div>
+      <div className="floating-orb"></div>
+
       {/* Header */}
-      <div className="bg-white/60 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="glass-card border-b border-white/10 backdrop-blur-2xl sticky top-0 z-50 slide-in-up">
+        <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center">
-                <FileSpreadsheet className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-6 slide-in-left">
+              <div className="w-16 h-16 gradient-primary rounded-3xl flex items-center justify-center pulse-glow">
+                <FileSpreadsheet className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold text-gradient">
                   ⚽ FantaCalcio Database
                 </h1>
-                <p className="text-gray-600 text-sm">Gestisci i tuoi giocatori</p>
+                <p className="text-muted-foreground text-sm mt-1">Gestisci i tuoi giocatori con stile</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 slide-in-right">
               <Button
                 onClick={() => navigate('/squad-builder')}
-                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl font-medium"
+                className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-8 py-3 text-base"
               >
-                🏗️ Squad Builder
+                <Zap className="w-5 h-5 mr-2" />
+                Squad Builder
               </Button>
               <Button
                 variant="outline"
                 onClick={signOut}
-                className="bg-white/80 hover:bg-white border-gray-200 rounded-2xl shadow-sm font-medium"
+                className="glass-button border-white/20 hover:border-white/30 font-medium px-6 py-3"
               >
                 Logout
               </Button>
@@ -92,41 +102,53 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6">
-        <Card className="shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl overflow-hidden">
+      <div className="max-w-7xl mx-auto p-6 mt-8">
+        <div className="glass-card shadow-2xl overflow-hidden fade-in-scale">
           <Tabs value={selectedRole} onValueChange={(value) => setSelectedRole(value as PlayerRole)} className="w-full">
-            <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-6 border-b border-white/20">
-              <TabsList className="grid w-full grid-cols-4 bg-white/60 backdrop-blur-sm rounded-2xl p-1 shadow-sm">
+            <div className="glass-card border-b border-white/10 p-8">
+              <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto">
                 <TabsTrigger 
                   value="Portiere" 
-                  className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
                 >
-                  🥅 Portieri
+                  <div className="flex flex-col items-center space-y-2">
+                    <Shield className="w-6 h-6" />
+                    <span>Portieri</span>
+                  </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Difensore"
-                  className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300"
+                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
                 >
-                  🛡️ Difensori
+                  <div className="flex flex-col items-center space-y-2">
+                    <Shield className="w-6 h-6" />
+                    <span>Difensori</span>
+                  </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Centrocampista"
-                  className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300"
+                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
                 >
-                  ⚡ Centrocampisti
+                  <div className="flex flex-col items-center space-y-2">
+                    <Sparkles className="w-6 h-6" />
+                    <span>Centrocampisti</span>
+                  </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Attaccante"
-                  className="rounded-xl font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105"
                 >
-                  🎯 Attaccanti
+                  <div className="flex flex-col items-center space-y-2">
+                    <Target className="w-6 h-6" />
+                    <span>Attaccanti</span>
+                  </div>
                 </TabsTrigger>
-              </TabsList>
+              </div>
             </div>
 
-            <div className="p-6">
+            <div className="p-8">
               {(['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'] as PlayerRole[]).map((role) => (
-                <TabsContent key={role} value={role} className="mt-0">
+                <TabsContent key={role} value={role} className="mt-0 fade-in-scale">
                   <PlayersList
                     roleCategory={role}
                     onAddPlayer={() => {
@@ -140,7 +162,7 @@ const Index = () => {
               ))}
             </div>
           </Tabs>
-        </Card>
+        </div>
       </div>
     </div>
   );
