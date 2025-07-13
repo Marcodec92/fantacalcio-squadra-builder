@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Glassmorphism Design System with vibrant gradients and animations */
+/* Glassmorphism Design System with vibrant gradients and smoother animations */
 
 @layer base {
   :root {
@@ -105,7 +105,8 @@
       radial-gradient(800px circle at 80% 70%, hsla(320, 85%, 65%, 0.15) 0%, transparent 50%),
       radial-gradient(400px circle at 40% 80%, hsla(200, 85%, 65%, 0.1) 0%, transparent 50%);
     z-index: -1;
-    animation: float-bg 20s ease-in-out infinite;
+    animation: float-bg 12s ease-in-out infinite;
+    will-change: transform, opacity;
   }
 }
 
@@ -116,7 +117,8 @@
     box-shadow: 
       0 8px 32px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, box-shadow, border-color;
   }
 
   .glass-card:hover {
@@ -125,18 +127,20 @@
       0 12px 40px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.15),
       0 0 20px rgba(255, 255, 255, 0.05);
-    transform: translateY(-2px);
+    transform: translateY(-1px) scale(1.01);
   }
 
   .glass-button {
-    @apply relative overflow-hidden rounded-2xl border border-white/20 backdrop-blur-xl transition-all duration-300;
+    @apply relative overflow-hidden rounded-2xl border border-white/20 backdrop-blur-xl;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    transition: all 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, box-shadow, border-color;
   }
 
   .glass-button:hover {
     @apply border-white/30;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transform: translateY(-0.5px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   }
 
   .glass-button::before {
@@ -147,7 +151,7 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+    transition: left 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .glass-button:hover::before {
@@ -174,8 +178,9 @@
     border-radius: 50%;
     filter: blur(60px);
     opacity: 0.6;
-    animation: float-orb 15s ease-in-out infinite;
+    animation: float-orb 8s ease-in-out infinite;
     pointer-events: none;
+    will-change: transform, opacity;
   }
 
   .floating-orb:nth-child(1) {
@@ -193,7 +198,7 @@
     background: radial-gradient(circle, hsl(320 85% 65%) 0%, transparent 70%);
     top: 60%;
     right: 15%;
-    animation-delay: -5s;
+    animation-delay: -2.5s;
   }
 
   .floating-orb:nth-child(3) {
@@ -202,7 +207,7 @@
     background: radial-gradient(circle, hsl(200 85% 65%) 0%, transparent 70%);
     bottom: 20%;
     left: 60%;
-    animation-delay: -10s;
+    animation-delay: -5s;
   }
 
   .text-gradient {
@@ -227,74 +232,81 @@
   }
 
   .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+    animation: pulse-glow 1.5s ease-in-out infinite;
   }
 
   .slide-in-up {
-    animation: slide-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: slide-in-up 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .slide-in-left {
-    animation: slide-in-left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: slide-in-left 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .slide-in-right {
-    animation: slide-in-right 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: slide-in-right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
 
   .fade-in-scale {
-    animation: fade-in-scale 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    animation: fade-in-scale 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .bounce-gentle {
+    animation: bounce-gentle 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .scale-on-hover {
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  .scale-on-hover:hover {
+    transform: scale(1.05);
   }
 }
 
-/* Animations */
+/* Optimized Animations */
 @keyframes float-bg {
   0%, 100% { 
     transform: translateY(0px) rotate(0deg);
     opacity: 0.6;
   }
-  33% { 
-    transform: translateY(-20px) rotate(120deg);
+  50% { 
+    transform: translateY(-15px) rotate(180deg);
     opacity: 0.8;
-  }
-  66% { 
-    transform: translateY(-10px) rotate(240deg);
-    opacity: 0.7;
   }
 }
 
 @keyframes float-orb {
   0%, 100% { 
     transform: translateY(0px) translateX(0px) scale(1);
-  }
-  25% { 
-    transform: translateY(-20px) translateX(10px) scale(1.1);
+    opacity: 0.6;
   }
   50% { 
-    transform: translateY(-10px) translateX(-15px) scale(0.9);
-  }
-  75% { 
-    transform: translateY(-25px) translateX(5px) scale(1.05);
+    transform: translateY(-15px) translateX(8px) scale(1.05);
+    opacity: 0.8;
   }
 }
 
 @keyframes pulse-glow {
   0%, 100% { 
     box-shadow: 
-      0 0 20px rgba(255, 255, 255, 0.1),
-      0 0 40px rgba(255, 255, 255, 0.05);
+      0 0 15px rgba(255, 255, 255, 0.1),
+      0 0 30px rgba(255, 255, 255, 0.05);
+    transform: scale(1);
   }
   50% { 
     box-shadow: 
-      0 0 30px rgba(255, 255, 255, 0.2),
-      0 0 60px rgba(255, 255, 255, 0.1);
+      0 0 25px rgba(255, 255, 255, 0.2),
+      0 0 50px rgba(255, 255, 255, 0.1);
+    transform: scale(1.02);
   }
 }
 
 @keyframes slide-in-up {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -305,7 +317,7 @@
 @keyframes slide-in-left {
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translateX(-20px);
   }
   to {
     opacity: 1;
@@ -316,7 +328,7 @@
 @keyframes slide-in-right {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX(20px);
   }
   to {
     opacity: 1;
@@ -327,11 +339,26 @@
 @keyframes fade-in-scale {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes bounce-gentle {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  30% {
+    transform: translateY(-8px) scale(1.02);
+  }
+  60% {
+    transform: translateY(-4px) scale(1.01);
+  }
+  100% {
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -352,7 +379,7 @@
     transparent
   );
   background-size: 200% 100%;
-  animation: shimmer 2s infinite;
+  animation: shimmer 1.5s infinite;
 }
 
 /* Enhanced scrollbar */
@@ -368,8 +395,22 @@
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(135deg, hsl(260 85% 65%), hsl(280 85% 70%));
   border-radius: 4px;
+  transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, hsl(280 85% 70%), hsl(300 85% 75%));
+}
+
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* GPU acceleration for better performance */
+.glass-card, .glass-button, .floating-orb {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
