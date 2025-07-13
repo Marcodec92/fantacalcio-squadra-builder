@@ -103,8 +103,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 {player.role}
               </div>
             </div>
-            {/* Fascia e MFV valorizzati a destra */}
-            <div className="flex items-center gap-4 mt-2 mr-4">
+            {/* Fascia e MFV valorizzati e centrati con più spazio */}
+            <div className="flex items-center gap-8 mt-2 mr-8"> {/* Gap aumentato e margine maggiore */}
               <div className="transform scale-125"> {/* Ingrandimento della fascia */}
                 <TierSelect 
                   roleCategory={player.roleCategory} 
@@ -151,9 +151,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 {player.costPercentage}% del budget
               </div>
             </div>
-            {/* Breakdown posizionato a destra del budget percentage */}
+            {/* Breakdown posizionato più vicino al budget percentage */}
             {showBudgetBreakdown && (
-              <div className="absolute top-0 left-[250px] z-10 flex gap-2 animate-slide-in-right">
+              <div className="absolute top-0 left-[140px] z-10 flex gap-2 animate-slide-in-right">
                 <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
                   {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
                 </div>
