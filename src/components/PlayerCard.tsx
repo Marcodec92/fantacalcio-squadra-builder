@@ -66,15 +66,25 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     return (
       <div className="glass-card p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
         <div className="space-y-3">
-          {/* Nome, squadra e ruolo */}
+          {/* Prima riga: Nome più grande, Fascia a destra e Azioni */}
           <div className="flex justify-between items-start">
-            <div>
-              <div className="font-bold text-base text-gradient leading-tight break-words">
-                {player.name} {player.surname}
+            <div className="flex items-center gap-4">
+              <div>
+                <div className="font-bold text-xl text-gradient leading-tight break-words">
+                  {player.name} {player.surname}
+                </div>
+                <div className="text-sm text-muted-foreground mt-1">{player.team}</div>
+                <div className="glass-card px-2 py-1 text-xs font-medium text-gradient-secondary inline-block mt-1">
+                  {player.role}
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground">{player.team}</div>
-              <div className="glass-card px-2 py-1 text-xs font-medium text-gradient-secondary inline-block mt-1">
-                {player.role}
+              {/* Fascia a destra del nome */}
+              <div>
+                <TierSelect 
+                  roleCategory={player.roleCategory} 
+                  value={player.tier} 
+                  readonly 
+                />
               </div>
             </div>
             {/* Azioni */}
@@ -98,29 +108,20 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
 
-          {/* FMV e Budget in orizzontale sotto il nome */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="glass-card p-3">
-              <CostCalculator percentage={player.costPercentage} readonly />
+          {/* FMV e Budget compatti sotto il nome - FMV PRIMA */}
+          <div className="flex gap-2 text-xs">
+            <div className="glass-card px-3 py-1 text-gradient font-medium">
+              FMV: {player.fmv.toFixed(2)}
             </div>
-            <div className="glass-card p-3">
-              <FMVInput value={player.fmv} readonly />
+            <div className="glass-card px-2 py-1 text-xs text-muted-foreground">
+              {player.costPercentage}% del budget
             </div>
           </div>
 
-          {/* Resto delle informazioni in orizzontale */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+          {/* Tutte le altre informazioni uniformemente in orizzontale */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           
-            {/* Tier */}
-            <div>
-              <TierSelect 
-                roleCategory={player.roleCategory} 
-                value={player.tier} 
-                readonly 
-              />
-            </div>
-          
-            {/* Statistiche principali */}
+            {/* Statistiche */}
             <div>
             {isGoalkeeper ? (
               <div className="glass-card p-3">
@@ -167,7 +168,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             )}
           </div>
           
-            {/* Expected Stats e Performance */}
+            {/* Expected/Performance */}
             <div>
             <div className="glass-card p-3">
               <div className="text-xs font-medium text-gradient mb-1">
