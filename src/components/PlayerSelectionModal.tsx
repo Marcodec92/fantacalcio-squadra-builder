@@ -95,7 +95,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden glass-card border-white/20 backdrop-blur-2xl">
         <DialogHeader>
           <DialogTitle>
             Seleziona {getRoleTitle(selectedRole)}
@@ -106,7 +106,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
           {/* Search and Filter */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Cerca per nome o squadra..."
                 value={searchTerm}
@@ -126,7 +126,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                   )}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-80 p-4" align="end">
+              <PopoverContent className="w-80 p-4 glass-card border-white/20 backdrop-blur-2xl" align="end">
                 <div>
                   <Label className="text-sm font-medium mb-2 block">Fasce</Label>
                   <div className="grid grid-cols-2 gap-2 mb-4">
@@ -156,7 +156,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
           {/* Players List */}
           <div className="overflow-y-auto max-h-96 space-y-2">
             {filteredPlayers.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-muted-foreground">
                 <p>Nessun giocatore trovato</p>
               </div>
             ) : (
@@ -166,7 +166,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                 return (
                   <div
                     key={player.id}
-                    className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="p-4 glass-card cursor-pointer hover:bg-white/10 hover:border-white/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
                     onClick={() => handlePlayerClick(player.id)}
                   >
                     <div className="flex justify-between items-start">
@@ -183,44 +183,44 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                         
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                           <div>
-                            <span className="text-gray-600">Budget: </span>
-                            <span className="font-semibold">{player.costPercentage}%</span>
+                            <span className="text-muted-foreground">Budget: </span>
+                            <span className="font-semibold text-primary">{player.costPercentage}%</span>
                           </div>
                           <div>
-                            <span className="text-gray-600">FMV: </span>
-                            <span className="font-semibold">{player.fmv}M</span>
+                            <span className="text-muted-foreground">FMV: </span>
+                            <span className="font-semibold text-accent">{player.fmv}M</span>
                           </div>
                           {player.roleCategory !== 'Portiere' && (
                             <div>
-                              <span className="text-gray-600">Bonus: </span>
-                              <span className={`font-semibold ${bonusTotal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                              <span className="text-muted-foreground">Bonus: </span>
+                              <span className={`font-semibold ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                                 {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
                               </span>
                             </div>
                           )}
                           <div>
-                            <span className="text-gray-600">Titolarità: </span>
-                            <span>{player.ownership}%</span>
+                            <span className="text-muted-foreground">Titolarità: </span>
+                            <span className="text-foreground font-medium">{player.ownership}%</span>
                           </div>
                           <div>
-                            <span className="text-gray-600">Plus: </span>
-                            <span>{player.plusCategories.length}</span>
+                            <span className="text-muted-foreground">Plus: </span>
+                            <span className="text-foreground font-medium">{player.plusCategories.length}</span>
                           </div>
                         </div>
 
                         {player.roleCategory !== 'Portiere' ? (
-                          <div className="mt-2 flex gap-4 text-sm text-gray-600">
-                            <span>Gol: {player.goals}</span>
-                            <span>Assist: {player.assists}</span>
-                            <span>Malus: {player.malus}</span>
-                            <span>xG: {player.xG.toFixed(2)}</span>
-                            <span>xA: {player.xA.toFixed(2)}</span>
+                          <div className="mt-2 flex gap-4 text-sm text-muted-foreground">
+                            <span className="text-foreground">Gol: <span className="text-primary font-medium">{player.goals}</span></span>
+                            <span className="text-foreground">Assist: <span className="text-accent font-medium">{player.assists}</span></span>
+                            <span className="text-foreground">Malus: <span className="text-destructive font-medium">{player.malus}</span></span>
+                            <span className="text-foreground">xG: <span className="text-secondary-foreground font-medium">{player.xG.toFixed(2)}</span></span>
+                            <span className="text-foreground">xA: <span className="text-secondary-foreground font-medium">{player.xA.toFixed(2)}</span></span>
                           </div>
                         ) : (
-                          <div className="mt-2 flex gap-4 text-sm text-gray-600">
-                            <span>Gol subiti: {player.goalsConceded}</span>
-                            <span>Rigori parati: {player.penaltiesSaved}</span>
-                            <span>xP: {player.xP.toFixed(2)}</span>
+                          <div className="mt-2 flex gap-4 text-sm text-muted-foreground">
+                            <span className="text-foreground">Gol subiti: <span className="text-destructive font-medium">{player.goalsConceded}</span></span>
+                            <span className="text-foreground">Rigori parati: <span className="text-primary font-medium">{player.penaltiesSaved}</span></span>
+                            <span className="text-foreground">xP: <span className="text-secondary-foreground font-medium">{player.xP.toFixed(2)}</span></span>
                           </div>
                         )}
 
