@@ -60,7 +60,16 @@ const PlayersList: React.FC<PlayersListProps> = ({
   };
 
   const sortedPlayers = useMemo(() => {
-    const sorted = [...filteredPlayers].sort((a, b) => {
+    // Separa i giocatori vuoti (nuovi) da quelli compilati
+    const emptyPlayers = filteredPlayers.filter(p => 
+      p.name === 'Nuovo' && p.surname === 'Giocatore' && p.costPercentage === 0
+    );
+    const compiledPlayers = filteredPlayers.filter(p => 
+      !(p.name === 'Nuovo' && p.surname === 'Giocatore' && p.costPercentage === 0)
+    );
+
+    // Ordina solo i giocatori compilati
+    const sortedCompiled = [...compiledPlayers].sort((a, b) => {
       let aValue: any;
       let bValue: any;
 
@@ -111,7 +120,8 @@ const PlayersList: React.FC<PlayersListProps> = ({
       return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
     });
 
-    return sorted;
+    // Ritorna prima i giocatori vuoti, poi quelli compilati ordinati
+    return [...emptyPlayers, ...sortedCompiled];
   }, [filteredPlayers, sortBy, sortDirection, calculateBonusTotal]);
 
   const handleSortChange = (newSortBy: SortOption, newDirection: 'asc' | 'desc') => {

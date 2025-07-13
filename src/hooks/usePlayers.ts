@@ -103,6 +103,7 @@ export const usePlayers = (filters?: {
         query = query.in('tier', filters.selectedTiers);
       }
 
+      // Ordina per created_at decrescente per mostrare i nuovi giocatori in cima
       const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
