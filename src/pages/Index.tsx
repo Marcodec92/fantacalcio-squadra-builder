@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -35,7 +34,9 @@ const Index = () => {
     if (editingPlayer) {
       updatePlayer({ ...editingPlayer, ...playerData });
     }
+    // Chiudi la modal e resetta lo stato
     setIsModalOpen(false);
+    setEditingPlayer(null);
   };
 
   const handleDeletePlayer = (playerId: string) => {
@@ -157,7 +158,10 @@ const Index = () => {
       {isModalOpen && editingPlayer && (
         <PlayerFormModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingPlayer(null);
+          }}
           onSave={handleSavePlayer}
           player={editingPlayer}
           defaultRole={editingPlayer.roleCategory}
