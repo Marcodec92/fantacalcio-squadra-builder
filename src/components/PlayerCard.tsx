@@ -66,12 +66,22 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   const isGoalkeeper = player.roleCategory === 'Portiere';
 
+  // Funzione per arrotondamento personalizzato
+  const customRound = (num: number) => {
+    const decimal = num - Math.floor(num);
+    return decimal >= 0.5 ? Math.ceil(num) : Math.floor(num);
+  };
+
   // Funzione per calcolare il breakdown dei crediti
   const calculateCreditBreakdown = (costPercentage: number) => {
+    const credits300 = (costPercentage / 100) * 300;
+    const credits500 = (costPercentage / 100) * 500;
+    const credits650 = (costPercentage / 100) * 650;
+    
     return {
-      credits300: ((costPercentage / 100) * 300).toFixed(1),
-      credits500: ((costPercentage / 100) * 500).toFixed(1),
-      credits650: ((costPercentage / 100) * 650).toFixed(1)
+      credits300: customRound(credits300),
+      credits500: customRound(credits500),
+      credits650: customRound(credits650)
     };
   };
 
@@ -141,21 +151,21 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
             {showBudgetBreakdown && (
               <div className="flex gap-2 mt-2 animate-slide-in-right">
-                <div className="text-xs bg-green-100 px-2 py-1 rounded border border-green-300">
-                  300: {calculateCreditBreakdown(player.costPercentage).credits300}
+                <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+                  {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
                 </div>
-                <div className="text-xs bg-amber-100 px-2 py-1 rounded border border-amber-300">
-                  500: {calculateCreditBreakdown(player.costPercentage).credits500}
+                <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+                  {calculateCreditBreakdown(player.costPercentage).credits500} su 500 cr.
                 </div>
-                <div className="text-xs bg-red-100 px-2 py-1 rounded border border-red-300">
-                  650: {calculateCreditBreakdown(player.costPercentage).credits650}
+                <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-red-500 to-rose-600 shadow-lg">
+                  {calculateCreditBreakdown(player.costPercentage).credits650} su 650 cr.
                 </div>
               </div>
             )}
           </div>
 
-          {/* Tutte le altre informazioni uniformemente in orizzontale */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Tutte le altre informazioni uniformemente in orizzontale - ALLINEATE IN ALTO */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           
             {/* Statistiche */}
             <div>
