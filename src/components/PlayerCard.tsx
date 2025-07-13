@@ -226,7 +226,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             <div>
             <div className="glass-card p-3">
               <div className="text-xs font-medium text-gradient mb-1">
-                {isGoalkeeper ? 'Performance' : 'Expected'}
+                {isGoalkeeper ? 'Gol subiti a partita' : 'Expected'}
               </div>
               <div className="text-sm space-y-1">
                 {isGoalkeeper ? (
