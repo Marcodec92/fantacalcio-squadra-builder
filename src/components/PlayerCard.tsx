@@ -130,15 +130,14 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               FMV: {player.fmv.toFixed(2)}
             </div>
             <div 
-              className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors border-2 border-red-500"
+              className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors"
               onClick={() => {
                 console.log('🎯 BUDGET CLICKED!!!', player.name);
-                alert(`Budget clicked for ${player.name}!`);
                 setShowBudgetBreakdown(!showBudgetBreakdown);
               }}
               title="Clicca per vedere breakdown crediti"
             >
-              {player.costPercentage}% del budget ← CLICK ME!
+              {player.costPercentage}% del budget
             </div>
             {showBudgetBreakdown && (
               <div className="flex gap-2 mt-2 animate-slide-in-right">
@@ -235,32 +234,16 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
           </div>
           
-            {/* Titolarità e Plus con BOX FORZATI */}
+            {/* Titolarità e Plus con design uniforme */}
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <div 
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                    border: '3px solid red'
-                  }}
-                >
+                <div className="glass-card p-3">
                   <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
                   <OwnershipProgress value={player.ownership} readonly />
                 </div>
               </div>
               <div>
-                <div 
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                    border: '3px solid blue'
-                  }}
-                >
+                <div className="glass-card p-3">
                   <div className="text-xs font-medium text-gradient mb-1">Plus</div>
                   <PlusCategoriesSelector 
                     selected={player.plusCategories} 
