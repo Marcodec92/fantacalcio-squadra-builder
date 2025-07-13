@@ -95,8 +95,13 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           {/* Prima riga: Nome più grande, Fascia e MFV a destra e Azioni */}
           <div className="flex justify-between items-start">
             <div className="flex-1">
-              <div className="font-bold text-2xl text-gradient leading-tight break-words">
+              <div className="font-bold text-2xl text-gradient leading-tight break-words flex items-center gap-2">
                 {player.name} {player.surname}
+                {player.isFavorite && (
+                  <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" style={{
+                    filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5))'
+                  }} />
+                )}
               </div>
               <div className="text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
               <div className="glass-card px-3 py-1 text-sm font-semibold text-gradient-secondary inline-block mt-1">
@@ -395,12 +400,27 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           />
         </div>
 
-        <div>
-          <Label>Categorie Plus</Label>
-          <PlusCategoriesSelector
-            selected={editedPlayer.plusCategories}
-            onChange={(categories) => updateField('plusCategories', categories)}
-          />
+        <div className="flex gap-6">
+          <div className="flex-1">
+            <Label>Categorie Plus</Label>
+            <PlusCategoriesSelector
+              selected={editedPlayer.plusCategories}
+              onChange={(categories) => updateField('plusCategories', categories)}
+              playerRole={editedPlayer.roleCategory}
+            />
+          </div>
+          <div className="flex items-center space-x-2 pt-8">
+            <input
+              type="checkbox"
+              id="editFavorite"
+              checked={editedPlayer.isFavorite}
+              onChange={(e) => updateField('isFavorite', e.target.checked)}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <Label htmlFor="editFavorite" className="text-sm font-medium cursor-pointer">
+              Aggiungi ai preferiti
+            </Label>
+          </div>
         </div>
 
         <div className="flex gap-4 pt-6 border-t border-white/10">

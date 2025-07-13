@@ -292,12 +292,26 @@ const PlayerFormModal: React.FC<PlayerFormModalProps> = ({
             </div>
           </div>
 
-          <div>
-            <PlusCategoriesSelector
-              selected={formData.plusCategories || []}
-              onChange={(categories) => handleInputChange('plusCategories', categories)}
-              playerRole={formData.roleCategory}
-            />
+          <div className="flex gap-6">
+            <div className="flex-1">
+              <PlusCategoriesSelector
+                selected={formData.plusCategories || []}
+                onChange={(categories) => handleInputChange('plusCategories', categories)}
+                playerRole={formData.roleCategory}
+              />
+            </div>
+            <div className="flex items-center space-x-2 pt-8">
+              <input
+                type="checkbox"
+                id="isFavorite"
+                checked={formData.isFavorite}
+                onChange={(e) => handleInputChange('isFavorite', e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <Label htmlFor="isFavorite" className="text-sm font-medium cursor-pointer">
+                Aggiungi ai preferiti
+              </Label>
+            </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
