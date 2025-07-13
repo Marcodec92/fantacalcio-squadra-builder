@@ -84,23 +84,10 @@ const PositionCard: React.FC<PositionCardProps> = ({
     };
   };
 
-  useEffect(() => {
-    const handleGlobalClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const budgetElement = target.closest('[data-action="budget-toggle"]');
-      
-      if (budgetElement) {
-        const playerId = budgetElement.getAttribute('data-player-id');
-        if (playerId) {
-          console.log('GLOBAL CLICK DETECTED for player:', playerId);
-          toggleBudgetBreakdown(playerId);
-        }
-      }
-    };
-
-    document.addEventListener('click', handleGlobalClick);
-    return () => document.removeEventListener('click', handleGlobalClick);
-  }, [showBudgetBreakdown]);
+  // Rimuovo l'event listener globale che potrebbe interferire
+  // useEffect(() => {
+  //   ...
+  // }, [showBudgetBreakdown]);
 
   return (
     <Card 
@@ -172,15 +159,21 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                        <div 
-                          className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors px-2 py-1 rounded bg-blue-50 border border-blue-200"
-                          onClick={(e) => {
-                            console.log('BUDGET CLICKED!', player.id);
-                            toggleBudgetBreakdown(player.id);
-                          }}
-                        >
-                          {player.costPercentage}%
-                        </div>
+                         <div 
+                           className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors px-2 py-1 rounded bg-blue-50 border border-blue-200"
+                           onMouseDown={(e) => {
+                             e.preventDefault();
+                             e.stopPropagation();
+                             console.log('BUDGET MOUSEDOWN!', player.id);
+                             console.log('Current state:', showBudgetBreakdown);
+                             alert(`Click detected for ${player.name}! State: ${showBudgetBreakdown}`);
+                             toggleBudgetBreakdown(player.id);
+                           }}
+                           style={{zIndex: 999, border: '3px solid red'}}
+                           title="CLICCA QUI per breakdown crediti"
+                         >
+                           {player.costPercentage}% ← CLICK ME!
+                         </div>
                          <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
                         {showBudgetBreakdown === player.id && (
                           <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
