@@ -282,8 +282,14 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 </div>
               </div>
 
-              {/* Titolarità */}
-              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+              {/* Titolarità - FORZATO */}
+              <div style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                borderRadius: '12px',
+                padding: '12px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                border: '2px solid red'
+              }}>
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Titolarità</div>
                 <div className="space-y-1">
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
@@ -299,8 +305,14 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 </div>
               </div>
 
-              {/* Categoria Plus */}
-              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+              {/* Categoria Plus - FORZATO */}
+              <div style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.4)',
+                borderRadius: '12px',
+                padding: '12px',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                border: '2px solid blue'
+              }}>
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Plus</div>
                 <div className="space-y-1">
                   {player.plusCategories && player.plusCategories.length > 0 ? (
