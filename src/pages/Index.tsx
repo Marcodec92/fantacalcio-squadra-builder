@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,9 @@ const Index = () => {
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
 
-  const handleAddPlayer = () => {
-    setEditingPlayer(null);
-    setIsModalOpen(true);
+  const handleAddPlayer = (role: PlayerRole) => {
+    // Crea direttamente il giocatore nel database
+    addPlayer(role);
   };
 
   const handleEditPlayer = (player: Player) => {
@@ -32,9 +33,6 @@ const Index = () => {
   const handleSavePlayer = (playerData: Omit<Player, 'id' | 'userId'>) => {
     if (editingPlayer) {
       updatePlayer({ ...editingPlayer, ...playerData });
-    } else {
-      // Fix: Call addPlayer with the correct role parameter
-      addPlayer(selectedRole);
     }
     setIsModalOpen(false);
   };
@@ -140,10 +138,7 @@ const Index = () => {
                 <TabsContent key={role} value={role} className="mt-0">
                   <PlayersList
                     roleCategory={role}
-                    onAddPlayer={() => {
-                      setSelectedRole(role);
-                      handleAddPlayer();
-                    }}
+                    onAddPlayer={() => handleAddPlayer(role)}
                     onUpdatePlayer={handleEditPlayer}
                     onDeletePlayer={handleDeletePlayer}
                   />
@@ -154,13 +149,16 @@ const Index = () => {
         </Card>
       </div>
 
-      <PlayerFormModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSavePlayer}
-        player={editingPlayer}
-        defaultRole={selectedRole}
-      />
+      {/* Modal solo per modificare giocatori esistenti */}
+      {isModalOpen && editingPlayer && (
+        <PlayerFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSavePlayer}
+          player={editingPlayer}
+          defaultRole={editingPlayer.roleCategory}
+        />
+      )}
     </div>
   );
 };

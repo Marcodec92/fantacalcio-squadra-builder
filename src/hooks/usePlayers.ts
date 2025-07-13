@@ -125,10 +125,37 @@ export const usePlayers = (filters?: {
   });
 
   const addPlayerMutation = useMutation({
-    mutationFn: async (player: Player) => {
+    mutationFn: async (role: PlayerRole) => {
       if (!user) throw new Error('User not authenticated');
       
-      const dbPlayer = convertPlayerToDbFormat(player, user.id);
+      // Crea un nuovo giocatore con dati di default
+      const newPlayer: Player = {
+        id: crypto.randomUUID(),
+        name: 'Nuovo',
+        surname: 'Giocatore',
+        team: '',
+        role: role === 'Portiere' ? 'Portiere' : 
+              role === 'Difensore' ? 'Difensore centrale' :
+              role === 'Centrocampista' ? 'Mediano' : 'Attaccante centrale',
+        roleCategory: role,
+        costPercentage: 0,
+        fmv: 0,
+        tier: '',
+        goals: 0,
+        assists: 0,
+        malus: 0,
+        goalsConceded: 0,
+        yellowCards: 0,
+        penaltiesSaved: 0,
+        xG: 0,
+        xA: 0,
+        xP: 0,
+        ownership: 0,
+        plusCategories: [],
+        isFavorite: false
+      };
+      
+      const dbPlayer = convertPlayerToDbFormat(newPlayer, user.id);
       const { data, error } = await supabase
         .from('players')
         .insert([dbPlayer])
@@ -140,7 +167,7 @@ export const usePlayers = (filters?: {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['players', user?.id] });
-      toast.success('Giocatore aggiunto con successo!');
+      toast.success('Nuovo giocatore aggiunto! Puoi modificarlo con il pulsante di modifica.');
     },
     onError: (error) => {
       console.error('Error adding player:', error);
@@ -197,33 +224,7 @@ export const usePlayers = (filters?: {
   });
 
   const addPlayer = (role: PlayerRole) => {
-    const newPlayer: Player = {
-      id: crypto.randomUUID(),
-      name: '',
-      surname: '',
-      team: '',
-      role: role === 'Portiere' ? 'Portiere' : 
-            role === 'Difensore' ? 'Difensore centrale' :
-            role === 'Centrocampista' ? 'Mediano' : 'Attaccante centrale',
-      roleCategory: role,
-      costPercentage: 0,
-      fmv: 0,
-      tier: '',
-      goals: 0,
-      assists: 0,
-      malus: 0,
-      goalsConceded: 0,
-      yellowCards: 0,
-      penaltiesSaved: 0,
-      xG: 0,
-      xA: 0,
-      xP: 0,
-      ownership: 0,
-      plusCategories: [],
-      isFavorite: false
-    };
-    
-    addPlayerMutation.mutate(newPlayer);
+    addPlayerMutation.mutate(role);
   };
 
   const updatePlayer = (player: Player) => {
