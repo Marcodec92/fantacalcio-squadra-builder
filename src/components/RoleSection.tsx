@@ -5,8 +5,6 @@ import { SquadSelection } from '@/hooks/useSquadSelections';
 import PositionCard from './PositionCard';
 
 interface RoleSectionProps {
-  title: string;
-  emoji: string;
   role: PlayerRole;
   slots: number[];
   columns: number;
@@ -18,8 +16,6 @@ interface RoleSectionProps {
 }
 
 const RoleSection: React.FC<RoleSectionProps> = ({
-  title,
-  emoji,
   role,
   slots,
   columns,
@@ -54,25 +50,20 @@ const RoleSection: React.FC<RoleSectionProps> = ({
   };
 
   return (
-    <div>
-      <h3 className="text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-        {emoji} {title}
-      </h3>
-      <div className={`grid gap-4`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
-        {slots.map(slot => (
-          <PositionCard
-            key={slot}
-            slot={slot}
-            role={role}
-            label={getSlotLabel(slot)}
-            player={getPlayerForPosition(slot, role)}
-            selection={getSelectionForPosition(slot, role)}
-            onPositionClick={onPositionClick}
-            onRemovePlayer={onRemovePlayer}
-            calculateBonusTotal={calculateBonusTotal}
-          />
-        ))}
-      </div>
+    <div className={`grid gap-4`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+      {slots.map(slot => (
+        <PositionCard
+          key={slot}
+          slot={slot}
+          role={role}
+          label={getSlotLabel(slot)}
+          player={getPlayerForPosition(slot, role)}
+          selection={getSelectionForPosition(slot, role)}
+          onPositionClick={onPositionClick}
+          onRemovePlayer={onRemovePlayer}
+          calculateBonusTotal={calculateBonusTotal}
+        />
+      ))}
     </div>
   );
 };

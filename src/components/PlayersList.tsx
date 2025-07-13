@@ -49,6 +49,16 @@ const PlayersList: React.FC<PlayersListProps> = ({
     }
   };
 
+  const getRoleGradient = (role: PlayerRole) => {
+    switch (role) {
+      case 'Portiere': return 'from-blue-500 to-cyan-600';
+      case 'Difensore': return 'from-green-500 to-emerald-600';
+      case 'Centrocampista': return 'from-purple-500 to-pink-600';
+      case 'Attaccante': return 'from-red-500 to-orange-600';
+      default: return 'from-gray-500 to-gray-600';
+    }
+  };
+
   const sortedPlayers = useMemo(() => {
     const sorted = [...filteredPlayers].sort((a, b) => {
       let aValue: any;
@@ -110,45 +120,57 @@ const PlayersList: React.FC<PlayersListProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-800">{getRoleTitle(roleCategory)}</h2>
-        <Button onClick={onAddPlayer} className="bg-green-600 hover:bg-green-700">
+        <h2 className={`text-2xl font-bold bg-gradient-to-r ${getRoleGradient(roleCategory)} bg-clip-text text-transparent`}>
+          {getRoleTitle(roleCategory)}
+        </h2>
+        <Button 
+          onClick={onAddPlayer} 
+          className={`bg-gradient-to-r ${getRoleGradient(roleCategory)} hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl font-medium`}
+        >
           <Plus className="w-4 h-4 mr-2" />
           Aggiungi {roleCategory.toLowerCase()}
         </Button>
       </div>
 
-      <PlayerFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        showFavoritesOnly={showFavoritesOnly}
-        onFavoritesToggle={() => setShowFavoritesOnly(!showFavoritesOnly)}
-        selectedTeams={selectedTeams}
-        onTeamsChange={setSelectedTeams}
-        selectedTiers={selectedTiers}
-        onTiersChange={setSelectedTiers}
-        selectedPlusCategories={selectedPlusCategories}
-        onPlusCategoriesChange={setSelectedPlusCategories}
-        roleCategory={roleCategory}
-      />
+      <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 shadow-sm">
+        <PlayerFilters
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          showFavoritesOnly={showFavoritesOnly}
+          onFavoritesToggle={() => setShowFavoritesOnly(!showFavoritesOnly)}
+          selectedTeams={selectedTeams}
+          onTeamsChange={setSelectedTeams}
+          selectedTiers={selectedTiers}
+          onTiersChange={setSelectedTiers}
+          selectedPlusCategories={selectedPlusCategories}
+          onPlusCategoriesChange={setSelectedPlusCategories}
+          roleCategory={roleCategory}
+        />
+      </div>
 
       {filteredPlayers.length > 0 && (
-        <SortControls
-          roleCategory={roleCategory}
-          sortBy={sortBy}
-          sortDirection={sortDirection}
-          onSortChange={handleSortChange}
-        />
+        <div className="bg-white/40 backdrop-blur-sm rounded-2xl p-6 shadow-sm">
+          <SortControls
+            roleCategory={roleCategory}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+            onSortChange={handleSortChange}
+          />
+        </div>
       )}
 
       {sortedPlayers.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          <p className="text-lg">Nessun {roleCategory.toLowerCase()} trovato</p>
-          <p className="text-sm">Prova a modificare i filtri o aggiungi un nuovo giocatore</p>
+        <div className="text-center py-16 bg-white/40 backdrop-blur-sm rounded-2xl shadow-sm">
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center">
+            <span className="text-2xl">🔍</span>
+          </div>
+          <p className="text-lg font-medium text-gray-600 mb-2">Nessun {roleCategory.toLowerCase()} trovato</p>
+          <p className="text-sm text-gray-500">Prova a modificare i filtri o aggiungi un nuovo giocatore</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {sortedPlayers.map((player) => (
             <PlayerCard
               key={player.id}

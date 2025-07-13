@@ -56,14 +56,12 @@ const SquadGrid: React.FC<SquadGridProps> = ({
 
   return (
     <div className="space-y-8">
-      {roleConfig.map(({ title, emoji, role, slots, columns }) => (
+      {roleConfig.map(({ title, emoji, role, slots, columns, gradient }) => (
         <div key={role}>
-          <h3 className={`text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r ${roleConfig.find(r => r.role === role)?.gradient} bg-clip-text text-transparent`}>
+          <h3 className={`text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
             {emoji} {title}
           </h3>
           <RoleSection
-            title={title}
-            emoji={emoji}
             role={role}
             slots={slots}
             columns={columns}
