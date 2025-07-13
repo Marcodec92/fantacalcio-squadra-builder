@@ -37,6 +37,8 @@ const PositionCard: React.FC<PositionCardProps> = ({
   const { updatePlayer } = usePlayers();
 
   const bonusTotal = player ? calculateBonusTotal(player) : 0;
+  
+  console.log('PositionCard rendered for player:', player?.name, 'ID:', player?.id);
 
   const handleEditPercentage = (player: Player) => {
     setEditingPercentage(player.id);
@@ -151,15 +153,18 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                        <span 
-                          className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleBudgetBreakdown(player.id);
-                          }}
-                        >
-                          {player.costPercentage}%
-                        </span>
+                         <div 
+                           className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors inline-block"
+                           onClick={(e) => {
+                             e.preventDefault();
+                             e.stopPropagation();
+                             console.log('BUDGET CLICK TRIGGERED!', player.id);
+                             toggleBudgetBreakdown(player.id);
+                           }}
+                         >
+                           {player.costPercentage}%
+                          </div>
+                         <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
                         {showBudgetBreakdown === player.id && (
                           <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
                             <div className="flex items-center gap-1 text-xs bg-green-50 px-2 py-1 rounded-lg border border-green-200 shadow-sm">
