@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,8 @@ const Index = () => {
     if (editingPlayer) {
       updatePlayer({ ...editingPlayer, ...playerData });
     } else {
-      addPlayer(playerData);
+      // Fix: Call addPlayer with the correct role parameter
+      addPlayer(selectedRole);
     }
     setIsModalOpen(false);
   };
