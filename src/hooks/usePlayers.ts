@@ -77,6 +77,8 @@ export const usePlayers = (filters?: {
     queryFn: async () => {
       if (!user) return [];
       
+      console.log('Fetching players for user:', user.id);
+      
       let query = supabase
         .from('players')
         .select('*')
@@ -108,6 +110,8 @@ export const usePlayers = (filters?: {
         throw error;
       }
 
+      console.log('Raw players data from DB:', data);
+
       let filteredData = data.map(convertDbPlayerToPlayer);
 
       // Filter by plus categories (client-side because of array handling)
@@ -119,6 +123,8 @@ export const usePlayers = (filters?: {
         );
       }
 
+      console.log('Processed players data:', filteredData);
+
       return filteredData;
     },
     enabled: !!user,
@@ -128,44 +134,57 @@ export const usePlayers = (filters?: {
     mutationFn: async (role: PlayerRole) => {
       if (!user) throw new Error('User not authenticated');
       
-      // Crea un nuovo giocatore con dati di default
-      const newPlayer: Player = {
-        id: crypto.randomUUID(),
+      console.log('Adding new player with role:', role);
+      
+      // Genera un ID unico per il nuovo giocatore
+      const playerId = crypto.randomUUID();
+      
+      // Crea i dati del giocatore per il database
+      const dbPlayerData = {
+        id: playerId,
+        user_id: user.id,
         name: 'Nuovo',
         surname: 'Giocatore',
-        team: '',
+        team: null,
         role: role === 'Portiere' ? 'Portiere' : 
               role === 'Difensore' ? 'Difensore centrale' :
               role === 'Centrocampista' ? 'Mediano' : 'Attaccante centrale',
-        roleCategory: role,
-        costPercentage: 0,
+        role_category: role,
+        cost_percentage: 0,
         fmv: 0,
         tier: '',
         goals: 0,
         assists: 0,
         malus: 0,
-        goalsConceded: 0,
-        yellowCards: 0,
-        penaltiesSaved: 0,
-        xG: 0,
-        xA: 0,
-        xP: 0,
+        goals_conceded: 0,
+        yellow_cards: 0,
+        penalties_saved: 0,
+        x_g: 0,
+        x_a: 0,
+        x_p: 0,
         ownership: 0,
-        plusCategories: [],
-        isFavorite: false
+        plus_categories: [],
+        is_favorite: false
       };
       
-      const dbPlayer = convertPlayerToDbFormat(newPlayer, user.id);
+      console.log('Inserting player data:', dbPlayerData);
+      
       const { data, error } = await supabase
         .from('players')
-        .insert([dbPlayer])
+        .insert([dbPlayerData])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error inserting player:', error);
+        throw error;
+      }
+      
+      console.log('Player inserted successfully:', data);
       return convertDbPlayerToPlayer(data);
     },
-    onSuccess: () => {
+    onSuccess: (newPlayer) => {
+      console.log('Player added successfully:', newPlayer);
       queryClient.invalidateQueries({ queryKey: ['players', user?.id] });
       toast.success('Nuovo giocatore aggiunto! Puoi modificarlo con il pulsante di modifica.');
     },
@@ -224,6 +243,7 @@ export const usePlayers = (filters?: {
   });
 
   const addPlayer = (role: PlayerRole) => {
+    console.log('addPlayer called with role:', role);
     addPlayerMutation.mutate(role);
   };
 
@@ -254,5 +274,6 @@ export const usePlayers = (filters?: {
     deletePlayer,
     getPlayersByRole,
     calculateBonusTotal,
+    isAddingPlayer: addPlayerMutation.isPending,
   };
 };

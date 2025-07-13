@@ -21,6 +21,7 @@ const Index = () => {
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
 
   const handleAddPlayer = (role: PlayerRole) => {
+    console.log('handleAddPlayer called with role:', role);
     // Crea direttamente il giocatore nel database
     addPlayer(role);
   };
@@ -138,7 +139,10 @@ const Index = () => {
                 <TabsContent key={role} value={role} className="mt-0">
                   <PlayersList
                     roleCategory={role}
-                    onAddPlayer={() => handleAddPlayer(role)}
+                    onAddPlayer={() => {
+                      console.log('PlayersList onAddPlayer triggered for role:', role);
+                      handleAddPlayer(role);
+                    }}
                     onUpdatePlayer={handleEditPlayer}
                     onDeletePlayer={handleDeletePlayer}
                   />
