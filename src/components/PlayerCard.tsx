@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -60,8 +59,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   const isGoalkeeper = player.roleCategory === 'Portiere';
 
-  // Calcolo del bonus totale per i giocatori non portieri
-  const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.yellowCards * 0.5;
+  // Calcolo del bonus totale per i giocatori non portieri - CORRETTO
+  const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.malus * 0.5;
 
   if (!isEditing) {
     return (
