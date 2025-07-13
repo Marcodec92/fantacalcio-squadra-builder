@@ -24,6 +24,7 @@ export type SortOption =
   | 'name'
   | 'costPercentage'
   | 'fmv'
+  | 'tier'
   | 'goals'
   | 'assists'
   | 'bonusTotal'

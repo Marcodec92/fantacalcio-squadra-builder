@@ -16,7 +16,8 @@ const getSortOptions = (roleCategory: PlayerRole): { value: SortOption; label: s
   const baseOptions = [
     { value: 'name' as SortOption, label: 'Nome' },
     { value: 'costPercentage' as SortOption, label: 'Budget %' },
-    { value: 'fmv' as SortOption, label: 'FMV' }
+    { value: 'fmv' as SortOption, label: 'FMV' },
+    { value: 'tier' as SortOption, label: 'Fascia' }
   ];
 
   if (roleCategory === 'Portiere') {

@@ -59,6 +59,18 @@ const PlayersList: React.FC<PlayersListProps> = ({
     }
   };
 
+  // Funzione per convertire la fascia in valore numerico per ordinamento
+  const getTierValue = (tier: string): number => {
+    if (!tier) return 999; // Fasce vuote vanno alla fine
+    
+    // Estrae il numero dalla stringa (es. "1ª fascia" -> 1)
+    const match = tier.match(/(\d+)/);
+    if (match) {
+      return parseInt(match[1]);
+    }
+    return 999; // Fallback per fasce non riconosciute
+  };
+
   const sortedPlayers = useMemo(() => {
     // Separa i giocatori vuoti (nuovi) da quelli compilati
     const emptyPlayers = filteredPlayers.filter(p => 
@@ -85,6 +97,10 @@ const PlayersList: React.FC<PlayersListProps> = ({
         case 'fmv':
           aValue = a.fmv;
           bValue = b.fmv;
+          break;
+        case 'tier':
+          aValue = getTierValue(a.tier);
+          bValue = getTierValue(b.tier);
           break;
         case 'bonusTotal':
           aValue = calculateBonusTotal(a);
