@@ -63,10 +63,11 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
       
       const matchesTier = selectedTiers.length === 0 || selectedTiers.includes(player.tier);
       
+      // Exclude players already selected in squad
       const isAlreadySelected = existingSelections.some(s => s.player_id === player.id);
       
       return matchesSearch && matchesTier && !isAlreadySelected;
-    }).sort((a, b) => b.costPercentage - a.costPercentage);
+    }).sort((a, b) => b.costPercentage - a.costPercentage); // Sort by budget descending
   }, [players, searchTerm, selectedTiers, existingSelections]);
 
   const getRoleTitle = (role?: PlayerRole) => {
@@ -81,8 +82,8 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
 
   const handlePlayerClick = (playerId: string) => {
     onPlayerSelect(playerId);
-    setSearchTerm('');
-    setSelectedTiers([]);
+    setSearchTerm(''); // Reset search
+    setSelectedTiers([]); // Reset tier filter
   };
 
   const clearFilters = () => {
@@ -96,30 +97,30 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-900">
+          <DialogTitle>
             Seleziona {getRoleTitle(selectedRole)}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
           {/* Search and Filter */}
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
                 placeholder="Cerca per nome o squadra..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                className="pl-10"
               />
             </div>
             <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
+                <Button variant="outline">
                   <Filter className="w-4 h-4 mr-2" />
                   Filtri
                   {selectedTiers.length > 0 && (
-                    <Badge variant="secondary" className="ml-2 text-xs bg-blue-100 text-blue-800">
+                    <Badge variant="secondary" className="ml-2 text-xs">
                       {selectedTiers.length}
                     </Badge>
                   )}
@@ -127,7 +128,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
               </PopoverTrigger>
               <PopoverContent className="w-80 p-4" align="end">
                 <div>
-                  <Label className="text-sm font-medium mb-3 block text-gray-900">Fasce</Label>
+                  <Label className="text-sm font-medium mb-2 block">Fasce</Label>
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     {getTiersForRole(selectedRole).map((tier) => (
                       <div key={tier} className="flex items-center space-x-2">
@@ -136,14 +137,14 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                           checked={selectedTiers.includes(tier)}
                           onCheckedChange={() => toggleTier(tier)}
                         />
-                        <Label htmlFor={`tier-${tier}`} className="text-sm cursor-pointer text-gray-700">
+                        <Label htmlFor={`tier-${tier}`} className="text-sm cursor-pointer">
                           {tier}
                         </Label>
                       </div>
                     ))}
                   </div>
                   {hasActiveFilters && (
-                    <Button variant="ghost" onClick={clearFilters} size="sm" className="text-gray-600 hover:text-gray-800">
+                    <Button variant="ghost" onClick={clearFilters} size="sm">
                       Rimuovi filtri
                     </Button>
                   )}
@@ -165,45 +166,45 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                 return (
                   <div
                     key={player.id}
-                    className="p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors bg-white"
+                    className="p-4 border rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => handlePlayerClick(player.id)}
                   >
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold text-gray-900">{player.name} {player.surname}</h4>
+                          <h4 className="font-semibold">{player.name} {player.surname}</h4>
                           {player.isFavorite && (
                             <span className="text-yellow-500">⭐</span>
                           )}
-                          <Badge variant="outline" className="border-gray-300 text-gray-700">{player.team}</Badge>
-                          <Badge variant="secondary" className="bg-gray-100 text-gray-700">{player.role}</Badge>
-                          {player.tier && <Badge variant="outline" className="border-gray-300 text-gray-700">{player.tier}</Badge>}
+                          <Badge variant="outline">{player.team}</Badge>
+                          <Badge variant="secondary">{player.role}</Badge>
+                          {player.tier && <Badge variant="outline">{player.tier}</Badge>}
                         </div>
                         
                         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                           <div>
                             <span className="text-gray-600">Budget: </span>
-                            <span className="font-semibold text-gray-900">{player.costPercentage}%</span>
+                            <span className="font-semibold">{player.costPercentage}%</span>
                           </div>
                           <div>
                             <span className="text-gray-600">FMV: </span>
-                            <span className="font-semibold text-gray-900">{player.fmv}M</span>
+                            <span className="font-semibold">{player.fmv}M</span>
                           </div>
                           {player.roleCategory !== 'Portiere' && (
                             <div>
                               <span className="text-gray-600">Bonus: </span>
-                              <span className={`font-semibold ${bonusTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                              <span className={`font-semibold ${bonusTotal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                                 {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
                               </span>
                             </div>
                           )}
                           <div>
                             <span className="text-gray-600">Titolarità: </span>
-                            <span className="text-gray-900">{player.ownership}%</span>
+                            <span>{player.ownership}%</span>
                           </div>
                           <div>
                             <span className="text-gray-600">Plus: </span>
-                            <span className="text-gray-900">{player.plusCategories.length}</span>
+                            <span>{player.plusCategories.length}</span>
                           </div>
                         </div>
 
@@ -226,7 +227,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                         {player.plusCategories.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-1">
                             {player.plusCategories.map((category) => (
-                              <Badge key={category} variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                              <Badge key={category} variant="secondary" className="text-xs">
                                 {category}
                               </Badge>
                             ))}
@@ -234,7 +235,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
                         )}
                       </div>
                       
-                      <Button size="sm" className="ml-4 bg-blue-600 hover:bg-blue-700 text-white">
+                      <Button size="sm" className="ml-4">
                         <Check className="w-4 h-4 mr-1" />
                         Seleziona
                       </Button>

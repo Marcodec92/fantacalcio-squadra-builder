@@ -295,7 +295,7 @@ const PlayerFormModal: React.FC<PlayerFormModalProps> = ({
           <div>
             <Label>Categorie Plus</Label>
             <PlusCategoriesSelector
-              selected={formData.plusCategories}
+              selectedCategories={formData.plusCategories}
               onChange={(categories) => handleInputChange('plusCategories', categories)}
             />
           </div>
