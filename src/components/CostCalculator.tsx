@@ -37,17 +37,17 @@ const CostCalculator: React.FC<CostCalculatorProps> = ({
       )}
       
       <div className="grid grid-cols-3 gap-2 text-sm">
-        <div className="bg-gray-50 p-2 rounded text-center">
-          <div className="font-semibold text-blue-600">{calculateCost(300)}</div>
-          <div className="text-xs text-gray-600">Budget 300</div>
+        <div className="bg-gray-50 p-3 rounded text-center min-w-0">
+          <div className="font-semibold text-blue-600 text-lg">{calculateCost(300)}</div>
+          <div className="text-xs text-gray-600 whitespace-nowrap">Budget 300</div>
         </div>
-        <div className="bg-gray-50 p-2 rounded text-center">
-          <div className="font-semibold text-green-600">{calculateCost(500)}</div>
-          <div className="text-xs text-gray-600">Budget 500</div>
+        <div className="bg-gray-50 p-3 rounded text-center min-w-0">
+          <div className="font-semibold text-green-600 text-lg">{calculateCost(500)}</div>
+          <div className="text-xs text-gray-600 whitespace-nowrap">Budget 500</div>
         </div>
-        <div className="bg-gray-50 p-2 rounded text-center">
-          <div className="font-semibold text-purple-600">{calculateCost(650)}</div>
-          <div className="text-xs text-gray-600">Budget 650</div>
+        <div className="bg-gray-50 p-3 rounded text-center min-w-0">
+          <div className="font-semibold text-purple-600 text-lg">{calculateCost(650)}</div>
+          <div className="text-xs text-gray-600 whitespace-nowrap">Budget 650</div>
         </div>
       </div>
       

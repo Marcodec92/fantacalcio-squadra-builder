@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -60,7 +61,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   const isGoalkeeper = player.roleCategory === 'Portiere';
 
   // Calcolo del bonus totale per i giocatori non portieri
-  const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.malus;
+  const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.yellowCards * 0.5;
 
   if (!isEditing) {
     return (
@@ -130,7 +131,13 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                   </div>
                   <div className="flex justify-between">
                     <span className="text-xs">Malus:</span>
-                    <span className="font-bold text-red-400 text-sm">{player.malus}</span>
+                    <span className="font-bold text-red-400 text-sm">{player.yellowCards}</span>
+                  </div>
+                  <div className="flex justify-between border-t border-white/10 pt-2 mt-2">
+                    <span className="text-xs font-medium">Bonus Totali:</span>
+                    <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -164,14 +171,6 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                   </>
                 )}
               </div>
-              {!isGoalkeeper && (
-                <div className="flex items-center justify-center pt-2 border-t border-white/10 mt-2">
-                  <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                  <span className="font-bold text-gradient text-lg">
-                    {bonusTotal}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
           

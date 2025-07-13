@@ -61,7 +61,11 @@ const SortControls: React.FC<SortControlsProps> = ({
           </SelectTrigger>
           <SelectContent className="bg-white border shadow-lg z-50">
             {sortOptions.map(option => (
-              <SelectItem key={option.value} value={option.value}>
+              <SelectItem 
+                key={option.value} 
+                value={option.value}
+                className="text-gray-900 hover:bg-gray-100 focus:bg-gray-100 cursor-pointer"
+              >
                 {option.label}
               </SelectItem>
             ))}
