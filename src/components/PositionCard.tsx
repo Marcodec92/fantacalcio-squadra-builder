@@ -75,11 +75,12 @@ const PositionCard: React.FC<PositionCardProps> = ({
     }
   };
 
-  const calculateCreditBreakdown = (fmv: number) => {
+  const calculateCreditBreakdown = (costPercentage: number) => {
+    // Calcola quanti crediti effettivi costa il giocatore su diversi budget totali
     return {
-      credits300: ((fmv / 300) * 100).toFixed(1),
-      credits500: ((fmv / 500) * 100).toFixed(1),
-      credits650: ((fmv / 650) * 100).toFixed(1)
+      credits300: ((costPercentage / 100) * 300).toFixed(1),
+      credits500: ((costPercentage / 100) * 500).toFixed(1), 
+      credits650: ((costPercentage / 100) * 650).toFixed(1)
     };
   };
 
@@ -90,7 +91,13 @@ const PositionCard: React.FC<PositionCardProps> = ({
           ? 'bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 shadow-lg ring-1 ring-emerald-200/50' 
           : 'bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:via-indigo-50 hover:to-blue-100'
       }`}
-      onClick={() => onPositionClick(slot, role)}
+      onClick={(e) => {
+        // Non aprire il modal se si clicca su un elemento con la classe 'budget-click'
+        if ((e.target as HTMLElement).closest('.budget-click')) {
+          return;
+        }
+        onPositionClick(slot, role);
+      }}
     >
       <div className="h-full flex flex-col">
         <div className="text-sm font-bold text-gray-700 mb-3 px-3 py-1 bg-white/70 rounded-full shadow-sm text-center">
@@ -153,32 +160,32 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                         <div 
-                           className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors inline-block"
-                           onClick={(e) => {
-                             e.preventDefault();
-                             e.stopPropagation();
-                             console.log('BUDGET CLICK TRIGGERED!', player.id);
-                             toggleBudgetBreakdown(player.id);
-                           }}
-                         >
-                           {player.costPercentage}%
+                          <div 
+                            className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors inline-block budget-click"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              console.log('BUDGET CLICK TRIGGERED!', player.id);
+                              toggleBudgetBreakdown(player.id);
+                            }}
+                          >
+                            {player.costPercentage}%
                           </div>
                          <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
                         {showBudgetBreakdown === player.id && (
                           <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
-                            <div className="flex items-center gap-1 text-xs bg-green-50 px-2 py-1 rounded-lg border border-green-200 shadow-sm">
-                              <span className="text-green-600 font-medium">300:</span>
-                              <span className="text-green-700 font-bold">{calculateCreditBreakdown(player.fmv).credits300}%</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-xs bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 shadow-sm">
-                              <span className="text-amber-600 font-medium">500:</span>
-                              <span className="text-amber-700 font-bold">{calculateCreditBreakdown(player.fmv).credits500}%</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-xs bg-red-50 px-2 py-1 rounded-lg border border-red-200 shadow-sm">
-                              <span className="text-red-600 font-medium">650:</span>
-                              <span className="text-red-700 font-bold">{calculateCreditBreakdown(player.fmv).credits650}%</span>
-                            </div>
+                             <div className="flex items-center gap-1 text-xs bg-green-50 px-2 py-1 rounded-lg border border-green-200 shadow-sm">
+                               <span className="text-green-600 font-medium">300:</span>
+                               <span className="text-green-700 font-bold">{calculateCreditBreakdown(player.costPercentage).credits300}</span>
+                             </div>
+                             <div className="flex items-center gap-1 text-xs bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 shadow-sm">
+                               <span className="text-amber-600 font-medium">500:</span>
+                               <span className="text-amber-700 font-bold">{calculateCreditBreakdown(player.costPercentage).credits500}</span>
+                             </div>
+                             <div className="flex items-center gap-1 text-xs bg-red-50 px-2 py-1 rounded-lg border border-red-200 shadow-sm">
+                               <span className="text-red-600 font-medium">650:</span>
+                               <span className="text-green-700 font-bold">{calculateCreditBreakdown(player.costPercentage).credits650}</span>
+                             </div>
                           </div>
                         )}
                         <Button
