@@ -12,6 +12,7 @@ import SquadGrid from '@/components/SquadGrid';
 import PlayerSelectionModal from '@/components/PlayerSelectionModal';
 import BudgetWheel from '@/components/BudgetWheel';
 import RoleBudgetWheels from '@/components/RoleBudgetWheels';
+import BudgetInfographic from '@/components/BudgetInfographic';
 import { PlayerRole } from '@/types/Player';
 
 const SquadBuilder = () => {
@@ -111,6 +112,7 @@ const SquadBuilder = () => {
   }
 
   const { roleBudgets, roleCounts } = calculateRoleBudgets();
+  const totalBudget = calculateTotalBudget();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 p-4">
@@ -141,7 +143,7 @@ const SquadBuilder = () => {
             <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
               <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Budget Totale</h3>
               <BudgetWheel 
-                totalBudget={calculateTotalBudget()}
+                totalBudget={totalBudget}
                 selectedCount={squadSelections.length}
               />
               <div className="mt-4 text-center space-y-2">
@@ -150,7 +152,7 @@ const SquadBuilder = () => {
                     Giocatori: <span className="font-bold text-blue-600">{squadSelections.length}/25</span>
                   </p>
                   <p className="text-sm text-gray-700 font-medium">
-                    Budget: <span className="font-bold text-purple-600">{calculateTotalBudget().toFixed(1)}%</span>
+                    Budget: <span className="font-bold text-purple-600">{totalBudget.toFixed(1)}%</span>
                   </p>
                 </div>
               </div>
@@ -161,6 +163,9 @@ const SquadBuilder = () => {
               roleBudgets={roleBudgets}
               roleCounts={roleCounts}
             />
+
+            {/* Budget Infographic */}
+            <BudgetInfographic totalBudgetPercentage={totalBudget} />
           </div>
 
           {/* Squad Grid */}
