@@ -30,7 +30,7 @@ export const usePlayers = (filters?: {
     return players.filter(p => p.roleCategory === role);
   };
 
-  // Funzione per calcolare i bonus con la formula corretta
+  // Funzione per calcolare i bonus totali con la formula corretta
   const calculateBonusTotal = (player: Player) => {
     if (player.roleCategory === 'Portiere') return 0;
     return player.goals * 3 + player.assists - (player.malus * 0.5);

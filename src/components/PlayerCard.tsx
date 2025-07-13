@@ -59,7 +59,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   const isGoalkeeper = player.roleCategory === 'Portiere';
 
-  // Calcolo del bonus totale per i giocatori non portieri - CORRETTO
+  // Calcolo dei bonus totali per i giocatori non portieri - FORMULA CORRETTA
   const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.malus * 0.5;
 
   if (!isEditing) {
@@ -130,7 +130,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                   </div>
                   <div className="flex justify-between">
                     <span className="text-xs">Malus:</span>
-                    <span className="font-bold text-red-400 text-sm">{player.yellowCards}</span>
+                    <span className="font-bold text-red-400 text-sm">{player.malus}</span>
                   </div>
                   <div className="flex justify-between border-t border-white/10 pt-2 mt-2">
                     <span className="text-xs font-medium">Bonus Totali:</span>
