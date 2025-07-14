@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { PlayerRole } from '@/types/Player';
 import { RealTimePlayer, RealTimeSelection } from '@/pages/RealTimeBuilder';
 import { useCSVPlayers } from './useCSVPlayers';
@@ -19,7 +19,7 @@ export const useRealTimeBuilder = () => {
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
     if (csvPlayers.length === 0) {
-      // Se non ci sono CSV players, mostra un messaggio
+      // Se non ci sono CSV players, non aprire il modal
       return;
     }
     
@@ -102,9 +102,6 @@ export const useRealTimeBuilder = () => {
     setSelections([]);
   };
 
-  // Controlla se i CSV players sono disponibili
-  const hasCSVPlayers = csvPlayers.length > 0;
-
   return {
     maxBudget,
     setMaxBudget,
@@ -125,7 +122,6 @@ export const useRealTimeBuilder = () => {
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections,
-    hasCSVPlayers,
     csvPlayers
   };
 };

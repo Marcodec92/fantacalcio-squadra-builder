@@ -47,11 +47,11 @@ const RealTimeBuilder = () => {
     handleUpdateCredits,
     calculateTotalCredits,
     calculateRoleCredits,
-    clearSelections
+    clearSelections,
+    csvPlayers
   } = useRealTimeBuilder();
 
   const {
-    csvPlayers,
     loading,
     fileInputRef,
     handleFileUpload,
@@ -132,21 +132,31 @@ const RealTimeBuilder = () => {
           </div>
         </div>
 
-        {/* Nota per l'utente */}
-        <div className="glass-card mb-8 p-6 shadow-xl">
-          <div className="text-center">
-            <p className="text-muted-foreground">
-              💡 Per utilizzare il Real Time Builder, carica prima i giocatori CSV dalla pagina Database
-            </p>
-            <Button
-              onClick={() => navigate('/')}
-              className="mt-4 glass-button gradient-primary font-medium"
-              size="sm"
-            >
-              Vai al Database
-            </Button>
+        {/* Messaggio di stato CSV */}
+        {csvPlayers.length === 0 ? (
+          <div className="glass-card mb-8 p-6 shadow-xl">
+            <div className="text-center">
+              <p className="text-muted-foreground mb-4">
+                💡 Per utilizzare il Real Time Builder, carica prima i giocatori CSV dalla pagina Database
+              </p>
+              <Button
+                onClick={() => navigate('/')}
+                className="glass-button gradient-primary font-medium"
+                size="sm"
+              >
+                Vai al Database
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="glass-card mb-8 p-6 shadow-xl">
+            <div className="text-center">
+              <p className="text-green-600 font-medium">
+                ✅ {csvPlayers.length} giocatori CSV caricati e pronti per l'uso
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Budget and Squad Layout - Solo se ci sono giocatori CSV */}
         {csvPlayers.length > 0 && (

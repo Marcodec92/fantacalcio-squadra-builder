@@ -98,8 +98,15 @@ const PositionCard: React.FC<PositionCardProps> = ({
               </div>
               <div className="text-sm text-gray-600 font-medium mt-1 text-center">{player.team}</div>
               
-              {/* FMV e Budget orizzontali */}
-              <div className="flex justify-between items-center mt-3 pt-2 border-t border-gray-200/50">
+              {/* Fascia spostata sotto la squadra */}
+              <div className="flex justify-center mt-2">
+                <Badge variant="secondary" className="text-xs h-5 bg-gray-200/80 text-gray-700">
+                  {player.tier}
+                </Badge>
+              </div>
+              
+              {/* FMV e Budget distribuiti meglio orizzontalmente */}
+              <div className="flex justify-between items-center gap-3 mt-3 pt-2 border-t border-gray-200/50">
                 <div className="flex items-center gap-1">
                   <span className="text-xs font-medium text-gray-600">FMV:</span>
                   <span className="font-bold text-purple-600 text-sm">{player.fmv}M</span>
@@ -183,12 +190,6 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </>
                     )}
                   </div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-medium text-gray-600">Fascia:</span>
-                  <Badge variant="secondary" className="text-xs h-5 bg-gray-200/80 text-gray-700">
-                    {player.tier}
-                  </Badge>
                 </div>
               </div>
             </div>
@@ -307,7 +308,6 @@ const PositionCard: React.FC<PositionCardProps> = ({
               </div>
             </div>
             
-            {/* Tasto Rimuovi */}
             <div className="mt-2">
               <Button
                 variant="outline"
