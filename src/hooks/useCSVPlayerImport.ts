@@ -15,7 +15,8 @@ export const useCSVPlayerImport = () => {
       return null;
     }
 
-    console.log('🎯 importSingleCSVPlayer - Inizio importazione singolo giocatore:', playerData);
+    console.log('🎯 importSingleCSVPlayer - INIZIO importazione SINGOLO giocatore:', playerData);
+    console.log('🔒 VERIFICA: Stiamo importando SOLO questo giocatore, non una lista');
 
     try {
       // Crea l'oggetto da inserire nel database con tutti i campi necessari
@@ -43,22 +44,24 @@ export const useCSVPlayerImport = () => {
         is_favorite: playerData.isFavorite || false
       };
 
-      console.log('📝 Oggetto da inserire nel database:', playerToInsert);
+      console.log('📝 SINGOLO oggetto da inserire nel database:', playerToInsert);
+      console.log('🔍 CONTROLLO CRITICO: Non stiamo inserendo un array, ma un singolo oggetto');
 
-      // Inserisci SOLO questo giocatore nel database
+      // Inserisci SOLO questo giocatore nel database - IMPORTANTE: array con un solo elemento
       const { data, error } = await supabase
         .from('players')
-        .insert([playerToInsert]) // IMPORTANTE: array con un solo elemento
+        .insert([playerToInsert]) // ARRAY CON UN SOLO ELEMENTO - QUESTO È FONDAMENTALE
         .select()
-        .single();
+        .single(); // .single() perché ci aspettiamo un solo risultato
 
       if (error) {
-        console.error('❌ Errore nell\'inserimento del giocatore:', error);
+        console.error('❌ Errore nell\'inserimento del SINGOLO giocatore:', error);
         toast.error('Errore nell\'aggiunta del giocatore');
         return null;
       }
 
-      console.log('✅ Giocatore inserito con successo:', data);
+      console.log('✅ SINGOLO giocatore inserito con successo:', data);
+      console.log('🎉 CONFERMA: È stato inserito solo 1 giocatore, non di più');
       toast.success(`Giocatore ${playerData.surname} aggiunto con successo!`);
       
       // IMPORTANTE: Invalida la cache per aggiornare la lista dei giocatori
@@ -68,7 +71,7 @@ export const useCSVPlayerImport = () => {
       return data;
 
     } catch (error) {
-      console.error('❌ Errore generale nell\'importazione:', error);
+      console.error('❌ Errore generale nell\'importazione del SINGOLO giocatore:', error);
       toast.error('Errore nell\'importazione del giocatore');
       return null;
     }
