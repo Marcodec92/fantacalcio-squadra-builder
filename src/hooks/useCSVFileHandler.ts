@@ -1,10 +1,11 @@
+
 import React, { useRef } from 'react';
 import { toast } from 'sonner';
 import { useCSVPlayers } from './useCSVPlayers';
 
 export const useCSVFileHandler = (onUploadComplete: () => void) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { csvPlayers, loading, handleCSVUpload, resetDatabase } = useCSVPlayers();
+  const { csvPlayers, loading, handleCSVUpload, resetDatabase, removeCSVPlayer } = useCSVPlayers();
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -104,6 +105,7 @@ export const useCSVFileHandler = (onUploadComplete: () => void) => {
     handleDrop,
     handleDrag,
     triggerFileInput,
-    resetDatabase
+    resetDatabase,
+    removeCSVPlayer
   };
 };

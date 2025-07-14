@@ -37,7 +37,8 @@ const Index = () => {
     handleDrop,
     handleDrag,
     triggerFileInput,
-    resetDatabase
+    resetDatabase,
+    removeCSVPlayer
   } = useCSVFileHandler(() => {});
 
   // Conteggio giocatori per ruolo
@@ -121,6 +122,10 @@ const Index = () => {
       if (result) {
         console.log('✅✅✅ SUCCESSO! Giocatore importato tramite hook dedicato');
         console.log('🆔 ID risultato:', result.id);
+        
+        // Rimuovi il giocatore dalla lista CSV
+        await removeCSVPlayer(csvPlayer.id);
+        
         setShowCSVModal(false);
         setSelectedRoleForCSV(null);
       } else {
