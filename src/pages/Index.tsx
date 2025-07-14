@@ -14,6 +14,7 @@ import AuthModal from '@/components/AuthModal';
 import CSVPlayerSelectionModal from '@/components/CSVPlayerSelectionModal';
 import { Player, PlayerRole } from '@/types/Player';
 import { useCSVFileHandler } from '@/hooks/useCSVFileHandler';
+import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const navigate = useNavigate();
