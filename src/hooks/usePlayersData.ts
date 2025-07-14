@@ -2,7 +2,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Player } from '@/types/Player';
+import { Player, PlayerTier } from '@/types/Player';
+
+// Helper function to validate if a string is a valid PlayerTier
+const isValidPlayerTier = (tier: string | null): tier is PlayerTier => {
+  if (!tier) return false;
+  
+  const validTiers: PlayerTier[] = [
+    '1ª fascia', '2ª fascia', '3ª fascia', '4ª fascia', '5ª fascia', '6ª fascia', '7ª fascia', '8ª fascia'
+  ];
+  
+  return validTiers.includes(tier as PlayerTier);
+};
 
 export const usePlayersData = (includeCSVPlayers: boolean = false) => {
   const { user } = useAuth();
@@ -38,7 +49,7 @@ export const usePlayersData = (includeCSVPlayers: boolean = false) => {
         team: player.team,
         roleCategory: player.role_category,
         role: player.role,
-        tier: player.tier || '',
+        tier: isValidPlayerTier(player.tier) ? player.tier : '',
         costPercentage: player.cost_percentage || 0,
         fmv: player.fmv || 0,
         goals: player.goals || 0,
