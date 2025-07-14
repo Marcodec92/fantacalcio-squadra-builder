@@ -107,7 +107,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               placeholder="Cerca per nome..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10 glass-button bg-white/5 border-white/20 text-white placeholder:text-white/60"
+              className="pl-10 bg-transparent border-white/20 text-white placeholder:text-white/60"
             />
           </div>
           <Button
