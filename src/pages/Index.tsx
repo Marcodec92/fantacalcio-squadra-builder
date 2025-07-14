@@ -123,8 +123,9 @@ const Index = () => {
         console.log('✅✅✅ SUCCESSO! Giocatore importato tramite hook dedicato');
         console.log('🆔 ID risultato:', result.id);
         
-        // Rimuovi il giocatore dalla lista CSV
-        await removeCSVPlayer(csvPlayer.id);
+        // NON rimuovere più il giocatore dalla lista CSV
+        // Il giocatore rimane disponibile per il Real Time Builder
+        console.log('🔄 Giocatore rimane disponibile per Real Time Builder');
         
         setShowCSVModal(false);
         setSelectedRoleForCSV(null);
@@ -192,9 +193,9 @@ const Index = () => {
     );
   }
 
-  // Funzione per filtrare i CSV players escludendo quelli già aggiunti
-  const getAvailableCSVPlayers = (role: PlayerRole) => {
-    console.log('🔍 getAvailableCSVPlayers - Filtrando per ruolo:', role);
+  // Funzione per filtrare i CSV players escludendo SOLO i duplicati esatti per il DATABASE
+  const getAvailableCSVPlayersForDatabase = (role: PlayerRole) => {
+    console.log('🔍 getAvailableCSVPlayersForDatabase - Filtrando per ruolo:', role);
     console.log('🔍 csvPlayers disponibili:', csvPlayers.length);
     console.log('🔍 allPlayers nel database:', allPlayers.length);
     
@@ -202,7 +203,7 @@ const Index = () => {
       // Filtra per ruolo
       if (csvPlayer.role !== role) return false;
       
-      // Escludi i giocatori già presenti nel database
+      // Escludi SOLO i giocatori già presenti nel database (per evitare duplicati)
       const alreadyExists = allPlayers.some(dbPlayer => 
         dbPlayer.name.toLowerCase() === csvPlayer.name.toLowerCase() &&
         dbPlayer.surname.toLowerCase() === csvPlayer.surname.toLowerCase() &&
@@ -279,7 +280,7 @@ const Index = () => {
                       <h3 className="text-xl font-bold text-gradient mb-2">Carica Giocatori</h3>
                       <p className="text-muted-foreground text-sm">
                         {csvPlayers.length > 0 
-                          ? `${csvPlayers.length} giocatori caricati dal CSV`
+                          ? `${csvPlayers.length} giocatori caricati dal CSV - Disponibili anche per Real Time Builder`
                           : 'Carica un file CSV per importare i giocatori'
                         }
                       </p>
@@ -396,7 +397,7 @@ const Index = () => {
           setShowCSVModal(false);
           setSelectedRoleForCSV(null);
         }}
-        players={selectedRoleForCSV ? getAvailableCSVPlayers(selectedRoleForCSV) : []}
+        players={selectedRoleForCSV ? getAvailableCSVPlayersForDatabase(selectedRoleForCSV) : []}
         selectedRole={selectedRoleForCSV}
         onPlayerSelect={handleCSVPlayerSelect}
       />

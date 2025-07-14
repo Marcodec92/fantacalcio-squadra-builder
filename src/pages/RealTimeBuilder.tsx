@@ -75,13 +75,20 @@ const RealTimeBuilder = () => {
     await handleDrop(e);
   };
 
+  // Real Time Builder ha accesso a TUTTI i giocatori CSV, senza filtri
   const getFilteredPlayers = (role: PlayerRole) => {
-    return csvPlayers
+    console.log('🔍 Real Time Builder - getFilteredPlayers per ruolo:', role);
+    console.log('🔍 Totale CSV players disponibili:', csvPlayers.length);
+    
+    const filtered = csvPlayers
       .filter(p => p.role === role)
       .filter(p => 
         searchTerm === '' || 
         `${p.name} ${p.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
       );
+    
+    console.log('🔍 Giocatori filtrati per', role, ':', filtered.length);
+    return filtered;
   };
 
   if (!user) {
@@ -169,7 +176,7 @@ const RealTimeBuilder = () => {
                       ✅ {csvPlayers.length} giocatori CSV disponibili
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Dati persistenti - disponibili anche dopo la navigazione
+                      Lista completa e indipendente - Non influenzata dalle selezioni del database
                     </p>
                   </div>
                 </>
