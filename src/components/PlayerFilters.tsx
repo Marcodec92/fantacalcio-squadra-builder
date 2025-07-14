@@ -3,7 +3,6 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Search, X, Star, Filter } from "lucide-react";
@@ -98,7 +97,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
   const activeFiltersCount = selectedTeams.length + selectedTiers.length + selectedPlusCategories.length + (showFavoritesOnly ? 1 : 0);
 
   return (
-    <Card className="p-4 mb-4">
+    <div className="mb-4">
       <div className="space-y-4">
         {/* Search and Favorites */}
         <div className="flex gap-2">
@@ -108,7 +107,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               placeholder="Cerca per nome..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10"
+              className="pl-10 glass-button bg-white/5 border-white/20 text-white placeholder:text-white/60"
             />
           </div>
           <Button
@@ -135,7 +134,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Teams Filter */}
                 <div>
-                  <Label className="text-sm font-medium mb-2 block">Squadre</Label>
+                  <Label className="text-sm font-medium mb-2 block text-white">Squadre</Label>
                   <div className="max-h-32 overflow-y-auto space-y-1">
                     {teams.map((team) => (
                       <div key={team} className="flex items-center space-x-2">
@@ -144,7 +143,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
                           checked={selectedTeams.includes(team)}
                           onCheckedChange={() => toggleTeam(team)}
                         />
-                        <Label htmlFor={`team-${team}`} className="text-sm cursor-pointer">
+                        <Label htmlFor={`team-${team}`} className="text-sm cursor-pointer text-white">
                           {team}
                         </Label>
                       </div>
@@ -154,7 +153,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
 
                 {/* Tiers Filter */}
                 <div>
-                  <Label className="text-sm font-medium mb-2 block">Fasce</Label>
+                  <Label className="text-sm font-medium mb-2 block text-white">Fasce</Label>
                   <div className="space-y-1">
                     {getTiersForRole(roleCategory).map((tier) => (
                       <div key={tier} className="flex items-center space-x-2">
@@ -163,7 +162,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
                           checked={selectedTiers.includes(tier)}
                           onCheckedChange={() => toggleTier(tier)}
                         />
-                        <Label htmlFor={`tier-${tier}`} className="text-sm cursor-pointer">
+                        <Label htmlFor={`tier-${tier}`} className="text-sm cursor-pointer text-white">
                           {tier}
                         </Label>
                       </div>
@@ -173,7 +172,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
 
                 {/* Plus Categories Filter */}
                 <div>
-                  <Label className="text-sm font-medium mb-2 block">Categorie Plus</Label>
+                  <Label className="text-sm font-medium mb-2 block text-white">Categorie Plus</Label>
                   <div className="space-y-1">
                     {getPlusCategoriesForRole(roleCategory).map((category) => (
                       <div key={category} className="flex items-center space-x-2">
@@ -182,7 +181,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
                           checked={selectedPlusCategories.includes(category)}
                           onCheckedChange={() => togglePlusCategory(category)}
                         />
-                        <Label htmlFor={`plus-${category}`} className="text-sm cursor-pointer">
+                        <Label htmlFor={`plus-${category}`} className="text-sm cursor-pointer text-white">
                           {category}
                         </Label>
                       </div>
@@ -192,7 +191,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               </div>
 
               {activeFiltersCount > 0 && (
-                <div className="mt-4 pt-4 border-t">
+                <div className="mt-4 pt-4 border-t border-white/10">
                   <Button variant="ghost" onClick={clearAllFilters} size="sm">
                     <X className="w-4 h-4 mr-1" />
                     Rimuovi tutti i filtri
@@ -203,7 +202,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
           </Collapsible>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
