@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -124,6 +123,28 @@ export const useSquadSelections = () => {
     },
   });
 
+  // Clear all selections mutation
+  const clearAllSelectionsMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error('User not authenticated');
+      
+      const { error } = await supabase
+        .from('squad_selections')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['squadSelections', user?.id] });
+      toast.success('Squadra resettata! Tutti i giocatori sono stati rimossi.');
+    },
+    onError: (error) => {
+      console.error('Error clearing all squad selections:', error);
+      toast.error('Errore nel reset della squadra');
+    },
+  });
+
   const addSelection = (selection: NewSquadSelection) => {
     addSelectionMutation.mutate(selection);
   };
@@ -136,6 +157,10 @@ export const useSquadSelections = () => {
     deleteSelectionMutation.mutate(selectionId);
   };
 
+  const clearAllSelections = () => {
+    clearAllSelectionsMutation.mutate();
+  };
+
   return {
     squadSelections,
     isLoading,
@@ -143,5 +168,6 @@ export const useSquadSelections = () => {
     addSelection,
     updateSelection,
     deleteSelection,
+    clearAllSelections,
   };
 };

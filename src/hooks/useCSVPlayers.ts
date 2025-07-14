@@ -360,9 +360,9 @@ export const useCSVPlayers = () => {
 
     try {
       setLoading(true);
-      console.log('🔄 Inizio reset completo del database');
+      console.log('🔄 Inizio reset database CSV');
 
-      // 1. Cancella tutti i CSV players
+      // 1. Cancella tutti i giocatori CSV dal database
       const { error: csvError } = await supabase
         .from('players')
         .delete()
@@ -381,19 +381,19 @@ export const useCSVPlayers = () => {
         .eq('user_id', user.id);
 
       if (selectionsError) {
-        console.error('Errore nella cancellazione selezioni:', selectionsError);
+        console.error('Errore nella cancellazione selezioni Real Time:', selectionsError);
         throw selectionsError;
       }
 
-      // 3. Aggiorna lo stato locale
+      // 3. Pulisce lo stato locale dei CSV players
       setCsvPlayers([]);
       
       console.log('✅ Reset database completato');
-      toast.success('Database resettato con successo! Tutti i CSV e le selezioni sono stati cancellati.');
+      toast.success('Database CSV resettato! Tutti i giocatori CSV e le selezioni Real Time sono stati cancellati.');
       
     } catch (error) {
       console.error('Errore nel reset del database:', error);
-      toast.error('Errore nel reset del database');
+      toast.error('Errore nel reset del database CSV');
     } finally {
       setLoading(false);
     }

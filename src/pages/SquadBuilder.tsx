@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Zap, Target, Users, Trophy } from "lucide-react";
+import { ArrowLeft, Zap, Target, Users, Trophy, Trash2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
@@ -19,7 +18,7 @@ const SquadBuilder = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { players, isLoading: playersLoading, calculateBonusTotal } = usePlayers();
-  const { squadSelections, addSelection, updateSelection, deleteSelection, isLoading: squadLoading } = useSquadSelections();
+  const { squadSelections, addSelection, updateSelection, deleteSelection, clearAllSelections, isLoading: squadLoading } = useSquadSelections();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
@@ -51,6 +50,10 @@ const SquadBuilder = () => {
     
     setIsModalOpen(false);
     setSelectedPosition(null);
+  };
+
+  const handleResetTeam = () => {
+    clearAllSelections();
   };
 
   const calculateTotalBudget = () => {
@@ -148,7 +151,19 @@ const SquadBuilder = () => {
               </h1>
               <p className="text-muted-foreground font-medium text-lg">Costruisci la tua formazione ideale</p>
             </div>
-            <div className="w-40"></div> {/* Spacer for centering */}
+            <div className="flex items-center space-x-2">
+              {squadSelections.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={handleResetTeam}
+                  className="glass-button border-red-300/20 hover:border-red-300/30 text-red-400 hover:text-red-300"
+                  disabled={squadLoading}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Reset Team
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
