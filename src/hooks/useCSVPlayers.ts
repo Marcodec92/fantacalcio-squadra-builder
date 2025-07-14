@@ -355,6 +355,50 @@ export const useCSVPlayers = () => {
     }
   };
 
+  const resetDatabase = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      console.log('🔄 Inizio reset completo del database');
+
+      // 1. Cancella tutti i CSV players
+      const { error: csvError } = await supabase
+        .from('players')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('tier', 'CSV');
+
+      if (csvError) {
+        console.error('Errore nella cancellazione CSV players:', csvError);
+        throw csvError;
+      }
+
+      // 2. Cancella tutte le selezioni del Real Time Builder
+      const { error: selectionsError } = await supabase
+        .from('realtime_selections')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (selectionsError) {
+        console.error('Errore nella cancellazione selezioni:', selectionsError);
+        throw selectionsError;
+      }
+
+      // 3. Aggiorna lo stato locale
+      setCsvPlayers([]);
+      
+      console.log('✅ Reset database completato');
+      toast.success('Database resettato con successo! Tutti i CSV e le selezioni sono stati cancellati.');
+      
+    } catch (error) {
+      console.error('Errore nel reset del database:', error);
+      toast.error('Errore nel reset del database');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     csvPlayers,
     loading,
@@ -362,6 +406,7 @@ export const useCSVPlayers = () => {
     parseCSVData,
     saveCSVPlayersToDatabase,
     clearCSVPlayers,
-    loadCSVPlayersFromDatabase
+    loadCSVPlayersFromDatabase,
+    resetDatabase
   };
 };

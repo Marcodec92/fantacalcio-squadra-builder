@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer, Upload } from "lucide-react";
+import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer, Upload, RotateCcw } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
@@ -33,7 +33,8 @@ const Index = () => {
     handleFileUpload,
     handleDrop,
     handleDrag,
-    triggerFileInput
+    triggerFileInput,
+    resetDatabase
   } = useCSVFileHandler(() => {});
 
   // Conteggio giocatori per ruolo
@@ -205,14 +206,27 @@ const Index = () => {
                           <span className="text-sm">Caricamento...</span>
                         </div>
                       ) : (
-                        <Button
-                          onClick={triggerFileInput}
-                          className="glass-button gradient-secondary font-medium"
-                          size="sm"
-                        >
-                          <Upload className="w-4 h-4 mr-2" />
-                          {csvPlayers.length > 0 ? 'Aggiorna CSV' : 'Carica CSV'}
-                        </Button>
+                        <>
+                          <Button
+                            onClick={triggerFileInput}
+                            className="glass-button gradient-secondary font-medium"
+                            size="sm"
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            {csvPlayers.length > 0 ? 'Aggiorna CSV' : 'Carica CSV'}
+                          </Button>
+                          {csvPlayers.length > 0 && (
+                            <Button
+                              onClick={resetDatabase}
+                              className="glass-button bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-2xl font-medium"
+                              size="sm"
+                              disabled={csvLoading}
+                            >
+                              <RotateCcw className="w-4 h-4 mr-2" />
+                              Reset Database
+                            </Button>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>
