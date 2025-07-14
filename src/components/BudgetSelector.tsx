@@ -1,8 +1,7 @@
 
 import React from 'react';
 import { Card } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface BudgetSelectorProps {
   selectedBudget: number;
@@ -25,23 +24,21 @@ const BudgetSelector: React.FC<BudgetSelectorProps> = ({
         💰 Seleziona Budget Massimo
       </h3>
       
-      <RadioGroup 
+      <Select 
         value={selectedBudget.toString()} 
         onValueChange={(value) => onBudgetChange(parseInt(value))}
-        className="space-y-4"
       >
-        {budgetOptions.map(({ value, label, emoji, description }) => (
-          <div key={value} className="flex items-center space-x-3">
-            <RadioGroupItem 
-              value={value.toString()} 
-              id={`budget-${value}`}
-              className="text-primary"
-            />
-            <Label 
-              htmlFor={`budget-${value}`}
-              className="flex-1 cursor-pointer"
+        <SelectTrigger className="w-full h-12 bg-white/80 border-2 border-white/30 rounded-2xl text-gray-800 font-medium hover:bg-white/90 transition-colors">
+          <SelectValue placeholder="Seleziona budget" />
+        </SelectTrigger>
+        <SelectContent className="bg-white border-2 border-white/30 rounded-2xl shadow-xl backdrop-blur-sm z-50">
+          {budgetOptions.map(({ value, label, emoji, description }) => (
+            <SelectItem 
+              key={value} 
+              value={value.toString()}
+              className="cursor-pointer hover:bg-gray-100 focus:bg-gray-100 rounded-xl my-1 mx-1 text-gray-800 font-medium"
             >
-              <div className="flex items-center justify-between p-3 rounded-2xl hover:bg-white/20 transition-colors">
+              <div className="flex items-center justify-between w-full">
                 <div className="flex items-center space-x-3">
                   <span className="text-2xl">{emoji}</span>
                   <div>
@@ -49,16 +46,14 @@ const BudgetSelector: React.FC<BudgetSelectorProps> = ({
                     <p className="text-sm text-gray-600">{description}</p>
                   </div>
                 </div>
-                <div className={`text-lg font-bold ${
-                  selectedBudget === value ? 'text-primary' : 'text-gray-500'
-                }`}>
+                <div className="text-lg font-bold text-primary ml-4">
                   {value}
                 </div>
               </div>
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </Card>
   );
 };
