@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -72,7 +73,11 @@ const Index = () => {
 
       if (alreadyExists) {
         console.log('⚠️ Giocatore già presente nel database');
-        toast.error('Questo giocatore è già presente nella tua lista');
+        toast({
+          title: "Errore",
+          description: "Questo giocatore è già presente nella tua lista",
+          variant: "destructive",
+        });
         setShowCSVModal(false);
         setSelectedRoleForCSV(null);
         return;
@@ -124,7 +129,11 @@ const Index = () => {
       
     } catch (error) {
       console.error('❌ ERRORE nell\'importazione del singolo giocatore:', error);
-      toast.error('Errore nell\'importazione del giocatore');
+      toast({
+        title: "Errore",
+        description: "Errore nell'importazione del giocatore",
+        variant: "destructive",
+      });
     }
   };
 
