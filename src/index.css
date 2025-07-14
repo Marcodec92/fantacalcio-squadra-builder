@@ -99,21 +99,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-      radial-gradient(600px circle at 20% 30%, hsla(260, 85%, 65%, 0.15) 0%, transparent 50%),
-      radial-gradient(800px circle at 80% 70%, hsla(320, 85%, 65%, 0.15) 0%, transparent 50%),
-      radial-gradient(400px circle at 40% 80%, hsla(200, 85%, 65%, 0.1) 0%, transparent 50%);
-    z-index: -1;
-    animation: float-bg 30s ease-in-out infinite;
-  }
 }
 
 /* Glassmorphism Components */
@@ -126,7 +111,6 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Hover più sottile per i card */
   .glass-card:hover {
     @apply border-white/15;
     box-shadow: 
@@ -179,60 +163,12 @@
     box-shadow: var(--shadow-glow-accent);
   }
 
-  .floating-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.6;
-    animation: float-orb 20s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  .floating-orb:nth-child(1) {
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, hsl(260 85% 65%) 0%, transparent 70%);
-    top: 10%;
-    left: 20%;
-    animation-delay: 0s;
-  }
-
-  .floating-orb:nth-child(2) {
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle, hsl(320 85% 65%) 0%, transparent 70%);
-    top: 60%;
-    right: 15%;
-    animation-delay: -7s;
-  }
-
-  .floating-orb:nth-child(3) {
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, hsl(200 85% 65%) 0%, transparent 70%);
-    bottom: 20%;
-    left: 60%;
-    animation-delay: -14s;
-  }
-
-  /* Animazione del testo gradient solo al hover del testo stesso */
+  /* Testo gradient senza hover effect */
   .text-gradient {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .text-gradient:hover {
-    background: linear-gradient(135deg, hsl(280 85% 75%) 0%, hsl(300 85% 80%) 50%, hsl(320 85% 85%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transform: translateX(2px);
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }
 
   .text-gradient-secondary {
@@ -240,15 +176,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .text-gradient-secondary:hover {
-    background: linear-gradient(135deg, hsl(220 85% 75%) 0%, hsl(240 85% 80%) 50%, hsl(260 85% 85%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transform: translateX(1px);
   }
 
   .text-gradient-accent {
@@ -256,15 +183,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .text-gradient-accent:hover {
-    background: linear-gradient(135deg, hsl(340 85% 75%) 0%, hsl(360 85% 80%) 50%, hsl(20 85% 85%) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    transform: translateX(1px);
   }
 
   .pulse-glow {
@@ -339,40 +257,6 @@
 }
 
 /* Animations */
-@keyframes float-bg {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg);
-    opacity: 0.6;
-  }
-  33% { 
-    transform: translateY(-15px) rotate(120deg);
-    opacity: 0.7;
-  }
-  66% { 
-    transform: translateY(-8px) rotate(240deg);
-    opacity: 0.8;
-  }
-}
-
-@keyframes float-orb {
-  0%, 100% { 
-    transform: translateY(0px) translateX(0px) scale(1);
-    opacity: 0.6;
-  }
-  25% { 
-    transform: translateY(-15px) translateX(8px) scale(1.02);
-    opacity: 0.7;
-  }
-  50% { 
-    transform: translateY(-8px) translateX(-5px) scale(1.03);
-    opacity: 0.8;
-  }
-  75% { 
-    transform: translateY(-12px) translateX(3px) scale(1.01);
-    opacity: 0.75;
-  }
-}
-
 @keyframes pulse-glow {
   0%, 100% { 
     box-shadow: 
