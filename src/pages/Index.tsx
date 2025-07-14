@@ -56,7 +56,9 @@ const Index = () => {
   };
 
   const handleCSVPlayerSelect = async (csvPlayer: any) => {
-    console.log('🎯🎯🎯 INIZIO handleCSVPlayerSelect - Giocatore selezionato:', csvPlayer);
+    console.log('🎯🎯🎯 HANDLE CSV PLAYER SELECT - INIZIO');
+    console.log('📋 Giocatore CSV selezionato:', csvPlayer);
+    console.log('🔒 VERIFICA CRITICA: Selezionato SOLO questo giocatore');
     
     try {
       // Verifica che il giocatore non sia già presente
@@ -69,14 +71,15 @@ const Index = () => {
 
       if (alreadyExists) {
         console.log('⚠️ Giocatore già presente nel database');
+        toast.error('Questo giocatore è già presente nella tua lista');
         setShowCSVModal(false);
         setSelectedRoleForCSV(null);
         return;
       }
 
-      console.log('🔧 Creazione oggetto singolo giocatore per importazione...');
+      console.log('🔧 Creazione oggetto SINGOLO giocatore per importazione...');
       
-      // Crea SOLO il giocatore selezionato - ATTENZIONE: questo deve essere UN SINGOLO GIOCATORE
+      // Crea SOLO il giocatore selezionato - SINGOLO, NON ARRAY
       const singlePlayerToAdd: Partial<Player> = {
         name: csvPlayer.name || '',
         surname: csvPlayer.surname || '',
@@ -100,13 +103,18 @@ const Index = () => {
         isFavorite: false
       };
       
-      console.log('🚀 CHIAMATA HOOK importSingleCSVPlayer con SINGOLO giocatore:', singlePlayerToAdd);
+      console.log('🚀 CHIAMATA importSingleCSVPlayer con SINGOLO giocatore:');
+      console.log('👤 Nome:', singlePlayerToAdd.name);
+      console.log('👤 Cognome:', singlePlayerToAdd.surname);
+      console.log('⚽ Ruolo:', singlePlayerToAdd.roleCategory);
+      console.log('🏟️ Team:', singlePlayerToAdd.team);
       
-      // USA ESCLUSIVAMENTE IL HOOK importSingleCSVPlayer - NON DEVE CHIAMARE ALTRO
+      // USA ESCLUSIVAMENTE IL HOOK importSingleCSVPlayer
       const result = await importSingleCSVPlayer(singlePlayerToAdd);
       
       if (result) {
-        console.log('✅ Giocatore importato con successo tramite hook dedicato');
+        console.log('✅✅✅ SUCCESSO! Giocatore importato tramite hook dedicato');
+        console.log('🆔 ID risultato:', result.id);
         setShowCSVModal(false);
         setSelectedRoleForCSV(null);
       } else {
@@ -114,7 +122,8 @@ const Index = () => {
       }
       
     } catch (error) {
-      console.error('❌ Errore nell\'importazione del singolo giocatore:', error);
+      console.error('❌ ERRORE nell\'importazione del singolo giocatore:', error);
+      toast.error('Errore nell\'importazione del giocatore');
     }
   };
 

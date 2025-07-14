@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,48 +19,8 @@ export const useCSVPlayers = () => {
   const [csvPlayers, setCsvPlayers] = useState<CSVPlayer[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Carica i CSV players dal database all'avvio
-  useEffect(() => {
-    if (user) {
-      loadCSVPlayersFromDatabase();
-    }
-  }, [user]);
-
-  const loadCSVPlayersFromDatabase = async () => {
-    if (!user) return;
-
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('players')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('tier', 'CSV'); // Usiamo il tier per identificare i players CSV
-
-      if (error) {
-        console.error('Errore nel caricamento CSV players:', error);
-        return;
-      }
-
-      if (data && data.length > 0) {
-        const players: CSVPlayer[] = data.map(player => ({
-          id: player.id,
-          name: player.name,
-          surname: player.surname,
-          team: player.team || '',
-          role: player.role_category,
-          credits: 0
-        }));
-        
-        setCsvPlayers(players);
-        console.log('📥 CSV players caricati dal database:', players.length);
-      }
-    } catch (error) {
-      console.error('Errore nel caricamento CSV players:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // NON carichiamo più i CSV players dal database all'avvio
+  // I giocatori CSV ora esistono solo in memoria fino a quando non vengono selezionati
 
   // Helper function to map role category to specific role
   const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
@@ -208,96 +169,7 @@ export const useCSVPlayers = () => {
     return players;
   };
 
-  const saveCSVPlayersToDatabase = async (players: CSVPlayer[]) => {
-    if (!user) {
-      toast.error('Devi essere autenticato per salvare i dati');
-      return;
-    }
-
-    if (players.length === 0) {
-      toast.error('Nessun giocatore da salvare - controlla il formato del CSV');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      console.log('💾 Inizio salvataggio nel database di', players.length, 'giocatori CSV');
-      
-      // Prima eliminiamo i vecchi CSV players
-      const { error: deleteError } = await supabase
-        .from('players')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('tier', 'CSV');
-
-      if (deleteError) {
-        console.error('Errore nell\'eliminazione dei vecchi CSV players:', deleteError);
-      }
-
-      // Ora salviamo i nuovi CSV players con la corretta mappatura dei tipi
-      const playersToInsert = players.map(player => {
-        const validatedTeam = validateTeamName(player.team);
-        
-        return {
-          user_id: user.id,
-          name: player.name,
-          surname: player.surname,
-          team: validatedTeam, // Questo ora è del tipo corretto o null
-          role_category: player.role,
-          role: getDefaultSpecificRole(player.role),
-          tier: 'CSV', // Marchiamo come CSV per distinguerli
-          cost_percentage: 0,
-          fmv: 0,
-          goals: 0,
-          assists: 0,
-          malus: 0,
-          goals_conceded: 0,
-          yellow_cards: 0,
-          penalties_saved: 0,
-          x_g: 0,
-          x_a: 0,
-          x_p: 0,
-          ownership: 0,
-          plus_categories: [],
-          is_favorite: false
-        };
-      });
-
-      const { data, error } = await supabase
-        .from('players')
-        .insert(playersToInsert)
-        .select();
-
-      if (error) {
-        console.error('Errore nel salvataggio CSV players:', error);
-        toast.error('Errore nel salvataggio dei giocatori CSV');
-        return;
-      }
-
-      console.log('✅ CSV players salvati nel database:', data?.length);
-      
-      // Aggiorna lo stato locale con i players salvati
-      if (data) {
-        const savedPlayers: CSVPlayer[] = data.map(player => ({
-          id: player.id,
-          name: player.name,
-          surname: player.surname,
-          team: player.team || '',
-          role: player.role_category,
-          credits: 0
-        }));
-        setCsvPlayers(savedPlayers);
-      }
-      
-      toast.success(`${players.length} giocatori CSV salvati nel database e pronti per il Real Time Builder`);
-      
-    } catch (error) {
-      console.error('Errore nel salvataggio CSV:', error);
-      toast.error('Errore nel salvataggio CSV');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // RIMOSSA la funzione saveCSVPlayersToDatabase - ora i giocatori vengono salvati solo quando selezionati
 
   const handleCSVUpload = async (file: File) => {
     console.log('📁 Caricamento file CSV:', file.name, 'Size:', file.size, 'bytes');
@@ -311,12 +183,14 @@ export const useCSVPlayers = () => {
         const players = parseCSVData(text);
         
         if (players.length > 0) {
-          await saveCSVPlayersToDatabase(players);
+          // IMPORTANTE: NON salviamo più nel database, teniamo solo in memoria
+          setCsvPlayers(players);
+          console.log('✅ CSV parsato e tenuto in memoria:', players.length, 'giocatori');
+          toast.success(`${players.length} giocatori CSV caricati e pronti per la selezione`);
         } else {
           toast.error('Nessun giocatore trovato nel file CSV. Controlla il formato del file.');
         }
         
-        console.log('CSV caricato con successo:', players);
       } catch (error) {
         toast.error('Errore nel parsing del file CSV');
         console.error('Errore nel parsing del CSV:', error);
@@ -331,28 +205,11 @@ export const useCSVPlayers = () => {
     reader.readAsText(file);
   };
 
-  const clearCSVPlayers = async () => {
-    if (!user) return;
-
-    try {
-      const { error } = await supabase
-        .from('players')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('tier', 'CSV');
-
-      if (error) {
-        console.error('Errore nella cancellazione CSV players:', error);
-        return;
-      }
-
-      setCsvPlayers([]);
-      console.log('🗑️ CSV players cancellati dal database');
-      toast.success('Giocatori CSV cancellati');
-    } catch (error) {
-      console.error('Errore nella cancellazione CSV players:', error);
-      toast.error('Errore nella cancellazione dei giocatori CSV');
-    }
+  const clearCSVPlayers = () => {
+    // Ora cancelliamo solo dalla memoria, non dal database
+    setCsvPlayers([]);
+    console.log('🗑️ CSV players cancellati dalla memoria');
+    toast.success('Giocatori CSV cancellati dalla memoria');
   };
 
   const resetDatabase = async () => {
@@ -362,7 +219,7 @@ export const useCSVPlayers = () => {
       setLoading(true);
       console.log('🔄 Inizio reset database CSV');
 
-      // 1. Cancella tutti i giocatori CSV dal database
+      // 1. Cancella tutti i giocatori CSV dal database (quelli con tier = 'CSV')
       const { error: csvError } = await supabase
         .from('players')
         .delete()
@@ -389,11 +246,11 @@ export const useCSVPlayers = () => {
       setCsvPlayers([]);
       
       console.log('✅ Reset database completato');
-      toast.success('Database CSV resettato! Tutti i giocatori CSV e le selezioni Real Time sono stati cancellati.');
+      toast.success('Database resettato! Tutti i giocatori CSV e le selezioni Real Time sono stati cancellati.');
       
     } catch (error) {
       console.error('Errore nel reset del database:', error);
-      toast.error('Errore nel reset del database CSV');
+      toast.error('Errore nel reset del database');
     } finally {
       setLoading(false);
     }
@@ -404,9 +261,7 @@ export const useCSVPlayers = () => {
     loading,
     handleCSVUpload,
     parseCSVData,
-    saveCSVPlayersToDatabase,
     clearCSVPlayers,
-    loadCSVPlayersFromDatabase,
     resetDatabase
   };
 };

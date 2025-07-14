@@ -15,8 +15,9 @@ export const useCSVPlayerImport = () => {
       return null;
     }
 
-    console.log('🎯 importSingleCSVPlayer - INIZIO importazione SINGOLO giocatore:', playerData);
-    console.log('🔒 VERIFICA: Stiamo importando SOLO questo giocatore, non una lista');
+    console.log('🎯🎯🎯 IMPORTAZIONE SINGOLO GIOCATORE - INIZIO');
+    console.log('📋 Dati giocatore da importare:', playerData);
+    console.log('🔒 VERIFICA CRITICA: Importo SOLO questo giocatore, non una lista');
 
     try {
       // Crea l'oggetto da inserire nel database con tutti i campi necessari
@@ -44,24 +45,41 @@ export const useCSVPlayerImport = () => {
         is_favorite: playerData.isFavorite || false
       };
 
-      console.log('📝 SINGOLO oggetto da inserire nel database:', playerToInsert);
-      console.log('🔍 CONTROLLO CRITICO: Non stiamo inserendo un array, ma un singolo oggetto');
+      console.log('📝 OGGETTO SINGOLO da inserire nel database:');
+      console.log('👤 Nome:', playerToInsert.name);
+      console.log('👤 Cognome:', playerToInsert.surname);
+      console.log('⚽ Ruolo:', playerToInsert.role_category);
+      console.log('🏟️ Team:', playerToInsert.team);
+      console.log('🔢 User ID:', playerToInsert.user_id);
 
-      // Inserisci SOLO questo giocatore nel database - IMPORTANTE: array con un solo elemento
+      // INSERIMENTO SINGOLO - ATTENZIONE: UN SOLO GIOCATORE
+      console.log('💾 ESEGUENDO INSERT di UN SOLO GIOCATORE...');
       const { data, error } = await supabase
         .from('players')
-        .insert([playerToInsert]) // ARRAY CON UN SOLO ELEMENTO - QUESTO È FONDAMENTALE
+        .insert([playerToInsert]) // Array con UN SOLO elemento
         .select()
-        .single(); // .single() perché ci aspettiamo un solo risultato
+        .single(); // Ci aspettiamo UN SOLO risultato
 
       if (error) {
-        console.error('❌ Errore nell\'inserimento del SINGOLO giocatore:', error);
+        console.error('❌ ERRORE nell\'inserimento del SINGOLO giocatore:', error);
+        console.error('❌ Dettagli errore:', error.message);
         toast.error('Errore nell\'aggiunta del giocatore');
         return null;
       }
 
-      console.log('✅ SINGOLO giocatore inserito con successo:', data);
-      console.log('🎉 CONFERMA: È stato inserito solo 1 giocatore, non di più');
+      if (!data) {
+        console.error('❌ ERRORE: Nessun dato restituito dall\'inserimento');
+        toast.error('Errore nell\'aggiunta del giocatore - nessun dato restituito');
+        return null;
+      }
+
+      console.log('✅✅✅ SUCCESSO! Giocatore inserito:');
+      console.log('🆔 ID inserito:', data.id);
+      console.log('👤 Nome inserito:', data.name);
+      console.log('👤 Cognome inserito:', data.surname);
+      console.log('⚽ Ruolo inserito:', data.role_category);
+      console.log('🔢 Conteggio inserimenti: 1 (UNO SOLO)');
+      
       toast.success(`Giocatore ${playerData.surname} aggiunto con successo!`);
       
       // IMPORTANTE: Invalida la cache per aggiornare la lista dei giocatori
@@ -71,7 +89,7 @@ export const useCSVPlayerImport = () => {
       return data;
 
     } catch (error) {
-      console.error('❌ Errore generale nell\'importazione del SINGOLO giocatore:', error);
+      console.error('❌ ERRORE GENERALE nell\'importazione del SINGOLO giocatore:', error);
       toast.error('Errore nell\'importazione del giocatore');
       return null;
     }
