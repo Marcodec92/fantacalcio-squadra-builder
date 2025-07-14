@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
 import { usePlayersData } from '@/hooks/usePlayersData';
+import { useCSVPlayerImport } from '@/hooks/useCSVPlayerImport';
 import PlayersList from '@/components/PlayersList';
 import AuthModal from '@/components/AuthModal';
 import CSVPlayerSelectionModal from '@/components/CSVPlayerSelectionModal';
@@ -18,6 +20,7 @@ const Index = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { addPlayer, updatePlayer, deletePlayer } = usePlayers();
+  const { importSingleCSVPlayer } = useCSVPlayerImport();
   const { data: allPlayers = [] } = usePlayersData();
   
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
@@ -70,8 +73,8 @@ const Index = () => {
         return;
       }
 
-      // Crea SOLO il giocatore selezionato - NON tutti i giocatori CSV
-      const newPlayer: Partial<Player> = {
+      // Crea SOLO il giocatore selezionato
+      const singlePlayerToAdd: Partial<Player> = {
         name: csvPlayer.name || '',
         surname: csvPlayer.surname || '',
         roleCategory: csvPlayer.role,
@@ -90,24 +93,24 @@ const Index = () => {
         xP: 0,
         ownership: 0,
         plusCategories: [],
-        tier: '', // NON 'CSV' - questo è importante
+        tier: '',
         isFavorite: false
       };
       
-      console.log('➕ Aggiungendo SOLO questo giocatore:', newPlayer);
+      console.log('➕ USANDO IL NUOVO HOOK PER IMPORTARE SINGOLO GIOCATORE:', singlePlayerToAdd);
       
-      // Chiamiamo addPlayer passando SOLO il giocatore selezionato
-      // NON tutto l'array csvPlayers
-      await addPlayer(selectedRoleForCSV!, newPlayer);
+      // USA IL NUOVO HOOK invece di addPlayer per evitare confusione
+      const result = await importSingleCSVPlayer(singlePlayerToAdd);
       
-      console.log('✅ Singolo giocatore aggiunto con successo');
-      
-      // Chiudi il modal
-      setShowCSVModal(false);
-      setSelectedRoleForCSV(null);
+      if (result) {
+        console.log('✅ Giocatore importato con successo tramite hook dedicato');
+        // Chiudi il modal solo se l'importazione è riuscita
+        setShowCSVModal(false);
+        setSelectedRoleForCSV(null);
+      }
       
     } catch (error) {
-      console.error('❌ Errore nell\'aggiunta del singolo giocatore:', error);
+      console.error('❌ Errore nell\'importazione del singolo giocatore:', error);
     }
   };
 
