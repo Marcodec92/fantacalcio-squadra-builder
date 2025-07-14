@@ -76,7 +76,7 @@ export const useCSVPlayers = () => {
     }
   };
 
-  // Helper function to validate and convert team name - FIXED TYPE
+  // Helper function to validate and convert team name - FIXED TO ACCEPT STRING
   const validateTeamName = (teamName: string): Team | null => {
     const validTeams: Team[] = [
       'Atalanta', 'Bologna', 'Cagliari', 'Como', 'Cremonese', 'Fiorentina',
@@ -394,13 +394,16 @@ export const useCSVPlayers = () => {
       const csvPlayer = csvPlayers.find(p => p.id === playerId);
       if (!csvPlayer) return;
 
+      // Convert the team string to a valid Team type for database query
+      const validatedTeam = validateTeamName(csvPlayer.team);
+
       const { error } = await supabase
         .from('players')
         .delete()
         .eq('user_id', user.id)
         .eq('tier', 'CSV')
         .eq('surname', csvPlayer.surname)
-        .eq('team', csvPlayer.team)
+        .eq('team', validatedTeam) // Now using the validated team
         .eq('role_category', csvPlayer.role);
 
       if (error) {
