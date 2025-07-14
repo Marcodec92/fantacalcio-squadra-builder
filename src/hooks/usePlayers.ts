@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
@@ -97,8 +96,18 @@ export const usePlayers = (filters?: PlayerFilters) => {
     }
 
     try {
-      // Ensure we have a proper specific role
-      const specificRole = partialPlayerData?.role || getDefaultSpecificRole(roleCategory);
+      // Ensure we have a proper specific role - this is the key fix
+      let specificRole: SpecificRole;
+      
+      if (partialPlayerData?.role) {
+        // If a specific role is provided, use it
+        specificRole = partialPlayerData.role;
+      } else {
+        // Otherwise, use the default for this role category
+        specificRole = getDefaultSpecificRole(roleCategory);
+      }
+
+      console.log('Adding player with role:', specificRole, 'for category:', roleCategory);
       
       // Handle team properly - convert empty string to null
       const teamValue = partialPlayerData?.team && partialPlayerData.team.length > 0 ? partialPlayerData.team : null;
@@ -109,7 +118,7 @@ export const usePlayers = (filters?: PlayerFilters) => {
         surname: partialPlayerData?.surname || 'Giocatore',
         team: teamValue,
         role_category: roleCategory,
-        role: specificRole,
+        role: specificRole, // Use the corrected specific role
         fmv: partialPlayerData?.fmv || 0,
         cost_percentage: partialPlayerData?.costPercentage || 0,
         goals: partialPlayerData?.goals || 0,
@@ -126,6 +135,8 @@ export const usePlayers = (filters?: PlayerFilters) => {
         tier: partialPlayerData?.tier || '',
         is_favorite: partialPlayerData?.isFavorite || false
       };
+
+      console.log('Final player data for insert:', basePlayerData);
 
       const { error } = await supabase
         .from('players')
