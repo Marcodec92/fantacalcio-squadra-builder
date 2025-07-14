@@ -12,6 +12,7 @@ import RealTimeSquadGrid from '@/components/RealTimeSquadGrid';
 import RealTimeBudgetWheel from '@/components/RealTimeBudgetWheel';
 import RealTimeRoleBudgets from '@/components/RealTimeRoleBudgets';
 import CSVPlayerModal from '@/components/CSVPlayerModal';
+import { useCSVPlayers } from '@/hooks/useCSVPlayers';
 import { toast } from 'sonner';
 
 export interface RealTimePlayer {
@@ -34,9 +35,9 @@ const RealTimeBuilder = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { csvPlayers, loading, handleCSVUpload } = useCSVPlayers();
   
   const [maxBudget, setMaxBudget] = useState<number>(500);
-  const [csvPlayers, setCsvPlayers] = useState<RealTimePlayer[]>([]);
   const [selections, setSelections] = useState<RealTimeSelection[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
@@ -45,49 +46,14 @@ const RealTimeBuilder = () => {
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleCSVUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
-      try {
-        const lines = text.split('\n').filter(line => line.trim());
-        const players: RealTimePlayer[] = [];
-        
-        // Skip header row
-        for (let i = 1; i < lines.length; i++) {
-          const [name, surname, team, role] = lines[i].split(',').map(s => s.trim());
-          if (name && surname && team && role) {
-            const playerRole = role as PlayerRole;
-            if (['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'].includes(playerRole)) {
-              players.push({
-                id: `csv-${i}`,
-                name,
-                surname,
-                team,
-                role: playerRole,
-                credits: 0
-              });
-            }
-          }
-        }
-        
-        // Clear previous CSV data and replace with new data
-        setCsvPlayers(players);
-        
-        // Clear existing selections since player IDs might have changed
-        setSelections([]);
-        
-        toast.success(`${players.length} giocatori caricati dal CSV`);
-        console.log('CSV caricato con successo:', players);
-      } catch (error) {
-        toast.error('Errore nel parsing del file CSV');
-        console.error('Errore nel parsing del CSV:', error);
-      }
-    };
-    reader.readAsText(file);
+    await handleCSVUpload(file);
+    
+    // Clear existing selections since player data has changed
+    setSelections([]);
     
     // Reset the input value to allow uploading the same file again
     event.target.value = '';
@@ -228,6 +194,11 @@ const RealTimeBuilder = () => {
                   </SelectContent>
                 </Select>
               </div>
+              {csvPlayers.length > 0 && (
+                <div className="text-sm text-muted-foreground">
+                  <p>{csvPlayers.length} giocatori caricati e salvati</p>
+                </div>
+              )}
             </div>
             
             <div>
@@ -235,15 +206,17 @@ const RealTimeBuilder = () => {
                 ref={fileInputRef}
                 type="file"
                 accept=".csv"
-                onChange={handleCSVUpload}
+                onChange={handleFileUpload}
                 className="hidden"
+                disabled={loading}
               />
               <Button
                 onClick={() => fileInputRef.current?.click()}
                 className="glass-button gradient-accent text-white shadow-lg hover:shadow-2xl font-medium px-6 py-3"
+                disabled={loading}
               >
                 <Upload className="w-5 h-5 mr-2" />
-                Carica CSV
+                {loading ? 'Caricamento...' : 'Carica CSV'}
               </Button>
             </div>
           </div>

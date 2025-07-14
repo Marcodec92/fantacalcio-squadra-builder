@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
 import { usePlayersData } from '@/hooks/usePlayersData';
 import PlayersList from '@/components/PlayersList';
+import AuthModal from '@/components/AuthModal';
 import { Player, PlayerRole } from '@/types/Player';
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
   const { data: allPlayers = [] } = usePlayersData();
   
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Conteggio giocatori per ruolo
   const getPlayerCountByRole = (role: PlayerRole) => {
@@ -36,6 +38,10 @@ const Index = () => {
 
   const handleDeletePlayer = (playerId: string) => {
     deletePlayer(playerId);
+  };
+
+  const handleAuthButtonClick = () => {
+    setShowAuthModal(true);
   };
 
   if (!user) {
@@ -58,11 +64,19 @@ const Index = () => {
             Accedi per gestire i tuoi giocatori e costruire la tua formazione perfetta
           </p>
           <div className="glass-card p-6">
-            <p className="text-sm text-muted-foreground">
+            <Button 
+              onClick={handleAuthButtonClick}
+              className="w-full glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-3"
+            >
               Utilizza l'autenticazione per iniziare
-            </p>
+            </Button>
           </div>
         </div>
+
+        <AuthModal 
+          isOpen={showAuthModal} 
+          onClose={() => setShowAuthModal(false)} 
+        />
       </div>
     );
   }
