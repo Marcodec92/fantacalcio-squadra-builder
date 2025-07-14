@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { usePlayersData } from './usePlayersData';
-import { Player, PlayerRole, PlusCategory } from '@/types/Player';
+import { Player, PlayerRole, PlusCategory, SpecificRole } from '@/types/Player';
 
 interface PlayerFilters {
   showFavoritesOnly?: boolean;
@@ -30,6 +30,22 @@ export const usePlayers = (filters?: PlayerFilters) => {
     const malusPoints = player.malus * -1;
     
     return goalBonus + assistBonus + malusPoints;
+  };
+
+  // Helper function to map role category to a default specific role
+  const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
+    switch (roleCategory) {
+      case 'Portiere':
+        return 'Portiere';
+      case 'Difensore':
+        return 'Difensore centrale';
+      case 'Centrocampista':
+        return 'Mediano';
+      case 'Attaccante':
+        return 'Attaccante centrale';
+      default:
+        return 'Portiere';
+    }
   };
 
   const filteredPlayers = useMemo(() => {
@@ -81,13 +97,19 @@ export const usePlayers = (filters?: PlayerFilters) => {
     }
 
     try {
+      // Ensure we have a proper specific role
+      const specificRole = partialPlayerData?.role || getDefaultSpecificRole(roleCategory);
+      
+      // Handle team properly - convert empty string to null
+      const teamValue = partialPlayerData?.team && partialPlayerData.team !== '' ? partialPlayerData.team : null;
+
       const basePlayerData = {
         user_id: user.id,
         name: partialPlayerData?.name || 'Nuovo',
         surname: partialPlayerData?.surname || 'Giocatore',
-        team: partialPlayerData?.team || null,
+        team: teamValue,
         role_category: roleCategory,
-        role: partialPlayerData?.role || roleCategory,
+        role: specificRole,
         fmv: partialPlayerData?.fmv || 0,
         cost_percentage: partialPlayerData?.costPercentage || 0,
         goals: partialPlayerData?.goals || 0,
@@ -134,12 +156,15 @@ export const usePlayers = (filters?: PlayerFilters) => {
     }
 
     try {
+      // Handle team properly - convert empty string to null
+      const teamValue = updatedPlayer.team && updatedPlayer.team !== '' ? updatedPlayer.team : null;
+
       const { error } = await supabase
         .from('players')
         .update({
           name: updatedPlayer.name,
           surname: updatedPlayer.surname,
-          team: updatedPlayer.team,
+          team: teamValue,
           role: updatedPlayer.role,
           role_category: updatedPlayer.roleCategory,
           fmv: updatedPlayer.fmv,
