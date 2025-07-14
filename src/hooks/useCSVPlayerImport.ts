@@ -1,11 +1,13 @@
 
 import { useAuth } from '@/contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Player } from '@/types/Player';
 
 export const useCSVPlayerImport = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const importSingleCSVPlayer = async (playerData: Partial<Player>) => {
     if (!user) {
@@ -58,6 +60,10 @@ export const useCSVPlayerImport = () => {
 
       console.log('✅ Giocatore inserito con successo:', data);
       toast.success(`Giocatore ${playerData.surname} aggiunto con successo!`);
+      
+      // IMPORTANTE: Invalida la cache per aggiornare la lista dei giocatori
+      console.log('🔄 Invalidando la cache dei giocatori...');
+      queryClient.invalidateQueries({ queryKey: ['players'] });
       
       return data;
 
