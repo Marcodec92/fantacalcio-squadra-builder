@@ -5,6 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { PlayerRole, SpecificRole, Team } from '@/types/Player';
 
+const CSV_STORAGE_KEY = 'csvPlayers';
+
 export interface CSVPlayer {
   id: string;
   name: string;
@@ -19,8 +21,36 @@ export const useCSVPlayers = () => {
   const [csvPlayers, setCsvPlayers] = useState<CSVPlayer[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // NON caricare i CSV players dal database all'avvio
-  // I CSV players esistono solo in memoria
+  // Carica i CSV players dal localStorage all'avvio
+  useEffect(() => {
+    const loadCSVFromStorage = () => {
+      try {
+        const storedCSV = localStorage.getItem(CSV_STORAGE_KEY);
+        if (storedCSV) {
+          const parsedData = JSON.parse(storedCSV);
+          setCsvPlayers(parsedData);
+          console.log('✅ CSV players caricati dal localStorage:', parsedData.length);
+        }
+      } catch (error) {
+        console.error('❌ Errore nel caricamento CSV dal localStorage:', error);
+        localStorage.removeItem(CSV_STORAGE_KEY);
+      }
+    };
+
+    loadCSVFromStorage();
+  }, []);
+
+  // Salva i CSV players nel localStorage ogni volta che cambiano
+  useEffect(() => {
+    if (csvPlayers.length > 0) {
+      try {
+        localStorage.setItem(CSV_STORAGE_KEY, JSON.stringify(csvPlayers));
+        console.log('💾 CSV players salvati nel localStorage:', csvPlayers.length);
+      } catch (error) {
+        console.error('❌ Errore nel salvataggio CSV nel localStorage:', error);
+      }
+    }
+  }, [csvPlayers]);
   
   // Helper function to map role category to specific role
   const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
@@ -161,10 +191,10 @@ export const useCSVPlayers = () => {
       };
 
       players.push(player);
-      console.log(`✅ Giocatore aggiunto (SOLO IN MEMORIA):`, player);
+      console.log(`✅ Giocatore aggiunto:`, player);
     }
     
-    console.log('🎯 Totale giocatori parsati (SOLO IN MEMORIA):', players.length);
+    console.log('🎯 Totale giocatori parsati:', players.length);
     return players;
   };
 
@@ -180,11 +210,11 @@ export const useCSVPlayers = () => {
         const players = parseCSVData(text);
         
         if (players.length > 0) {
-          // SOLO salva in memoria, NON nel database
+          // Salva in memoria e localStorage
           setCsvPlayers(players);
-          console.log('✅ CSV parsato e salvato IN MEMORIA:', players.length, 'giocatori');
-          console.log('🔒 IMPORTANTE: Giocatori NON salvati nel database automaticamente');
-          toast.success(`${players.length} giocatori CSV caricati in memoria`);
+          console.log('✅ CSV parsato e salvato:', players.length, 'giocatori');
+          console.log('💾 CSV salvato nel localStorage per persistenza');
+          toast.success(`${players.length} giocatori CSV caricati e salvati`);
         } else {
           toast.error('Nessun giocatore trovato nel file CSV. Controlla il formato del file.');
         }
@@ -204,10 +234,11 @@ export const useCSVPlayers = () => {
   };
 
   const clearCSVPlayers = async () => {
-    // Cancella solo dalla memoria
+    // Cancella dalla memoria e dal localStorage
     setCsvPlayers([]);
-    console.log('🗑️ CSV players cancellati dalla memoria');
-    toast.success('Giocatori CSV cancellati dalla memoria');
+    localStorage.removeItem(CSV_STORAGE_KEY);
+    console.log('🗑️ CSV players cancellati dalla memoria e localStorage');
+    toast.success('Giocatori CSV cancellati');
   };
 
   const resetDatabase = async () => {
@@ -250,8 +281,9 @@ export const useCSVPlayers = () => {
         throw playersError;
       }
 
-      // 4. Pulisce lo stato locale dei CSV players
+      // 4. Pulisce lo stato locale dei CSV players E il localStorage
       setCsvPlayers([]);
+      localStorage.removeItem(CSV_STORAGE_KEY);
       
       console.log('✅ Reset database completato');
       toast.success('Database resettato! Tutti i giocatori e le selezioni sono stati cancellati.');
@@ -265,14 +297,9 @@ export const useCSVPlayers = () => {
   };
 
   const removeCSVPlayer = async (playerId: string) => {
-    // Rimuovi solo dalla memoria, non c'è nulla da rimuovere dal database
+    // Rimuovi dalla memoria (il localStorage verrà aggiornato automaticamente dall'useEffect)
     setCsvPlayers(prev => prev.filter(p => p.id !== playerId));
-    console.log('✅ CSV player rimosso dalla memoria');
-  };
-
-  // Funzione non utilizzata - i CSV players non vengono mai salvati automaticamente
-  const loadCSVPlayersFromDatabase = async () => {
-    console.log('⚠️ loadCSVPlayersFromDatabase chiamata ma non necessaria - CSV players esistono solo in memoria');
+    console.log('✅ CSV player rimosso dalla memoria e localStorage');
   };
 
   return {
@@ -282,7 +309,6 @@ export const useCSVPlayers = () => {
     parseCSVData,
     clearCSVPlayers,
     resetDatabase,
-    removeCSVPlayer,
-    loadCSVPlayersFromDatabase
+    removeCSVPlayer
   };
 };

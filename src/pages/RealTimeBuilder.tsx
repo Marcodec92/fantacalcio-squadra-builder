@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { PlayerRole } from '@/types/Player';
@@ -145,36 +145,54 @@ const RealTimeBuilder = () => {
           </div>
         </div>
 
-        {/* Messaggio di stato CSV */}
-        {csvPlayers.length === 0 ? (
-          <div className="glass-card mb-8 p-6 shadow-xl">
-            <div className="text-center">
-              <p className="text-muted-foreground mb-4">
-                💡 Per utilizzare il Real Time Builder, carica prima i giocatori CSV dalla pagina Database
-              </p>
-              <Button
-                onClick={() => navigate('/')}
-                className="glass-button gradient-primary font-medium"
-                size="sm"
-              >
-                Vai al Database
-              </Button>
+        {/* Stato CSV con persistenza */}
+        <div className="glass-card mb-8 p-6 shadow-xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {csvPlayers.length === 0 ? (
+                <>
+                  <AlertCircle className="w-6 h-6 text-orange-500" />
+                  <div>
+                    <p className="text-orange-600 font-medium">
+                      Nessun file CSV caricato
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Carica un file CSV dalla pagina Database per iniziare
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-6 h-6 text-green-500" />
+                  <div>
+                    <p className="text-green-600 font-medium">
+                      ✅ {csvPlayers.length} giocatori CSV disponibili
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Dati persistenti - disponibili anche dopo la navigazione
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-        ) : (
-          <div className="glass-card mb-8 p-6 shadow-xl">
-            <div className="text-center">
-              <p className="text-green-600 font-medium">
-                ✅ {csvPlayers.length} giocatori CSV caricati e pronti per l'uso
-              </p>
+            <div className="flex items-center space-x-2">
+              {csvPlayers.length === 0 && (
+                <Button
+                  onClick={() => navigate('/')}
+                  className="glass-button gradient-primary font-medium"
+                  size="sm"
+                >
+                  Vai al Database
+                </Button>
+              )}
               {selections.length > 0 && (
-                <p className="text-blue-600 font-medium mt-2">
-                  💾 {selections.length} selezioni salvate automaticamente
+                <p className="text-blue-600 font-medium text-sm">
+                  💾 {selections.length} selezioni salvate
                 </p>
               )}
             </div>
           </div>
-        )}
+        </div>
 
         {/* Budget and Squad Layout - Solo se ci sono giocatori CSV */}
         {csvPlayers.length > 0 && (

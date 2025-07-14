@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { PlayerRole } from '@/types/Player';
 import { RealTimePlayer, RealTimeSelection } from '@/pages/RealTimeBuilder';
@@ -39,10 +38,11 @@ export const useRealTimeBuilder = () => {
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
     if (csvPlayers.length === 0) {
-      // Se non ci sono CSV players, non aprire il modal
+      console.log('⚠️ Nessun CSV player disponibile - impossibile aprire il modal');
       return;
     }
     
+    console.log('✅ Apertura modal con', csvPlayers.length, 'CSV players disponibili');
     setSelectedPosition({ slot, role });
     setSearchTerm('');
     setIsModalOpen(true);
