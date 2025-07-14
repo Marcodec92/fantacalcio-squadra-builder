@@ -33,21 +33,9 @@ const PositionCard: React.FC<PositionCardProps> = ({
   const [editingPercentage, setEditingPercentage] = useState<string | null>(null);
   const [tempPercentage, setTempPercentage] = useState<string>('');
   const [showBudgetBreakdown, setShowBudgetBreakdown] = useState<string | null>(null);
-  const [isExiting, setIsExiting] = useState<string | null>(null);
   const { updatePlayer } = usePlayers();
 
   const bonusTotal = player ? calculateBonusTotal(player) : 0;
-  
-  console.log('🚨 POSITION CARD RENDERING!!! 🚨', {
-    playerName: player?.name,
-    playerId: player?.id,
-    timestamp: Date.now()
-  });
-  
-  // Alert per forzare l'attenzione
-  if (player) {
-    console.log('🎯 PLAYER DATA:', player);
-  }
 
   const handleEditPercentage = (player: Player) => {
     setEditingPercentage(player.id);
@@ -70,33 +58,20 @@ const PositionCard: React.FC<PositionCardProps> = ({
   };
 
   const toggleBudgetBreakdown = (playerId: string) => {
-    console.log('Toggle budget breakdown clicked for player:', playerId);
-    console.log('Current showBudgetBreakdown:', showBudgetBreakdown);
-    
     if (showBudgetBreakdown === playerId) {
-      // Nasconde il breakdown
       setShowBudgetBreakdown(null);
-      setIsExiting(null);
     } else {
-      // Mostra il breakdown
       setShowBudgetBreakdown(playerId);
-      setIsExiting(null);
     }
   };
 
   const calculateCreditBreakdown = (costPercentage: number) => {
-    // Calcola quanti crediti effettivi costa il giocatore su diversi budget totali
     return {
       credits300: ((costPercentage / 100) * 300).toFixed(1),
       credits500: ((costPercentage / 100) * 500).toFixed(1), 
       credits650: ((costPercentage / 100) * 650).toFixed(1)
     };
   };
-
-  // Rimuovo l'event listener globale che potrebbe interferire
-  // useEffect(() => {
-  //   ...
-  // }, [showBudgetBreakdown]);
 
   return (
     <Card 
@@ -113,7 +88,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
         </div>
         
         {player ? (
-          <div className="space-y-3 flex-1 flex flex-col pb-2">
+          <div className="space-y-3 flex-1 flex flex-col">
             <div className="bg-white/60 rounded-xl p-3 shadow-sm">
               <div className="font-bold text-lg flex items-center justify-center gap-2 text-gray-800">
                 {player.name} {player.surname}
@@ -168,35 +143,29 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       </div>
                     ) : (
                       <>
-                         <div 
-                           className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors px-2 py-1 rounded bg-blue-50 border border-blue-200"
-                           onMouseDown={(e) => {
-                             e.preventDefault();
-                             e.stopPropagation();
-                             console.log('BUDGET MOUSEDOWN!', player.id);
-                             console.log('Current state:', showBudgetBreakdown);
-                             alert(`Click detected for ${player.name}! State: ${showBudgetBreakdown}`);
-                             toggleBudgetBreakdown(player.id);
-                           }}
-                           style={{zIndex: 999, border: '3px solid red'}}
-                           title="CLICCA QUI per breakdown crediti"
-                         >
-                           {player.costPercentage}% ← CLICK ME!
-                         </div>
-                         <small className="text-red-500 text-xs">Debug: {showBudgetBreakdown || 'none'}</small>
+                        <div 
+                          className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors px-2 py-1 rounded bg-blue-50 border border-blue-200 text-xs"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleBudgetBreakdown(player.id);
+                          }}
+                        >
+                          {player.costPercentage}%
+                        </div>
                         {showBudgetBreakdown === player.id && (
-                          <div className="flex items-center gap-2 ml-2 animate-slide-in-right">
-                             <div className="flex items-center gap-1 text-xs bg-green-50 px-2 py-1 rounded-lg border border-green-200 shadow-sm">
-                               <span className="text-green-600 font-medium">300:</span>
-                               <span className="text-green-700 font-bold">{calculateCreditBreakdown(player.costPercentage).credits300}</span>
+                          <div className="flex items-center gap-1 ml-1 animate-slide-in-right">
+                             <div className="flex items-center gap-1 text-xs bg-green-50 px-1 py-0.5 rounded border border-green-200 shadow-sm">
+                               <span className="text-green-600 font-medium text-xs">300:</span>
+                               <span className="text-green-700 font-bold text-xs">{calculateCreditBreakdown(player.costPercentage).credits300}</span>
                              </div>
-                             <div className="flex items-center gap-1 text-xs bg-amber-50 px-2 py-1 rounded-lg border border-amber-200 shadow-sm">
-                               <span className="text-amber-600 font-medium">500:</span>
-                               <span className="text-amber-700 font-bold">{calculateCreditBreakdown(player.costPercentage).credits500}</span>
+                             <div className="flex items-center gap-1 text-xs bg-amber-50 px-1 py-0.5 rounded border border-amber-200 shadow-sm">
+                               <span className="text-amber-600 font-medium text-xs">500:</span>
+                               <span className="text-amber-700 font-bold text-xs">{calculateCreditBreakdown(player.costPercentage).credits500}</span>
                              </div>
-                             <div className="flex items-center gap-1 text-xs bg-red-50 px-2 py-1 rounded-lg border border-red-200 shadow-sm">
-                               <span className="text-red-600 font-medium">650:</span>
-                               <span className="text-green-700 font-bold">{calculateCreditBreakdown(player.costPercentage).credits650}</span>
+                             <div className="flex items-center gap-1 text-xs bg-red-50 px-1 py-0.5 rounded border border-red-200 shadow-sm">
+                               <span className="text-red-600 font-medium text-xs">650:</span>
+                               <span className="text-green-700 font-bold text-xs">{calculateCreditBreakdown(player.costPercentage).credits650}</span>
                              </div>
                           </div>
                         )}
@@ -215,7 +184,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-1 ml-auto">
+                <div className="flex items-center gap-1">
                   <span className="text-xs font-medium text-gray-600">Fascia:</span>
                   <Badge variant="secondary" className="text-xs h-5 bg-gray-200/80 text-gray-700">
                     {player.tier}
@@ -224,10 +193,10 @@ const PositionCard: React.FC<PositionCardProps> = ({
               </div>
             </div>
             
-            {/* Sezioni allineate alla stessa altezza - tutte e 4 insieme */}
-            <div className="grid grid-cols-2 gap-3 mb-3">
+            {/* Sezioni allineate alla stessa altezza - layout migliorato */}
+            <div className="grid grid-cols-2 gap-2 flex-1">
               {/* Statistiche */}
-              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+              <div className="bg-white/40 rounded-lg p-2">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Statistiche</div>
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
@@ -254,13 +223,13 @@ const PositionCard: React.FC<PositionCardProps> = ({
               </div>
 
               {/* Expected */}
-              <div className="bg-white/40 rounded-xl p-3 shadow-sm">
+              <div className="bg-white/40 rounded-lg p-2">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Expected</div>
                 <div className="space-y-1">
                   {player.roleCategory === 'Portiere' ? (
                     <>
                       <div className="flex justify-between text-xs">
-                        <span className="text-gray-600">Gol subiti:</span>
+                        <span className="text-gray-600">Subiti:</span>
                         <span className="font-semibold text-orange-600">{player.goalsConceded || 0}</span>
                       </div>
                       <div className="flex justify-between text-xs">
@@ -268,7 +237,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                         <span className="font-semibold text-indigo-600">{(player.xP || 0).toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-gray-600">Rigori parati:</span>
+                        <span className="text-gray-600">Rigori:</span>
                         <span className="font-semibold text-purple-600">{player.penaltiesSaved || 0}</span>
                       </div>
                     </>
@@ -283,7 +252,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                         <span className="font-semibold text-blue-600">{(player.xA || 0).toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-xs">
-                        <span className="text-gray-600">Ammonizioni:</span>
+                        <span className="text-gray-600">Amm.:</span>
                         <span className="font-semibold text-yellow-600">{player.yellowCards || 0}</span>
                       </div>
                     </>
@@ -291,14 +260,8 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 </div>
               </div>
 
-              {/* Titolarità - FORZATO */}
-              <div style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                borderRadius: '12px',
-                padding: '12px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                border: '2px solid red'
-              }}>
+              {/* Titolarità */}
+              <div className="bg-white/40 rounded-lg p-2">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Titolarità</div>
                 <div className="space-y-1">
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
@@ -308,37 +271,35 @@ const PositionCard: React.FC<PositionCardProps> = ({
                     ></div>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-600">Percentuale:</span>
+                    <span className="text-gray-600">%:</span>
                     <span className="font-bold text-amber-600">{player.ownership}%</span>
                   </div>
                 </div>
               </div>
 
-              {/* Categoria Plus - FORZATO */}
-              <div style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                borderRadius: '12px',
-                padding: '12px',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                border: '2px solid blue'
-              }}>
+              {/* Categoria Plus */}
+              <div className="bg-white/40 rounded-lg p-2">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Plus</div>
                 <div className="space-y-1">
                   {player.plusCategories && player.plusCategories.length > 0 ? (
                     <div className="flex flex-wrap gap-1 justify-center">
-                      {player.plusCategories.map((category, index) => (
+                      {player.plusCategories.slice(0, 2).map((category, index) => (
                         <Badge 
                           key={index} 
                           variant="secondary" 
-                          className="text-xs bg-blue-100 text-blue-700 px-2 py-1"
+                          className="text-xs bg-blue-100 text-blue-700 px-1 py-0.5 h-auto"
                         >
-                          {category}
+                          {category.length > 8 ? category.substring(0, 8) + '...' : category}
                         </Badge>
                       ))}
+                      {player.plusCategories.length > 2 && (
+                        <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600 px-1 py-0.5 h-auto">
+                          +{player.plusCategories.length - 2}
+                        </Badge>
+                      )}
                     </div>
                   ) : (
-                    <div className="flex justify-between text-xs">
-                      <span className="text-gray-600">Categorie:</span>
+                    <div className="text-center">
                       <span className="text-xs text-gray-500">Nessuna</span>
                     </div>
                   )}
@@ -346,12 +307,12 @@ const PositionCard: React.FC<PositionCardProps> = ({
               </div>
             </div>
             
-            {/* Tasto Rimuovi posizionato sotto titolarità con distanza corretta */}
-            <div className="mt-3 pt-2">
+            {/* Tasto Rimuovi */}
+            <div className="mt-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 rounded-xl shadow-sm font-medium"
+                className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 rounded-xl shadow-sm font-medium h-8"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (selection) onRemovePlayer(selection.id);

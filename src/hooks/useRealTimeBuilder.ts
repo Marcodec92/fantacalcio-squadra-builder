@@ -1,7 +1,8 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PlayerRole } from '@/types/Player';
 import { RealTimePlayer, RealTimeSelection } from '@/pages/RealTimeBuilder';
+import { useCSVPlayers } from './useCSVPlayers';
 
 export const useRealTimeBuilder = () => {
   const [maxBudget, setMaxBudget] = useState<number>(500);
@@ -13,8 +14,15 @@ export const useRealTimeBuilder = () => {
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [dragActive, setDragActive] = useState(false);
+  
+  const { csvPlayers } = useCSVPlayers();
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
+    if (csvPlayers.length === 0) {
+      // Se non ci sono CSV players, mostra un messaggio
+      return;
+    }
+    
     setSelectedPosition({ slot, role });
     setSearchTerm('');
     setIsModalOpen(true);
@@ -94,6 +102,9 @@ export const useRealTimeBuilder = () => {
     setSelections([]);
   };
 
+  // Controlla se i CSV players sono disponibili
+  const hasCSVPlayers = csvPlayers.length > 0;
+
   return {
     maxBudget,
     setMaxBudget,
@@ -113,6 +124,8 @@ export const useRealTimeBuilder = () => {
     handleUpdateCredits,
     calculateTotalCredits,
     calculateRoleCredits,
-    clearSelections
+    clearSelections,
+    hasCSVPlayers,
+    csvPlayers
   };
 };

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,34 @@ const CSVUploadSection: React.FC<CSVUploadSectionProps> = ({
   onTriggerFileInput
 }) => {
   const budgetOptions = [300, 500, 650];
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+    onDrag(e);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    onDrag(e);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDrag(e);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    onDrop(e);
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -61,14 +89,14 @@ const CSVUploadSection: React.FC<CSVUploadSectionProps> = ({
         <h3 className="text-2xl font-bold mb-6 text-gradient">Carica Giocatori CSV</h3>
         <div 
           className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
-            dragActive 
-              ? 'border-blue-400 bg-blue-50/30' 
+            isDragOver || dragActive
+              ? 'border-blue-400 bg-blue-50/30 scale-105' 
               : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50/10'
           }`}
-          onDrop={onDrop}
-          onDragOver={onDrag}
-          onDragEnter={onDrag}
-          onDragLeave={onDrag}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
         >
           {loading ? (
             <div className="space-y-4">
@@ -105,6 +133,10 @@ const CSVUploadSection: React.FC<CSVUploadSectionProps> = ({
                 >
                   Seleziona File CSV
                 </Button>
+              </div>
+              <div className="mt-4 text-sm text-muted-foreground">
+                <p>Formato supportato: CSV</p>
+                <p>Dimensione massima: 5MB</p>
               </div>
             </div>
           )}

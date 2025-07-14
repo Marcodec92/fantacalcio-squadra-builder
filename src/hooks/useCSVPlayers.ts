@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +10,7 @@ export interface CSVPlayer {
   name: string;
   surname: string;
   team: string;
-  role: PlayerRole; // Questa è la macro area dal CSV
+  role: PlayerRole;
   credits: number;
 }
 
@@ -55,7 +56,7 @@ export const useCSVPlayers = () => {
     
     // Verifica se la prima riga è un header
     const firstLine = lines[0].toLowerCase();
-    const hasHeader = firstLine.includes('ruolo') || firstLine.includes('nome') || firstLine.includes('squadra') || firstLine.includes('giocatore');
+    const hasHeader = firstLine.includes('ruolo') || firstLine.includes('nome') || firstLine.includes('squadra') || firstLine.includes('giocatore') || firstLine.includes('cognome');
     const startIndex = hasHeader ? 1 : 0;
     
     console.log('🏁 Header rilevato:', hasHeader, 'Inizio parsing da riga:', startIndex + 1);
@@ -84,10 +85,10 @@ export const useCSVPlayers = () => {
         continue;
       }
       
-      const [ruolo, nomeGiocatore, squadra] = parts;
+      const [ruolo, cognomeGiocatore, squadra] = parts;
       
-      if (!ruolo || !nomeGiocatore || !squadra) {
-        console.log(`⚠️ Riga ${i + 1} ha campi vuoti:`, { ruolo, nomeGiocatore, squadra });
+      if (!ruolo || !cognomeGiocatore || !squadra) {
+        console.log(`⚠️ Riga ${i + 1} ha campi vuoti:`, { ruolo, cognomeGiocatore, squadra });
         continue;
       }
       
@@ -117,26 +118,25 @@ export const useCSVPlayers = () => {
           playerRole = 'Attaccante';
           break;
         default:
-          console.log(`⚠️ Ruolo non riconosciuto: "${ruolo}" per giocatore ${nomeGiocatore}`);
+          console.log(`⚠️ Ruolo non riconosciuto: "${ruolo}" per giocatore ${cognomeGiocatore}`);
           continue;
       }
 
-      // Dividi nome e cognome - gestisci meglio i nomi
-      const nameParts = nomeGiocatore.trim().split(' ').filter(part => part.length > 0);
-      const name = nameParts[0] || '';
-      const surname = nameParts.slice(1).join(' ') || '';
+      // IMPORTANTE: Il CSV contiene solo cognomi, quindi trattiamo il campo come cognome
+      // e lasciamo il nome vuoto per ora
+      const cognome = cognomeGiocatore.trim();
 
       const player: CSVPlayer = {
-        id: `csv-${i}-${nomeGiocatore.replace(/\s+/g, '-')}`,
-        name,
-        surname,
+        id: `csv-${i}-${cognome.replace(/\s+/g, '-')}`,
+        name: '', // Nome vuoto perché il CSV contiene solo cognomi
+        surname: cognome, // Questo è il cognome dal CSV
         team: squadra.trim(),
-        role: playerRole, // Questa è la macro area che verrà poi mappata
+        role: playerRole,
         credits: 0
       };
 
       players.push(player);
-      console.log(`✅ Giocatore aggiunto:`, player);
+      console.log(`✅ Giocatore aggiunto (COGNOME):`, player);
     }
     
     console.log('🎯 Totale giocatori parsati:', players.length);
@@ -158,73 +158,15 @@ export const useCSVPlayers = () => {
     try {
       console.log('💾 Inizio salvataggio nel database di', players.length, 'giocatori');
       
-      // Prima elimina tutti i giocatori esistenti dell'utente
-      const { error: deleteError } = await supabase
-        .from('players')
-        .delete()
-        .eq('user_id', user.id);
-        
-      if (deleteError) {
-        console.error('Errore nell\'eliminare i giocatori esistenti:', deleteError);
-        toast.error('Errore nell\'eliminare i dati precedenti');
-        return;
-      }
-
-      console.log('🗑️ Giocatori precedenti eliminati');
-
-      // Prepara i dati per l'inserimento nel database
-      const playersData = players.map(player => {
-        const specificRole = getDefaultSpecificRole(player.role);
-        
-        console.log('🎯 Mapping player:', {
-          name: player.name,
-          roleCategory: player.role,
-          specificRole: specificRole
-        });
-        
-        return {
-          user_id: user.id,
-          name: player.name,
-          surname: player.surname,
-          team: player.team as any,
-          role_category: player.role, // Macro area (Portiere, Difensore, etc.)
-          role: specificRole, // Ruolo specifico mappato correttamente
-          fmv: 0,
-          cost_percentage: 0,
-          goals: 0,
-          assists: 0,
-          malus: 0,
-          goals_conceded: 0,
-          yellow_cards: 0,
-          penalties_saved: 0,
-          x_g: 0,
-          x_a: 0,
-          x_p: 0,
-          ownership: 0,
-          plus_categories: [],
-          tier: '',
-          is_favorite: false
-        };
-      });
-
-      console.log('📋 Dati preparati per l\'inserimento:', playersData.slice(0, 2));
-
-      const { error } = await supabase
-        .from('players')
-        .insert(playersData);
-        
-      if (error) {
-        console.error('Errore nel salvare i giocatori:', error);
-        toast.error('Errore nel salvare i giocatori nel database: ' + error.message);
-        return;
-      }
-
-      toast.success(`${players.length} giocatori salvati nel database`);
-      console.log('✅ Giocatori salvati con successo nel database');
+      // NON eliminiamo i giocatori esistenti - manteniamo i dati del database separati dal CSV
+      // I CSV players saranno gestiti separatamente per il Real Time Builder
+      
+      console.log('✅ CSV players caricati in memoria per Real Time Builder');
+      toast.success(`${players.length} giocatori CSV caricati e pronti per il Real Time Builder`);
       
     } catch (error) {
-      console.error('Errore nel salvaggio:', error);
-      toast.error('Errore nel salvare i dati');
+      console.error('Errore nel caricamento CSV:', error);
+      toast.error('Errore nel caricamento CSV');
     } finally {
       setLoading(false);
     }
@@ -243,13 +185,12 @@ export const useCSVPlayers = () => {
         setCsvPlayers(players);
         
         if (players.length > 0) {
-          // Salva automaticamente i dati nel database
           await saveCSVPlayersToDatabase(players);
         } else {
           toast.error('Nessun giocatore trovato nel file CSV. Controlla il formato del file.');
         }
         
-        console.log('CSV caricato e salvato con successo:', players);
+        console.log('CSV caricato con successo:', players);
       } catch (error) {
         toast.error('Errore nel parsing del file CSV');
         console.error('Errore nel parsing del CSV:', error);
@@ -264,11 +205,17 @@ export const useCSVPlayers = () => {
     reader.readAsText(file);
   };
 
+  const clearCSVPlayers = () => {
+    setCsvPlayers([]);
+    console.log('🗑️ CSV players cleared');
+  };
+
   return {
     csvPlayers,
     loading,
     handleCSVUpload,
     parseCSVData,
-    saveCSVPlayersToDatabase
+    saveCSVPlayersToDatabase,
+    clearCSVPlayers
   };
 };
