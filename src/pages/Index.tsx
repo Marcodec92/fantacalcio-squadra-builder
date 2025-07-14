@@ -240,20 +240,20 @@ const Index = () => {
           </div>
           <div className="flex items-center gap-3 slide-in-right">
             <Button
-              onClick={() => navigate('/real-time-builder')}
+              onClick={() => navigate('/fanta-team')}
               className="glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-2 text-sm"
               size="sm"
             >
               <Timer className="w-4 h-4 mr-2" />
-              Real Time Builder
+              Fanta Team
             </Button>
             <Button
-              onClick={() => navigate('/squad-builder')}
+              onClick={() => navigate('/team-prediction')}
               className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-2 text-sm"
               size="sm"
             >
               <Zap className="w-4 h-4 mr-2" />
-              Squad Builder
+              Team Prediction
             </Button>
             <Button
               variant="outline"
