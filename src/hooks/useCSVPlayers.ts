@@ -76,7 +76,7 @@ export const useCSVPlayers = () => {
     }
   };
 
-  // Helper function to validate and convert team name
+  // Helper function to validate and convert team name - FIXED TYPE
   const validateTeamName = (teamName: string): Team | null => {
     const validTeams: Team[] = [
       'Atalanta', 'Bologna', 'Cagliari', 'Como', 'Cremonese', 'Fiorentina',
