@@ -1,8 +1,9 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PlayerRole } from '@/types/Player';
 import { RealTimePlayer, RealTimeSelection } from '@/pages/RealTimeBuilder';
 import { useCSVPlayers } from './useCSVPlayers';
+import { useRealTimeSelections } from './useRealTimeSelections';
 
 export const useRealTimeBuilder = () => {
   const [maxBudget, setMaxBudget] = useState<number>(500);
@@ -16,6 +17,25 @@ export const useRealTimeBuilder = () => {
   const [dragActive, setDragActive] = useState(false);
   
   const { csvPlayers } = useCSVPlayers();
+  const { 
+    loading: dbLoading, 
+    saveSelection, 
+    loadSelections, 
+    removeSelection: dbRemoveSelection, 
+    clearAllSelections: dbClearAllSelections 
+  } = useRealTimeSelections();
+
+  // Carica le selezioni dal database all'avvio
+  useEffect(() => {
+    const loadInitialSelections = async () => {
+      const savedSelections = await loadSelections();
+      if (savedSelections.length > 0) {
+        setSelections(savedSelections);
+      }
+    };
+    
+    loadInitialSelections();
+  }, []);
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
     if (csvPlayers.length === 0) {
@@ -28,7 +48,7 @@ export const useRealTimeBuilder = () => {
     setIsModalOpen(true);
   };
 
-  const handlePlayerSelect = (player: RealTimePlayer, credits: number) => {
+  const handlePlayerSelect = async (player: RealTimePlayer, credits: number) => {
     if (!selectedPosition) return;
     
     const newSelection: RealTimeSelection = {
@@ -38,40 +58,56 @@ export const useRealTimeBuilder = () => {
       player: { ...player, credits }
     };
 
+    // Aggiorna lo stato locale
     setSelections(prev => {
       const filtered = prev.filter(
         s => !(s.position_slot === selectedPosition.slot && s.role_category === selectedPosition.role)
       );
       return [...filtered, newSelection];
     });
+
+    // Salva nel database
+    await saveSelection(newSelection);
     
     setIsModalOpen(false);
     setSelectedPosition(null);
     console.log('Giocatore selezionato:', newSelection);
   };
 
-  const handleRemovePlayer = (slot: number, role: PlayerRole) => {
+  const handleRemovePlayer = async (slot: number, role: PlayerRole) => {
+    // Rimuovi dallo stato locale
     setSelections(prev => 
       prev.filter(s => !(s.position_slot === slot && s.role_category === role))
     );
+
+    // Rimuovi dal database
+    await dbRemoveSelection(slot, role);
+    
     console.log('Giocatore rimosso dalla posizione:', slot, role);
   };
 
-  const handleUpdateCredits = (slot: number, role: PlayerRole, newCredits: number) => {
+  const handleUpdateCredits = async (slot: number, role: PlayerRole, newCredits: number) => {
+    // Aggiorna lo stato locale
     setSelections(prev => 
       prev.map(selection => {
         if (selection.position_slot === slot && selection.role_category === role && selection.player) {
-          return {
+          const updatedSelection = {
             ...selection,
             player: {
               ...selection.player,
               credits: newCredits
             }
           };
+          
+          // Salva nel database in background
+          saveSelection(updatedSelection);
+          
+          return updatedSelection;
         }
         return selection;
       })
     );
+    
     console.log('Crediti aggiornati per posizione:', slot, role, 'nuovi crediti:', newCredits);
   };
 
@@ -98,8 +134,9 @@ export const useRealTimeBuilder = () => {
     return roleCredits;
   };
 
-  const clearSelections = () => {
+  const clearSelections = async () => {
     setSelections([]);
+    await dbClearAllSelections();
   };
 
   return {
@@ -122,6 +159,7 @@ export const useRealTimeBuilder = () => {
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections,
-    csvPlayers
+    csvPlayers,
+    dbLoading
   };
 };

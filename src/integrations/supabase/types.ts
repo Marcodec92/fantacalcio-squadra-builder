@@ -99,6 +99,45 @@ export type Database = {
         }
         Relationships: []
       }
+      realtime_selections: {
+        Row: {
+          created_at: string
+          credits: number
+          id: string
+          player_name: string
+          player_surname: string
+          player_team: string | null
+          position_slot: number
+          role_category: Database["public"]["Enums"]["player_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          id?: string
+          player_name: string
+          player_surname: string
+          player_team?: string | null
+          position_slot: number
+          role_category: Database["public"]["Enums"]["player_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          id?: string
+          player_name?: string
+          player_surname?: string
+          player_team?: string | null
+          position_slot?: number
+          role_category?: Database["public"]["Enums"]["player_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       squad_selections: {
         Row: {
           created_at: string

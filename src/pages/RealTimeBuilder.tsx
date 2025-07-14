@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { PlayerRole } from '@/types/Player';
@@ -48,7 +48,8 @@ const RealTimeBuilder = () => {
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections,
-    csvPlayers
+    csvPlayers,
+    dbLoading
   } = useRealTimeBuilder();
 
   const {
@@ -128,7 +129,19 @@ const RealTimeBuilder = () => {
               </h1>
               <p className="text-muted-foreground font-medium text-lg">Costruisci la squadra in base ai crediti spesi</p>
             </div>
-            <div className="w-40"></div>
+            <div className="flex items-center space-x-2">
+              {selections.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={clearSelections}
+                  className="glass-button border-red-300/20 hover:border-red-300/30 text-red-400 hover:text-red-300"
+                  disabled={dbLoading}
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Cancella Tutto
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -154,6 +167,11 @@ const RealTimeBuilder = () => {
               <p className="text-green-600 font-medium">
                 ✅ {csvPlayers.length} giocatori CSV caricati e pronti per l'uso
               </p>
+              {selections.length > 0 && (
+                <p className="text-blue-600 font-medium mt-2">
+                  💾 {selections.length} selezioni salvate automaticamente
+                </p>
+              )}
             </div>
           </div>
         )}
