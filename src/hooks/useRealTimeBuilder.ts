@@ -5,7 +5,11 @@ import { useCSVPlayers } from './useCSVPlayers';
 import { useRealTimeSelections } from './useRealTimeSelections';
 
 export const useRealTimeBuilder = () => {
-  const [maxBudget, setMaxBudget] = useState<number>(500);
+  const [maxBudget, setMaxBudget] = useState<number>(() => {
+    // Carica il budget salvato dal localStorage o usa 500 come default
+    const savedBudget = localStorage.getItem('realTimeBuilderBudget');
+    return savedBudget ? parseInt(savedBudget) : 500;
+  });
   const [selections, setSelections] = useState<RealTimeSelection[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
@@ -35,6 +39,13 @@ export const useRealTimeBuilder = () => {
     
     loadInitialSelections();
   }, []);
+
+  // Salva il budget nel localStorage quando cambia
+  const handleBudgetChange = (newBudget: number) => {
+    setMaxBudget(newBudget);
+    localStorage.setItem('realTimeBuilderBudget', newBudget.toString());
+    console.log('💰 Budget massimo aggiornato a:', newBudget);
+  };
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
     if (csvPlayers.length === 0) {
@@ -142,6 +153,7 @@ export const useRealTimeBuilder = () => {
   return {
     maxBudget,
     setMaxBudget,
+    handleBudgetChange,
     selections,
     setSelections,
     isModalOpen,

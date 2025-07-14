@@ -5,6 +5,7 @@ import { RealTimeSelection } from '@/pages/RealTimeBuilder';
 import RealTimeBudgetWheel from './RealTimeBudgetWheel';
 import RealTimeRoleBudgets from './RealTimeRoleBudgets';
 import RealTimeSquadGrid from './RealTimeSquadGrid';
+import BudgetSelector from './BudgetSelector';
 
 interface RealTimeBudgetLayoutProps {
   totalCredits: number;
@@ -15,6 +16,7 @@ interface RealTimeBudgetLayoutProps {
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
   onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
+  onBudgetChange: (budget: number) => void;
 }
 
 const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
@@ -25,12 +27,21 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
   selections,
   onPositionClick,
   onRemovePlayer,
-  onUpdateCredits
+  onUpdateCredits,
+  onBudgetChange
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-      {/* Budget Wheels */}
+      {/* Budget Controls */}
       <div className="lg:col-span-1 space-y-8 slide-in-left">
+        {/* Budget Selector */}
+        <div className="pulse-glow">
+          <BudgetSelector 
+            selectedBudget={maxBudget}
+            onBudgetChange={onBudgetChange}
+          />
+        </div>
+
         {/* Total Budget Wheel */}
         <div className="glass-card p-8 shadow-xl pulse-glow">
           <h3 className="text-xl font-bold mb-6 text-center text-gradient">Budget Totale</h3>

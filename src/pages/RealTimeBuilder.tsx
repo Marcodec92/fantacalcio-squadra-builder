@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -33,6 +32,7 @@ const RealTimeBuilder = () => {
   const {
     maxBudget,
     setMaxBudget,
+    handleBudgetChange,
     selections,
     isModalOpen,
     setIsModalOpen,
@@ -212,6 +212,7 @@ const RealTimeBuilder = () => {
             onPositionClick={handlePositionClick}
             onRemovePlayer={handleRemovePlayer}
             onUpdateCredits={handleUpdateCredits}
+            onBudgetChange={handleBudgetChange}
           />
         )}
 
