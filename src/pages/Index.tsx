@@ -52,17 +52,31 @@ const Index = () => {
   };
 
   const handleCSVPlayerSelect = async (csvPlayer: any) => {
-    console.log('🎯 Giocatore selezionato dal CSV:', csvPlayer);
+    console.log('🎯 handleCSVPlayerSelect - Giocatore selezionato:', csvPlayer);
     
     try {
-      // Crea un nuovo giocatore con SOLO i dati del giocatore selezionato
+      // Verifica che il giocatore non sia già presente
+      const alreadyExists = allPlayers.some(dbPlayer => 
+        dbPlayer.name.toLowerCase() === csvPlayer.name.toLowerCase() &&
+        dbPlayer.surname.toLowerCase() === csvPlayer.surname.toLowerCase() &&
+        dbPlayer.team === csvPlayer.team &&
+        dbPlayer.roleCategory === csvPlayer.role
+      );
+
+      if (alreadyExists) {
+        console.log('⚠️ Giocatore già presente nel database');
+        setShowCSVModal(false);
+        setSelectedRoleForCSV(null);
+        return;
+      }
+
+      // Crea SOLO il giocatore selezionato - NON tutti i giocatori CSV
       const newPlayer: Partial<Player> = {
         name: csvPlayer.name || '',
         surname: csvPlayer.surname || '',
         roleCategory: csvPlayer.role,
         role: csvPlayer.role,
         team: csvPlayer.team,
-        // I restanti campi rimangono con i valori di default
         fmv: 0,
         costPercentage: 0,
         goals: 0,
@@ -76,23 +90,24 @@ const Index = () => {
         xP: 0,
         ownership: 0,
         plusCategories: [],
-        tier: '',
+        tier: '', // NON 'CSV' - questo è importante
         isFavorite: false
       };
       
-      console.log('➕ Aggiungendo singolo giocatore:', newPlayer);
+      console.log('➕ Aggiungendo SOLO questo giocatore:', newPlayer);
       
-      // Aggiungi solo il singolo giocatore selezionato
+      // Chiamiamo addPlayer passando SOLO il giocatore selezionato
+      // NON tutto l'array csvPlayers
       await addPlayer(selectedRoleForCSV!, newPlayer);
       
-      console.log('✅ Giocatore aggiunto con successo');
+      console.log('✅ Singolo giocatore aggiunto con successo');
       
       // Chiudi il modal
       setShowCSVModal(false);
       setSelectedRoleForCSV(null);
       
     } catch (error) {
-      console.error('❌ Errore nell\'aggiunta del giocatore:', error);
+      console.error('❌ Errore nell\'aggiunta del singolo giocatore:', error);
     }
   };
 
@@ -148,7 +163,11 @@ const Index = () => {
 
   // Funzione per filtrare i CSV players escludendo quelli già aggiunti
   const getAvailableCSVPlayers = (role: PlayerRole) => {
-    return csvPlayers.filter(csvPlayer => {
+    console.log('🔍 getAvailableCSVPlayers - Filtrando per ruolo:', role);
+    console.log('🔍 csvPlayers disponibili:', csvPlayers.length);
+    console.log('🔍 allPlayers nel database:', allPlayers.length);
+    
+    const filtered = csvPlayers.filter(csvPlayer => {
       // Filtra per ruolo
       if (csvPlayer.role !== role) return false;
       
@@ -160,8 +179,12 @@ const Index = () => {
         dbPlayer.roleCategory === csvPlayer.role
       );
       
+      console.log(`🔍 Giocatore ${csvPlayer.surname} - già presente: ${alreadyExists}`);
       return !alreadyExists;
     });
+    
+    console.log('🔍 Giocatori disponibili dopo filtro:', filtered.length);
+    return filtered;
   };
 
   return (
