@@ -79,7 +79,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6 slide-in-left">
-              <div className="w-24 h-24 flex items-center justify-center">
+              <div className="w-14 h-14 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
                   alt="App Logo" 
@@ -91,6 +91,7 @@ const Index = () => {
               <Button
                 onClick={() => navigate('/squad-builder')}
                 className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-8 py-3 text-base"
+                size="lg"
               >
                 <Zap className="w-5 h-5 mr-2" />
                 Squad Builder
