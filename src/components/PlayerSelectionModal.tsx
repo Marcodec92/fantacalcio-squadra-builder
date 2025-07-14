@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -14,7 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 interface PlayerSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  players: Player[];
+  players: Player[]; // Questi sono solo i giocatori del database principale (NON CSV)
   selectedRole?: PlayerRole;
   onPlayerSelect: (playerId: string) => void;
   existingSelections: SquadSelection[];
@@ -24,7 +23,7 @@ interface PlayerSelectionModalProps {
 const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
   isOpen,
   onClose,
-  players,
+  players, // Solo giocatori del database principale
   selectedRole,
   onPlayerSelect,
   existingSelections,
@@ -59,7 +58,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
     return players.filter(player => {
       const matchesSearch = `${player.name} ${player.surname}`.toLowerCase()
         .includes(searchTerm.toLowerCase()) || 
-        player.team.toLowerCase().includes(searchTerm.toLowerCase());
+        player.team?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesTier = selectedTiers.length === 0 || selectedTiers.includes(player.tier);
       
@@ -98,7 +97,7 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
         <DialogHeader>
           <DialogTitle>
-            Seleziona {getRoleTitle(selectedRole)}
+            Seleziona {getRoleTitle(selectedRole)} dal Database
           </DialogTitle>
         </DialogHeader>
         
@@ -157,7 +156,8 @@ const PlayerSelectionModal: React.FC<PlayerSelectionModalProps> = ({
           <div className="overflow-y-auto max-h-96 space-y-2">
             {filteredPlayers.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
-                <p>Nessun giocatore trovato</p>
+                <p className="text-lg font-medium mb-2">Nessun giocatore trovato nel database</p>
+                <p className="text-sm">I giocatori devono essere importati dal CSV prima di poter essere selezionati qui</p>
               </div>
             ) : (
               filteredPlayers.map((player) => {

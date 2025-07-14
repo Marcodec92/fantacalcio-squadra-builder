@@ -21,6 +21,7 @@ export const useCSVPlayerImport = () => {
 
     try {
       // Crea l'oggetto da inserire nel database con tutti i campi necessari
+      // IMPORTANTE: NON usa tier: 'CSV' - diventa un giocatore normale del database
       const playerToInsert = {
         user_id: user.id,
         name: playerData.name || '',
@@ -28,7 +29,7 @@ export const useCSVPlayerImport = () => {
         team: playerData.team || null,
         role_category: playerData.roleCategory!,
         role: playerData.role!,
-        tier: playerData.tier || '',
+        tier: playerData.tier || '', // Tier vuoto, NON 'CSV'
         cost_percentage: playerData.costPercentage || 0,
         fmv: playerData.fmv || 0,
         goals: playerData.goals || 0,
@@ -50,6 +51,7 @@ export const useCSVPlayerImport = () => {
       console.log('👤 Cognome:', playerToInsert.surname);
       console.log('⚽ Ruolo:', playerToInsert.role_category);
       console.log('🏟️ Team:', playerToInsert.team);
+      console.log('🎯 Tier:', playerToInsert.tier, '(NON CSV - diventa giocatore normale)');
       console.log('🔢 User ID:', playerToInsert.user_id);
 
       // INSERIMENTO SINGOLO - ATTENZIONE: UN SOLO GIOCATORE
@@ -73,14 +75,15 @@ export const useCSVPlayerImport = () => {
         return null;
       }
 
-      console.log('✅✅✅ SUCCESSO! Giocatore inserito:');
+      console.log('✅✅✅ SUCCESSO! Giocatore inserito come NORMALE (non CSV):');
       console.log('🆔 ID inserito:', data.id);
       console.log('👤 Nome inserito:', data.name);
       console.log('👤 Cognome inserito:', data.surname);
       console.log('⚽ Ruolo inserito:', data.role_category);
+      console.log('🎯 Tier inserito:', data.tier, '(NON CSV)');
       console.log('🔢 Conteggio inserimenti: 1 (UNO SOLO)');
       
-      toast.success(`Giocatore ${playerData.surname} aggiunto con successo!`);
+      toast.success(`Giocatore ${playerData.surname} aggiunto al database principale!`);
       
       // IMPORTANTE: Invalida la cache per aggiornare la lista dei giocatori
       console.log('🔄 Invalidando la cache dei giocatori...');
