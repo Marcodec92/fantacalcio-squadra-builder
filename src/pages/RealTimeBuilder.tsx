@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { PlayerRole } from '@/types/Player';
 import CSVPlayerModal from '@/components/CSVPlayerModal';
-import CSVUploadSection from '@/components/CSVUploadSection';
 import RealTimeBudgetLayout from '@/components/RealTimeBudgetLayout';
 import { useRealTimeBuilder } from '@/hooks/useRealTimeBuilder';
 import { useCSVFileHandler } from '@/hooks/useCSVFileHandler';
@@ -133,31 +132,35 @@ const RealTimeBuilder = () => {
           </div>
         </div>
 
-        {/* Budget Selection and CSV Upload */}
-        <CSVUploadSection
-          maxBudget={maxBudget}
-          onMaxBudgetChange={setMaxBudget}
-          csvPlayersCount={csvPlayers.length}
-          loading={loading}
-          onFileUpload={handleFileUpload}
-          onDrop={handleDropWithActive}
-          onDrag={handleDrag}
-          dragActive={dragActive}
-          fileInputRef={fileInputRef}
-          onTriggerFileInput={triggerFileInput}
-        />
+        {/* Nota per l'utente */}
+        <div className="glass-card mb-8 p-6 shadow-xl">
+          <div className="text-center">
+            <p className="text-muted-foreground">
+              💡 Per utilizzare il Real Time Builder, carica prima i giocatori CSV dalla pagina Database
+            </p>
+            <Button
+              onClick={() => navigate('/')}
+              className="mt-4 glass-button gradient-primary font-medium"
+              size="sm"
+            >
+              Vai al Database
+            </Button>
+          </div>
+        </div>
 
-        {/* Budget and Squad Layout */}
-        <RealTimeBudgetLayout
-          totalCredits={totalCredits}
-          maxBudget={maxBudget}
-          selectedCount={selections.length}
-          roleCredits={roleCredits}
-          selections={selections}
-          onPositionClick={handlePositionClick}
-          onRemovePlayer={handleRemovePlayer}
-          onUpdateCredits={handleUpdateCredits}
-        />
+        {/* Budget and Squad Layout - Solo se ci sono giocatori CSV */}
+        {csvPlayers.length > 0 && (
+          <RealTimeBudgetLayout
+            totalCredits={totalCredits}
+            maxBudget={maxBudget}
+            selectedCount={selections.length}
+            roleCredits={roleCredits}
+            selections={selections}
+            onPositionClick={handlePositionClick}
+            onRemovePlayer={handleRemovePlayer}
+            onUpdateCredits={handleUpdateCredits}
+          />
+        )}
 
         {/* CSV Player Selection Modal */}
         <CSVPlayerModal

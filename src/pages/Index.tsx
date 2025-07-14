@@ -3,14 +3,17 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer, Upload } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
 import { usePlayersData } from '@/hooks/usePlayersData';
 import PlayersList from '@/components/PlayersList';
 import AuthModal from '@/components/AuthModal';
+import CSVPlayerSelectionModal from '@/components/CSVPlayerSelectionModal';
 import { Player, PlayerRole } from '@/types/Player';
+import { useCSVFileHandler } from '@/hooks/useCSVFileHandler';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -20,6 +23,18 @@ const Index = () => {
   
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showCSVModal, setShowCSVModal] = useState(false);
+  const [selectedRoleForCSV, setSelectedRoleForCSV] = useState<PlayerRole | null>(null);
+
+  const {
+    csvPlayers,
+    loading: csvLoading,
+    fileInputRef,
+    handleFileUpload,
+    handleDrop,
+    handleDrag,
+    triggerFileInput
+  } = useCSVFileHandler(() => {});
 
   // Conteggio giocatori per ruolo
   const getPlayerCountByRole = (role: PlayerRole) => {
@@ -28,7 +43,43 @@ const Index = () => {
 
   const handleAddPlayer = (role: PlayerRole) => {
     console.log('handleAddPlayer called with role:', role);
-    addPlayer(role);
+    if (csvPlayers.length > 0) {
+      setSelectedRoleForCSV(role);
+      setShowCSVModal(true);
+    } else {
+      addPlayer(role);
+    }
+  };
+
+  const handleCSVPlayerSelect = (csvPlayer: any) => {
+    // Crea un nuovo giocatore con i dati dal CSV (solo nome, cognome, ruolo e squadra)
+    const newPlayer: Partial<Player> = {
+      name: csvPlayer.name,
+      surname: csvPlayer.surname,
+      roleCategory: csvPlayer.role,
+      role: csvPlayer.role,
+      team: csvPlayer.team,
+      // I restanti campi rimangono con i valori di default
+      fmv: 0,
+      costPercentage: 0,
+      goals: 0,
+      assists: 0,
+      malus: 0,
+      goalsConceded: 0,
+      yellowCards: 0,
+      penaltiesSaved: 0,
+      xG: 0,
+      xA: 0,
+      xP: 0,
+      ownership: 0,
+      plusCategories: [],
+      tier: '',
+      isFavorite: false
+    };
+    
+    addPlayer(selectedRoleForCSV!, newPlayer);
+    setShowCSVModal(false);
+    setSelectedRoleForCSV(null);
   };
 
   const handleUpdatePlayer = (player: Player) => {
@@ -134,6 +185,47 @@ const Index = () => {
         <div className="glass-card shadow-2xl overflow-hidden fade-in-scale">
           <Tabs value={selectedRole} onValueChange={(value) => setSelectedRole(value as PlayerRole)} className="w-full">
             <div className="glass-card border-b border-white/10 p-8">
+              {/* CSV Upload Section */}
+              <div className="mb-8">
+                <Card className="glass-card p-6 shadow-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-gradient mb-2">Carica Giocatori</h3>
+                      <p className="text-muted-foreground text-sm">
+                        {csvPlayers.length > 0 
+                          ? `${csvPlayers.length} giocatori caricati dal CSV`
+                          : 'Carica un file CSV per importare i giocatori'
+                        }
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {csvLoading ? (
+                        <div className="flex items-center gap-2">
+                          <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                          <span className="text-sm">Caricamento...</span>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={triggerFileInput}
+                          className="glass-button gradient-secondary font-medium"
+                          size="sm"
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
+                          {csvPlayers.length > 0 ? 'Aggiorna CSV' : 'Carica CSV'}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </Card>
+              </div>
+
               <TabsList className="grid grid-cols-4 gap-4 max-w-4xl mx-auto h-auto bg-transparent p-0">
                 <TabsTrigger 
                   value="Portiere" 
@@ -196,6 +288,18 @@ const Index = () => {
           </Tabs>
         </div>
       </div>
+
+      {/* CSV Player Selection Modal */}
+      <CSVPlayerSelectionModal
+        isOpen={showCSVModal}
+        onClose={() => {
+          setShowCSVModal(false);
+          setSelectedRoleForCSV(null);
+        }}
+        players={csvPlayers.filter(p => selectedRoleForCSV ? p.role === selectedRoleForCSV : false)}
+        selectedRole={selectedRoleForCSV}
+        onPlayerSelect={handleCSVPlayerSelect}
+      />
     </div>
   );
 };
