@@ -19,15 +19,14 @@ const RealTimeRoleBudgets: React.FC<RealTimeRoleBudgetsProps> = ({
     { role: 'Attaccante' as PlayerRole, label: 'Attaccanti', emoji: '🎯', color: '#EF4444' }
   ];
 
-  const totalCredits = Object.values(roleCredits).reduce((sum, credits) => sum + credits, 0);
-
   return (
     <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
       <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Budget per Ruolo</h3>
       <div className="space-y-4">
         {roleConfig.map(({ role, label, emoji, color }) => {
           const credits = roleCredits[role];
-          const percentage = totalCredits > 0 ? (credits / totalCredits) * 100 : 0;
+          // Calcola la percentuale basata sul budget totale, non sul totale speso
+          const percentage = maxBudget > 0 ? (credits / maxBudget) * 100 : 0;
           
           return (
             <div key={role} className="space-y-2">
@@ -45,14 +44,14 @@ const RealTimeRoleBudgets: React.FC<RealTimeRoleBudgetsProps> = ({
                 <div
                   className="h-2 rounded-full transition-all duration-500 ease-in-out"
                   style={{
-                    width: `${percentage}%`,
+                    width: `${Math.min(percentage, 100)}%`,
                     backgroundColor: color
                   }}
                 />
               </div>
               
               <div className="text-xs text-center text-gray-500">
-                {percentage.toFixed(1)}% del budget speso
+                {percentage.toFixed(1)}% del budget totale ({maxBudget} crediti)
               </div>
             </div>
           );

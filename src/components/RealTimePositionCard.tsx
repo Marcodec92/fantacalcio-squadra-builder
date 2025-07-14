@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { X, Plus, Edit2, Check } from "lucide-react";
 import { PlayerRole } from '@/types/Player';
 import { RealTimeSelection } from '@/pages/RealTimeBuilder';
 
@@ -13,6 +14,7 @@ interface RealTimePositionCardProps {
   selection?: RealTimeSelection;
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
+  onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
 }
 
 const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
@@ -21,9 +23,34 @@ const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
   label,
   selection,
   onPositionClick,
-  onRemovePlayer
+  onRemovePlayer,
+  onUpdateCredits
 }) => {
+  const [editingCredits, setEditingCredits] = useState(false);
+  const [tempCredits, setTempCredits] = useState<string>('');
+  
   const player = selection?.player;
+
+  const handleEditCredits = () => {
+    if (player) {
+      setTempCredits(player.credits.toString());
+      setEditingCredits(true);
+    }
+  };
+
+  const handleSaveCredits = () => {
+    const newCredits = parseFloat(tempCredits);
+    if (!isNaN(newCredits) && newCredits > 0) {
+      onUpdateCredits(slot, role, newCredits);
+    }
+    setEditingCredits(false);
+    setTempCredits('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCredits(false);
+    setTempCredits('');
+  };
 
   return (
     <Card className="glass-card p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 relative group">
@@ -42,7 +69,47 @@ const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
             <div className="text-xs font-medium text-muted-foreground">{label}</div>
             <div className="font-bold text-sm">{player.name} {player.surname}</div>
             <div className="text-xs text-muted-foreground">{player.team}</div>
-            <div className="text-lg font-bold text-green-600">{player.credits} crediti</div>
+            
+            {editingCredits ? (
+              <div className="flex items-center justify-center space-x-2">
+                <Input
+                  type="number"
+                  value={tempCredits}
+                  onChange={(e) => setTempCredits(e.target.value)}
+                  className="w-20 h-8 text-center text-sm"
+                  min="1"
+                  step="0.5"
+                />
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-green-100"
+                  onClick={handleSaveCredits}
+                >
+                  <Check className="h-3 w-3 text-green-600" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-red-100"
+                  onClick={handleCancelEdit}
+                >
+                  <X className="h-3 w-3 text-red-500" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="text-lg font-bold text-green-600">{player.credits} crediti</div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-blue-100"
+                  onClick={handleEditCredits}
+                >
+                  <Edit2 className="h-3 w-3 text-blue-500" />
+                </Button>
+              </div>
+            )}
           </div>
         </>
       ) : (

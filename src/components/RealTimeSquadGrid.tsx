@@ -8,12 +8,14 @@ interface RealTimeSquadGridProps {
   selections: RealTimeSelection[];
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
+  onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
 }
 
 const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
   selections,
   onPositionClick,
-  onRemovePlayer
+  onRemovePlayer,
+  onUpdateCredits
 }) => {
   const roleConfig = [
     {
@@ -64,6 +66,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
             selections={selections}
             onPositionClick={onPositionClick}
             onRemovePlayer={onRemovePlayer}
+            onUpdateCredits={onUpdateCredits}
           />
         </div>
       ))}

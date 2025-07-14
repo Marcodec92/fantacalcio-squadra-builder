@@ -14,6 +14,7 @@ interface RealTimeBudgetLayoutProps {
   selections: RealTimeSelection[];
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
+  onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
 }
 
 const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
@@ -23,7 +24,8 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
   roleCredits,
   selections,
   onPositionClick,
-  onRemovePlayer
+  onRemovePlayer,
+  onUpdateCredits
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -53,6 +55,7 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
             selections={selections}
             onPositionClick={onPositionClick}
             onRemovePlayer={onRemovePlayer}
+            onUpdateCredits={onUpdateCredits}
           />
         </div>
       </div>

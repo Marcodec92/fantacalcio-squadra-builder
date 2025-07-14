@@ -45,6 +45,7 @@ const RealTimeBuilder = () => {
     handlePositionClick,
     handlePlayerSelect,
     handleRemovePlayer,
+    handleUpdateCredits,
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections
@@ -155,6 +156,7 @@ const RealTimeBuilder = () => {
           selections={selections}
           onPositionClick={handlePositionClick}
           onRemovePlayer={handleRemovePlayer}
+          onUpdateCredits={handleUpdateCredits}
         />
 
         {/* CSV Player Selection Modal */}

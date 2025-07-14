@@ -49,6 +49,24 @@ export const useRealTimeBuilder = () => {
     console.log('Giocatore rimosso dalla posizione:', slot, role);
   };
 
+  const handleUpdateCredits = (slot: number, role: PlayerRole, newCredits: number) => {
+    setSelections(prev => 
+      prev.map(selection => {
+        if (selection.position_slot === slot && selection.role_category === role && selection.player) {
+          return {
+            ...selection,
+            player: {
+              ...selection.player,
+              credits: newCredits
+            }
+          };
+        }
+        return selection;
+      })
+    );
+    console.log('Crediti aggiornati per posizione:', slot, role, 'nuovi crediti:', newCredits);
+  };
+
   const calculateTotalCredits = () => {
     return selections.reduce((total, selection) => {
       return total + (selection.player?.credits || 0);
@@ -92,6 +110,7 @@ export const useRealTimeBuilder = () => {
     handlePositionClick,
     handlePlayerSelect,
     handleRemovePlayer,
+    handleUpdateCredits,
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections

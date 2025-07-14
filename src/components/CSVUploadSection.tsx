@@ -1,8 +1,9 @@
 
-import React, { useRef } from 'react';
+import React from 'react';
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, FileText, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Upload, FileText } from "lucide-react";
 
 interface CSVUploadSectionProps {
   maxBudget: number;
@@ -10,8 +11,8 @@ interface CSVUploadSectionProps {
   csvPlayersCount: number;
   loading: boolean;
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
-  onDrag: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDrop: (event: React.DragEvent<HTMLDivElement>) => void;
+  onDrag: (event: React.DragEvent<HTMLDivElement>) => void;
   dragActive: boolean;
   fileInputRef: React.RefObject<HTMLInputElement>;
   onTriggerFileInput: () => void;
@@ -29,94 +30,94 @@ const CSVUploadSection: React.FC<CSVUploadSectionProps> = ({
   fileInputRef,
   onTriggerFileInput
 }) => {
+  const budgetOptions = [300, 500, 650];
+
   return (
-    <div className="glass-card mb-8 p-6 shadow-xl">
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-2 block">
-              Budget Massimo
-            </label>
-            <Select value={maxBudget.toString()} onValueChange={(value) => onMaxBudgetChange(Number(value))}>
-              <SelectTrigger className="w-40">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="300">300 Crediti</SelectItem>
-                <SelectItem value="500">500 Crediti</SelectItem>
-                <SelectItem value="650">650 Crediti</SelectItem>
-              </SelectContent>
-            </Select>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      {/* Budget Selection */}
+      <Card className="glass-card p-8 shadow-xl slide-in-left">
+        <h3 className="text-2xl font-bold mb-6 text-gradient">Budget Massimo</h3>
+        <div className="space-y-4">
+          <div className="grid grid-cols-3 gap-4">
+            {budgetOptions.map((budget) => (
+              <Button
+                key={budget}
+                variant={maxBudget === budget ? "default" : "outline"}
+                className="glass-button h-16 text-lg font-bold"
+                onClick={() => onMaxBudgetChange(budget)}
+              >
+                {budget}
+              </Button>
+            ))}
           </div>
-          {csvPlayersCount > 0 && (
-            <div className="text-sm text-muted-foreground flex items-center gap-2">
-              <FileText className="w-4 h-4 text-green-500" />
-              <p>{csvPlayersCount} giocatori caricati</p>
-            </div>
-          )}
+          <div className="text-center">
+            <p className="text-muted-foreground">Budget selezionato: <span className="font-bold text-2xl text-gradient">{maxBudget} crediti</span></p>
+          </div>
         </div>
-        
-        <div className="w-full lg:w-auto">
-          <div 
-            className={`
-              relative border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200
-              ${dragActive 
-                ? 'border-primary bg-primary/5 scale-105' 
-                : 'border-gray-300 hover:border-primary/50 hover:bg-gray-50/50'
-              }
-              ${loading ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}
-            `}
-            onDragEnter={onDrag}
-            onDragLeave={onDrag}
-            onDragOver={onDrag}
-            onDrop={onDrop}
-            onClick={onTriggerFileInput}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv,text/csv,application/csv"
-              onChange={onFileUpload}
-              className="hidden"
-              disabled={loading}
-            />
-            
-            <div className="flex flex-col items-center gap-3">
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <p className="text-sm font-medium">Caricamento in corso...</p>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10">
-                    <Upload className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1">
-                      Clicca o trascina il file CSV qui
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Formato: Ruolo,Nome Giocatore,Squadra
-                    </p>
-                  </div>
-                </>
-              )}
+      </Card>
+
+      {/* CSV Upload */}
+      <Card className="glass-card p-8 shadow-xl slide-in-right">
+        <h3 className="text-2xl font-bold mb-6 text-gradient">Carica Giocatori CSV</h3>
+        <div 
+          className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 ${
+            dragActive 
+              ? 'border-blue-400 bg-blue-50/30' 
+              : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50/10'
+          }`}
+          onDrop={onDrop}
+          onDragOver={onDrag}
+          onDragEnter={onDrag}
+          onDragLeave={onDrag}
+        >
+          {loading ? (
+            <div className="space-y-4">
+              <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+              <p className="text-lg font-medium text-blue-600">Caricamento in corso...</p>
             </div>
-          </div>
-          
-          <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
-              <div className="text-xs text-blue-700">
-                <p className="font-medium mb-1">Formato CSV richiesto:</p>
-                <p className="font-mono bg-white px-2 py-1 rounded">Ruolo,Nome Giocatore,Squadra</p>
-                <p className="mt-1">Ruoli: P/D/C/A (o versioni estese)</p>
+          ) : csvPlayersCount > 0 ? (
+            <div className="space-y-4">
+              <div className="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+                <FileText className="w-8 h-8 text-green-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-green-600 mb-2">File CSV caricato!</p>
+                <p className="text-lg text-muted-foreground">{csvPlayersCount} giocatori disponibili</p>
+                <Button
+                  onClick={onTriggerFileInput}
+                  className="mt-4 glass-button gradient-secondary"
+                >
+                  Carica nuovo file
+                </Button>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+                <Upload className="w-8 h-8 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold mb-2">Trascina qui il tuo file CSV</p>
+                <p className="text-muted-foreground mb-4">oppure</p>
+                <Button
+                  onClick={onTriggerFileInput}
+                  className="glass-button gradient-primary font-medium"
+                >
+                  Seleziona File CSV
+                </Button>
+              </div>
+            </div>
+          )}
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            onChange={onFileUpload}
+            className="hidden"
+          />
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
