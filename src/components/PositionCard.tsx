@@ -80,6 +80,12 @@ const PositionCard: React.FC<PositionCardProps> = ({
     };
   };
 
+  // Handle clicks on the budget section to prevent propagation
+  const handleBudgetSectionClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
     <Card 
       className={`p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 min-h-[320px] flex flex-col backdrop-blur-sm border-0 ${
@@ -118,7 +124,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                   <span className="text-xs font-medium text-gray-600">FMV:</span>
                   <span className="font-bold text-purple-600 text-sm">{player.fmv}M</span>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1" onClick={handleBudgetSectionClick}>
                   <span className="text-xs font-medium text-gray-600">Budget:</span>
                   <div className="flex items-center gap-1">
                     {editingPercentage === player.id ? (
@@ -159,7 +165,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                           {player.costPercentage}%
                         </div>
                         {showBudgetBreakdown === player.id && (
-                          <div className="flex items-center gap-1 ml-1 animate-slide-in-right">
+                          <div className="flex items-center gap-1 ml-1 animate-slide-in-right" onClick={handleBudgetSectionClick}>
                              <div className="flex items-center gap-1 text-xs bg-green-50 px-1 py-0.5 rounded border border-green-200 shadow-sm">
                                <span className="text-green-600 font-medium text-xs">300:</span>
                                <span className="text-green-700 font-bold text-xs">{calculateCreditBreakdown(player.costPercentage).credits300}</span>
