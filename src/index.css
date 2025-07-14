@@ -163,7 +163,6 @@
     box-shadow: var(--shadow-glow-accent);
   }
 
-  /* Testo gradient senza hover effect */
   .text-gradient {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
