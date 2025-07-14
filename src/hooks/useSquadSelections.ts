@@ -137,11 +137,11 @@ export const useSquadSelections = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['squadSelections', user?.id] });
-      toast.success('Squadra resettata! Tutti i giocatori sono stati rimossi.');
+      toast.success('Team Prediction resettata! Tutti i giocatori sono stati rimossi.');
     },
     onError: (error) => {
       console.error('Error clearing all squad selections:', error);
-      toast.error('Errore nel reset della squadra');
+      toast.error('Errore nel reset di Team Prediction');
     },
   });
 

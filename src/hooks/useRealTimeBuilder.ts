@@ -7,7 +7,7 @@ import { useRealTimeSelections } from './useRealTimeSelections';
 export const useRealTimeBuilder = () => {
   const [maxBudget, setMaxBudget] = useState<number>(() => {
     // Carica il budget salvato dal localStorage o usa 500 come default
-    const savedBudget = localStorage.getItem('realTimeBuilderBudget');
+    const savedBudget = localStorage.getItem('fantaTeamBudget');
     return savedBudget ? parseInt(savedBudget) : 500;
   });
   const [selections, setSelections] = useState<RealTimeSelection[]>([]);
@@ -43,7 +43,7 @@ export const useRealTimeBuilder = () => {
   // Salva il budget nel localStorage quando cambia
   const handleBudgetChange = (newBudget: number) => {
     setMaxBudget(newBudget);
-    localStorage.setItem('realTimeBuilderBudget', newBudget.toString());
+    localStorage.setItem('fantaTeamBudget', newBudget.toString());
     console.log('💰 Budget massimo aggiornato a:', newBudget);
   };
 

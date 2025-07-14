@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -101,7 +102,7 @@ const SquadBuilder = () => {
             <span className="text-3xl">🔒</span>
           </div>
           <h2 className="text-3xl font-bold mb-6 text-gradient-secondary">Accesso richiesto</h2>
-          <p className="text-muted-foreground text-lg">Devi effettuare l'accesso per utilizzare il Squad Builder</p>
+          <p className="text-muted-foreground text-lg">Devi effettuare l'accesso per utilizzare Team Prediction</p>
         </div>
       </div>
     );
@@ -147,7 +148,7 @@ const SquadBuilder = () => {
             </Button>
             <div className="text-center">
               <h1 className="text-5xl font-bold text-gradient mb-3">
-                ⚽ Squad Builder
+                ⚽ Team Prediction
               </h1>
               <p className="text-muted-foreground font-medium text-lg">Costruisci la tua formazione ideale</p>
             </div>

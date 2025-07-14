@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -103,7 +104,7 @@ const RealTimeBuilder = () => {
             <span className="text-3xl">🔒</span>
           </div>
           <h2 className="text-3xl font-bold mb-6 text-gradient-secondary">Accesso richiesto</h2>
-          <p className="text-muted-foreground text-lg">Devi effettuare l'accesso per utilizzare il Real Time Builder</p>
+          <p className="text-muted-foreground text-lg">Devi effettuare l'accesso per utilizzare Fanta Team</p>
         </div>
       </div>
     );
@@ -132,7 +133,7 @@ const RealTimeBuilder = () => {
             </Button>
             <div className="text-center">
               <h1 className="text-5xl font-bold text-gradient mb-3">
-                ⚡ Real Time Builder
+                ⚡ Fanta Team
               </h1>
               <p className="text-muted-foreground font-medium text-lg">Costruisci la squadra in base ai crediti spesi</p>
             </div>

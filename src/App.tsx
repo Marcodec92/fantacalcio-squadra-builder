@@ -30,8 +30,8 @@ const App: React.FC = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/squad-builder" element={<SquadBuilder />} />
-            <Route path="/real-time-builder" element={<RealTimeBuilder />} />
+            <Route path="/team-prediction" element={<SquadBuilder />} />
+            <Route path="/fanta-team" element={<RealTimeBuilder />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
