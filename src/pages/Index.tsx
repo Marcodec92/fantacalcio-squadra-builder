@@ -79,7 +79,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6 slide-in-left">
-              <div className="w-12 h-12 flex items-center justify-center">
+              <div className="w-16 h-16 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
                   alt="App Logo" 
