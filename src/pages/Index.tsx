@@ -47,12 +47,13 @@ const Index = () => {
         <div className="floating-orb"></div>
         
         <div className="glass-card p-12 text-center max-w-md w-full fade-in-scale">
-          <div className="w-20 h-20 mx-auto mb-8 gradient-primary rounded-3xl flex items-center justify-center pulse-glow">
-            <Users className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 mx-auto mb-8 flex items-center justify-center">
+            <img 
+              src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
+              alt="App Logo" 
+              className="w-full h-full object-contain"
+            />
           </div>
-          <h1 className="text-4xl font-bold mb-6 text-gradient">
-            ⚽ FantaCalcio Database
-          </h1>
           <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
             Accedi per gestire i tuoi giocatori e costruire la tua formazione perfetta
           </p>
@@ -78,14 +79,12 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6 slide-in-left">
-              <div className="w-16 h-16 gradient-primary rounded-3xl flex items-center justify-center pulse-glow">
-                <FileSpreadsheet className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gradient">
-                  ⚽ FantaCalcio Database
-                </h1>
-                <p className="text-muted-foreground text-sm mt-1">Gestisci i tuoi giocatori con stile</p>
+              <div className="w-16 h-16 flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
+                  alt="App Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
             </div>
             <div className="flex items-center gap-4 slide-in-right">
