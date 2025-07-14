@@ -234,7 +234,7 @@ export const useCSVPlayers = () => {
           user_id: user.id,
           name: player.name || '',
           surname: player.surname,
-          team: validatedTeam,
+          team: validatedTeam, // This is now properly typed as Team | null
           role_category: player.role,
           role: getDefaultSpecificRole(player.role),
           tier: 'CSV',
