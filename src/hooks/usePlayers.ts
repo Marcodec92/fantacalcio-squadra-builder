@@ -101,7 +101,7 @@ export const usePlayers = (filters?: PlayerFilters) => {
       const specificRole = partialPlayerData?.role || getDefaultSpecificRole(roleCategory);
       
       // Handle team properly - convert empty string to null
-      const teamValue = partialPlayerData?.team && partialPlayerData.team !== '' ? partialPlayerData.team : null;
+      const teamValue = partialPlayerData?.team && partialPlayerData.team.length > 0 ? partialPlayerData.team : null;
 
       const basePlayerData = {
         user_id: user.id,
@@ -157,7 +157,7 @@ export const usePlayers = (filters?: PlayerFilters) => {
 
     try {
       // Handle team properly - convert empty string to null
-      const teamValue = updatedPlayer.team && updatedPlayer.team !== '' ? updatedPlayer.team : null;
+      const teamValue = updatedPlayer.team && updatedPlayer.team.length > 0 ? updatedPlayer.team : null;
 
       const { error } = await supabase
         .from('players')
