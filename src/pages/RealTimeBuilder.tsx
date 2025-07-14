@@ -74,13 +74,23 @@ const RealTimeBuilder = () => {
           }
         }
         
+        // Clear previous CSV data and replace with new data
         setCsvPlayers(players);
+        
+        // Clear existing selections since player IDs might have changed
+        setSelections([]);
+        
         toast.success(`${players.length} giocatori caricati dal CSV`);
+        console.log('CSV caricato con successo:', players);
       } catch (error) {
         toast.error('Errore nel parsing del file CSV');
+        console.error('Errore nel parsing del CSV:', error);
       }
     };
     reader.readAsText(file);
+    
+    // Reset the input value to allow uploading the same file again
+    event.target.value = '';
   };
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
@@ -108,12 +118,14 @@ const RealTimeBuilder = () => {
     
     setIsModalOpen(false);
     setSelectedPosition(null);
+    console.log('Giocatore selezionato:', newSelection);
   };
 
   const handleRemovePlayer = (slot: number, role: PlayerRole) => {
     setSelections(prev => 
       prev.filter(s => !(s.position_slot === slot && s.role_category === role))
     );
+    console.log('Giocatore rimosso dalla posizione:', slot, role);
   };
 
   const calculateTotalCredits = () => {
