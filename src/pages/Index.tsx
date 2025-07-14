@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -53,10 +52,12 @@ const Index = () => {
   };
 
   const handleCSVPlayerSelect = (csvPlayer: any) => {
-    // Crea un nuovo giocatore con i dati dal CSV (solo nome, cognome, ruolo e squadra)
+    console.log('🎯 Giocatore selezionato dal CSV:', csvPlayer);
+    
+    // Crea un nuovo giocatore con SOLO i dati del giocatore selezionato
     const newPlayer: Partial<Player> = {
-      name: csvPlayer.name,
-      surname: csvPlayer.surname,
+      name: csvPlayer.name || '',
+      surname: csvPlayer.surname || '',
       roleCategory: csvPlayer.role,
       role: csvPlayer.role,
       team: csvPlayer.team,
@@ -78,6 +79,7 @@ const Index = () => {
       isFavorite: false
     };
     
+    console.log('➕ Aggiungendo giocatore:', newPlayer);
     addPlayer(selectedRoleForCSV!, newPlayer);
     setShowCSVModal(false);
     setSelectedRoleForCSV(null);
@@ -132,6 +134,24 @@ const Index = () => {
       </div>
     );
   }
+
+  // Funzione per filtrare i CSV players escludendo quelli già aggiunti
+  const getAvailableCSVPlayers = (role: PlayerRole) => {
+    return csvPlayers.filter(csvPlayer => {
+      // Filtra per ruolo
+      if (csvPlayer.role !== role) return false;
+      
+      // Escludi i giocatori già presenti nel database
+      const alreadyExists = allPlayers.some(dbPlayer => 
+        dbPlayer.name.toLowerCase() === csvPlayer.name.toLowerCase() &&
+        dbPlayer.surname.toLowerCase() === csvPlayer.surname.toLowerCase() &&
+        dbPlayer.team === csvPlayer.team &&
+        dbPlayer.roleCategory === csvPlayer.role
+      );
+      
+      return !alreadyExists;
+    });
+  };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -310,7 +330,7 @@ const Index = () => {
           setShowCSVModal(false);
           setSelectedRoleForCSV(null);
         }}
-        players={csvPlayers.filter(p => selectedRoleForCSV ? p.role === selectedRoleForCSV : false)}
+        players={selectedRoleForCSV ? getAvailableCSVPlayers(selectedRoleForCSV) : []}
         selectedRole={selectedRoleForCSV}
         onPlayerSelect={handleCSVPlayerSelect}
       />
