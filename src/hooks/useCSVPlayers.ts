@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { PlayerRole, SpecificRole } from '@/types/Player';
+import { PlayerRole, SpecificRole, Team } from '@/types/Player';
 
 export interface CSVPlayer {
   id: string;
@@ -76,6 +75,29 @@ export const useCSVPlayers = () => {
       default:
         return 'Portiere';
     }
+  };
+
+  // Helper function to validate and convert team name
+  const validateTeamName = (teamName: string): Team | null => {
+    const validTeams: Team[] = [
+      'Atalanta', 'Bologna', 'Cagliari', 'Como', 'Cremonese', 'Fiorentina',
+      'Genoa', 'Hellas Verona', 'Inter', 'Juventus', 'Lazio', 'Lecce',
+      'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese'
+    ];
+    
+    // Try exact match first
+    const exactMatch = validTeams.find(team => team.toLowerCase() === teamName.toLowerCase());
+    if (exactMatch) return exactMatch;
+    
+    // Try partial match
+    const partialMatch = validTeams.find(team => 
+      team.toLowerCase().includes(teamName.toLowerCase()) || 
+      teamName.toLowerCase().includes(team.toLowerCase())
+    );
+    if (partialMatch) return partialMatch;
+    
+    console.log(`⚠️ Team "${teamName}" not found in valid teams list`);
+    return null;
   };
 
   const parseCSVData = (csvText: string): CSVPlayer[] => {
@@ -212,23 +234,34 @@ export const useCSVPlayers = () => {
         console.error('Errore nell\'eliminazione dei vecchi CSV players:', deleteError);
       }
 
-      // Ora salviamo i nuovi CSV players
-      const playersToInsert = players.map(player => ({
-        user_id: user.id,
-        name: player.name,
-        surname: player.surname,
-        team: player.team,
-        role_category: player.role,
-        role: getDefaultSpecificRole(player.role),
-        tier: 'CSV', // Marchiamo come CSV per distinguerli
-        cost_percentage: 0,
-        fmv: 0,
-        goals: 0,
-        assists: 0,
-        malus: 0,
-        ownership: 0,
-        is_favorite: false
-      }));
+      // Ora salviamo i nuovi CSV players con la corretta mappatura dei tipi
+      const playersToInsert = players.map(player => {
+        const validatedTeam = validateTeamName(player.team);
+        
+        return {
+          user_id: user.id,
+          name: player.name,
+          surname: player.surname,
+          team: validatedTeam, // Questo ora è del tipo corretto o null
+          role_category: player.role,
+          role: getDefaultSpecificRole(player.role),
+          tier: 'CSV', // Marchiamo come CSV per distinguerli
+          cost_percentage: 0,
+          fmv: 0,
+          goals: 0,
+          assists: 0,
+          malus: 0,
+          goals_conceded: 0,
+          yellow_cards: 0,
+          penalties_saved: 0,
+          x_g: 0,
+          x_a: 0,
+          x_p: 0,
+          ownership: 0,
+          plus_categories: [],
+          is_favorite: false
+        };
+      });
 
       const { data, error } = await supabase
         .from('players')
