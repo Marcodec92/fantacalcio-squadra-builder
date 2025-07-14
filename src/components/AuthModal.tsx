@@ -59,17 +59,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           </div>
         </DialogHeader>
 
-        {/* Logo centered at the top */}
-        <div className="flex justify-center mb-6">
-          <div className="w-32 h-32 flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/28845278-992b-4c6b-b18d-b040ee5dd63b.png" 
-              alt="FantaCalcio Manager Logo" 
-              className="w-full h-full object-contain"
-            />
-          </div>
-        </div>
-
         <Card className="p-6">
           <div className="text-center mb-6">
             <p className="text-gray-600">
