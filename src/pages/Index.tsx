@@ -76,10 +76,10 @@ const Index = () => {
 
       {/* Header */}
       <div className="glass-card border-b border-white/10 backdrop-blur-2xl sticky top-0 z-50 slide-in-up">
-        <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6 slide-in-left">
-              <div className="w-64 h-64 flex items-center justify-center">
+              <div className="w-12 h-12 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
                   alt="App Logo" 
