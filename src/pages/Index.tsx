@@ -47,7 +47,7 @@ const Index = () => {
         <div className="floating-orb"></div>
         
         <div className="glass-card p-12 text-center max-w-md w-full fade-in-scale">
-          <div className="w-20 h-20 mx-auto mb-8 flex items-center justify-center">
+          <div className="w-32 h-32 mx-auto mb-8 flex items-center justify-center">
             <img 
               src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
               alt="App Logo" 
@@ -79,7 +79,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6 slide-in-left">
-              <div className="w-16 h-16 flex items-center justify-center">
+              <div className="w-24 h-24 flex items-center justify-center">
                 <img 
                   src="/lovable-uploads/be757f77-a4df-4318-9c95-f20b97978414.png" 
                   alt="App Logo" 
