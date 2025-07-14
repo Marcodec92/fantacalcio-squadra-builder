@@ -36,6 +36,19 @@ const PositionCard: React.FC<PositionCardProps> = ({
 
   const bonusTotal = player ? calculateBonusTotal(player) : 0;
 
+  // Funzioni per i colori della titolarità basate sulle stesse regole di OwnershipProgress
+  const getOwnershipColor = (percentage: number) => {
+    if (percentage <= 40) return 'bg-red-500';
+    if (percentage <= 75) return 'bg-yellow-500';
+    return 'bg-green-500';
+  };
+
+  const getOwnershipTextColor = (percentage: number) => {
+    if (percentage <= 40) return 'text-red-600';
+    if (percentage <= 75) return 'text-yellow-600';
+    return 'text-green-600';
+  };
+
   const handleEditPercentage = (player: Player, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -262,19 +275,19 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 </div>
               </div>
 
-              {/* Titolarità */}
+              {/* Titolarità con colori aggiornati */}
               <div className="bg-white/40 rounded-lg p-2">
                 <div className="text-xs font-bold text-gray-700 mb-2 text-center">Titolarità</div>
                 <div className="space-y-1">
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-1">
                     <div 
-                      className="bg-gradient-to-r from-amber-400 to-amber-600 h-2 rounded-full transition-all duration-300"
+                      className={`h-2 rounded-full transition-all duration-300 ${getOwnershipColor(player.ownership)}`}
                       style={{ width: `${player.ownership}%` }}
                     ></div>
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-gray-600">%:</span>
-                    <span className="font-bold text-amber-600">{player.ownership}%</span>
+                    <span className={`font-bold ${getOwnershipTextColor(player.ownership)}`}>{player.ownership}%</span>
                   </div>
                 </div>
               </div>
