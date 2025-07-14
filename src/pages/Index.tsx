@@ -51,38 +51,49 @@ const Index = () => {
     }
   };
 
-  const handleCSVPlayerSelect = (csvPlayer: any) => {
+  const handleCSVPlayerSelect = async (csvPlayer: any) => {
     console.log('🎯 Giocatore selezionato dal CSV:', csvPlayer);
     
-    // Crea un nuovo giocatore con SOLO i dati del giocatore selezionato
-    const newPlayer: Partial<Player> = {
-      name: csvPlayer.name || '',
-      surname: csvPlayer.surname || '',
-      roleCategory: csvPlayer.role,
-      role: csvPlayer.role,
-      team: csvPlayer.team,
-      // I restanti campi rimangono con i valori di default
-      fmv: 0,
-      costPercentage: 0,
-      goals: 0,
-      assists: 0,
-      malus: 0,
-      goalsConceded: 0,
-      yellowCards: 0,
-      penaltiesSaved: 0,
-      xG: 0,
-      xA: 0,
-      xP: 0,
-      ownership: 0,
-      plusCategories: [],
-      tier: '',
-      isFavorite: false
-    };
-    
-    console.log('➕ Aggiungendo giocatore:', newPlayer);
-    addPlayer(selectedRoleForCSV!, newPlayer);
-    setShowCSVModal(false);
-    setSelectedRoleForCSV(null);
+    try {
+      // Crea un nuovo giocatore con SOLO i dati del giocatore selezionato
+      const newPlayer: Partial<Player> = {
+        name: csvPlayer.name || '',
+        surname: csvPlayer.surname || '',
+        roleCategory: csvPlayer.role,
+        role: csvPlayer.role,
+        team: csvPlayer.team,
+        // I restanti campi rimangono con i valori di default
+        fmv: 0,
+        costPercentage: 0,
+        goals: 0,
+        assists: 0,
+        malus: 0,
+        goalsConceded: 0,
+        yellowCards: 0,
+        penaltiesSaved: 0,
+        xG: 0,
+        xA: 0,
+        xP: 0,
+        ownership: 0,
+        plusCategories: [],
+        tier: '',
+        isFavorite: false
+      };
+      
+      console.log('➕ Aggiungendo singolo giocatore:', newPlayer);
+      
+      // Aggiungi solo il singolo giocatore selezionato
+      await addPlayer(selectedRoleForCSV!, newPlayer);
+      
+      console.log('✅ Giocatore aggiunto con successo');
+      
+      // Chiudi il modal
+      setShowCSVModal(false);
+      setSelectedRoleForCSV(null);
+      
+    } catch (error) {
+      console.error('❌ Errore nell\'aggiunta del giocatore:', error);
+    }
   };
 
   const handleUpdatePlayer = (player: Player) => {
