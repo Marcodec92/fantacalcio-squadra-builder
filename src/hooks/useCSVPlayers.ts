@@ -1,16 +1,15 @@
-
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { PlayerRole } from '@/types/Player';
+import { PlayerRole, SpecificRole } from '@/types/Player';
 
 export interface CSVPlayer {
   id: string;
   name: string;
   surname: string;
   team: string;
-  role: PlayerRole;
+  role: PlayerRole; // Questa è la macro area dal CSV
   credits: number;
 }
 
@@ -18,6 +17,22 @@ export const useCSVPlayers = () => {
   const { user } = useAuth();
   const [csvPlayers, setCsvPlayers] = useState<CSVPlayer[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Helper function to map role category to specific role
+  const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
+    switch (roleCategory) {
+      case 'Portiere':
+        return 'Portiere';
+      case 'Difensore':
+        return 'Difensore centrale';
+      case 'Centrocampista':
+        return 'Mediano';
+      case 'Attaccante':
+        return 'Attaccante centrale';
+      default:
+        return 'Portiere';
+    }
+  };
 
   const parseCSVData = (csvText: string): CSVPlayer[] => {
     console.log('📄 Parsing CSV text:', csvText.substring(0, 200) + '...');
@@ -76,7 +91,7 @@ export const useCSVPlayers = () => {
         continue;
       }
       
-      // Converti ruolo abbreviato in ruolo completo
+      // Converti ruolo abbreviato in ruolo completo (MACRO AREA)
       let playerRole: PlayerRole;
       const ruoloUpper = ruolo.toUpperCase().trim();
       
@@ -116,7 +131,7 @@ export const useCSVPlayers = () => {
         name,
         surname,
         team: squadra.trim(),
-        role: playerRole,
+        role: playerRole, // Questa è la macro area che verrà poi mappata
         credits: 0
       };
 
@@ -158,29 +173,39 @@ export const useCSVPlayers = () => {
       console.log('🗑️ Giocatori precedenti eliminati');
 
       // Prepara i dati per l'inserimento nel database
-      const playersData = players.map(player => ({
-        user_id: user.id,
-        name: player.name,
-        surname: player.surname,
-        team: player.team as any,
-        role_category: player.role,
-        role: player.role as any,
-        fmv: 0,
-        cost_percentage: 0,
-        goals: 0,
-        assists: 0,
-        malus: 0,
-        goals_conceded: 0,
-        yellow_cards: 0,
-        penalties_saved: 0,
-        x_g: 0,
-        x_a: 0,
-        x_p: 0,
-        ownership: 0,
-        plus_categories: [],
-        tier: '',
-        is_favorite: false
-      }));
+      const playersData = players.map(player => {
+        const specificRole = getDefaultSpecificRole(player.role);
+        
+        console.log('🎯 Mapping player:', {
+          name: player.name,
+          roleCategory: player.role,
+          specificRole: specificRole
+        });
+        
+        return {
+          user_id: user.id,
+          name: player.name,
+          surname: player.surname,
+          team: player.team as any,
+          role_category: player.role, // Macro area (Portiere, Difensore, etc.)
+          role: specificRole, // Ruolo specifico mappato correttamente
+          fmv: 0,
+          cost_percentage: 0,
+          goals: 0,
+          assists: 0,
+          malus: 0,
+          goals_conceded: 0,
+          yellow_cards: 0,
+          penalties_saved: 0,
+          x_g: 0,
+          x_a: 0,
+          x_p: 0,
+          ownership: 0,
+          plus_categories: [],
+          tier: '',
+          is_favorite: false
+        };
+      });
 
       console.log('📋 Dati preparati per l\'inserimento:', playersData.slice(0, 2));
 

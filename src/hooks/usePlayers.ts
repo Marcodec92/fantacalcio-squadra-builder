@@ -33,6 +33,8 @@ export const usePlayers = (filters?: PlayerFilters) => {
 
   // Helper function to map role category to a default specific role
   const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
+    console.log('Mapping role category to specific role:', roleCategory);
+    
     switch (roleCategory) {
       case 'Portiere':
         return 'Portiere';
@@ -43,6 +45,7 @@ export const usePlayers = (filters?: PlayerFilters) => {
       case 'Attaccante':
         return 'Attaccante centrale';
       default:
+        console.warn('Unknown role category:', roleCategory, 'defaulting to Portiere');
         return 'Portiere';
     }
   };
@@ -96,18 +99,14 @@ export const usePlayers = (filters?: PlayerFilters) => {
     }
 
     try {
-      // Ensure we have a proper specific role - this is the key fix
-      let specificRole: SpecificRole;
+      // SEMPRE usa il mapping per ottenere il ruolo specifico corretto
+      const specificRole = getDefaultSpecificRole(roleCategory);
       
-      if (partialPlayerData?.role) {
-        // If a specific role is provided, use it
-        specificRole = partialPlayerData.role;
-      } else {
-        // Otherwise, use the default for this role category
-        specificRole = getDefaultSpecificRole(roleCategory);
-      }
-
-      console.log('Adding player with role:', specificRole, 'for category:', roleCategory);
+      console.log('🎯 Role mapping:', {
+        inputRoleCategory: roleCategory,
+        mappedSpecificRole: specificRole,
+        partialPlayerRole: partialPlayerData?.role
+      });
       
       // Handle team properly - convert empty string to null
       const teamValue = partialPlayerData?.team && partialPlayerData.team.length > 0 ? partialPlayerData.team : null;
@@ -117,8 +116,8 @@ export const usePlayers = (filters?: PlayerFilters) => {
         name: partialPlayerData?.name || 'Nuovo',
         surname: partialPlayerData?.surname || 'Giocatore',
         team: teamValue,
-        role_category: roleCategory,
-        role: specificRole, // Use the corrected specific role
+        role_category: roleCategory, // Questo è la macro area (Portiere, Difensore, etc.)
+        role: specificRole, // Questo è il ruolo specifico mappato correttamente
         fmv: partialPlayerData?.fmv || 0,
         cost_percentage: partialPlayerData?.costPercentage || 0,
         goals: partialPlayerData?.goals || 0,
@@ -136,14 +135,14 @@ export const usePlayers = (filters?: PlayerFilters) => {
         is_favorite: partialPlayerData?.isFavorite || false
       };
 
-      console.log('Final player data for insert:', basePlayerData);
+      console.log('💾 Final player data for database insert:', basePlayerData);
 
       const { error } = await supabase
         .from('players')
         .insert([basePlayerData]);
 
       if (error) {
-        console.error('Errore nell\'aggiungere il giocatore:', error);
+        console.error('❌ Database insert error:', error);
         toast.error('Errore nell\'aggiungere il giocatore: ' + error.message);
         return;
       }
@@ -155,7 +154,7 @@ export const usePlayers = (filters?: PlayerFilters) => {
       
       queryClient.invalidateQueries({ queryKey: ['players'] });
     } catch (error) {
-      console.error('Errore nell\'aggiungere il giocatore:', error);
+      console.error('❌ Errore nell\'aggiungere il giocatore:', error);
       toast.error('Errore nell\'aggiungere il giocatore');
     }
   };
