@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import SquadBuilder from "./pages/SquadBuilder";
+import RealTimeBuilder from "./pages/RealTimeBuilder";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient with proper default options
@@ -30,6 +31,7 @@ const App: React.FC = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/squad-builder" element={<SquadBuilder />} />
+            <Route path="/real-time-builder" element={<RealTimeBuilder />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

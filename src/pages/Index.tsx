@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield } from "lucide-react";
+import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
@@ -76,9 +76,9 @@ const Index = () => {
 
       {/* Header */}
       <div className="glass-card border-b border-white/10 backdrop-blur-2xl sticky top-0 z-50 slide-in-up">
-        <div className="max-w-7xl mx-auto px-6 py-1 flex items-center justify-between min-h-[40px]">
-          <div className="flex items-center space-x-6 slide-in-left">
-            <div className="w-60 h-60 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-6 py-0.5 flex items-center justify-between min-h-[32px]">
+          <div className="flex items-center space-x-4 slide-in-left">
+            <div className="w-40 h-40 flex items-center justify-center">
               <img 
                 src="/lovable-uploads/d669915b-abe9-409e-9866-7642ab7cdd29.png" 
                 alt="App Logo" 
@@ -86,19 +86,28 @@ const Index = () => {
               />
             </div>
           </div>
-          <div className="flex items-center gap-4 slide-in-right">
+          <div className="flex items-center gap-3 slide-in-right">
+            <Button
+              onClick={() => navigate('/real-time-builder')}
+              className="glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-2 text-sm"
+              size="sm"
+            >
+              <Timer className="w-4 h-4 mr-2" />
+              Real Time Builder
+            </Button>
             <Button
               onClick={() => navigate('/squad-builder')}
-              className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-8 py-3 text-base"
-              size="lg"
+              className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-2 text-sm"
+              size="sm"
             >
-              <Zap className="w-5 h-5 mr-2" />
+              <Zap className="w-4 h-4 mr-2" />
               Squad Builder
             </Button>
             <Button
               variant="outline"
               onClick={signOut}
-              className="glass-button border-white/20 hover:border-white/30 font-medium px-6 py-3"
+              className="glass-button border-white/20 hover:border-white/30 font-medium px-4 py-2 text-sm"
+              size="sm"
             >
               Logout
             </Button>
