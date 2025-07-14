@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -37,12 +36,16 @@ const PositionCard: React.FC<PositionCardProps> = ({
 
   const bonusTotal = player ? calculateBonusTotal(player) : 0;
 
-  const handleEditPercentage = (player: Player) => {
+  const handleEditPercentage = (player: Player, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setEditingPercentage(player.id);
     setTempPercentage(player.costPercentage.toString());
   };
 
-  const handleSavePercentage = (player: Player) => {
+  const handleSavePercentage = (player: Player, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     const newPercentage = parseFloat(tempPercentage);
     if (!isNaN(newPercentage) && newPercentage >= 0 && newPercentage <= 100) {
       const updatedPlayer = { ...player, costPercentage: newPercentage };
@@ -52,12 +55,16 @@ const PositionCard: React.FC<PositionCardProps> = ({
     setTempPercentage('');
   };
 
-  const handleCancelEdit = () => {
+  const handleCancelEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setEditingPercentage(null);
     setTempPercentage('');
   };
 
-  const toggleBudgetBreakdown = (playerId: string) => {
+  const toggleBudgetBreakdown = (playerId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (showBudgetBreakdown === playerId) {
       setShowBudgetBreakdown(null);
     } else {
@@ -124,15 +131,13 @@ const PositionCard: React.FC<PositionCardProps> = ({
                           min="0"
                           max="100"
                           step="0.1"
+                          onClick={(e) => e.stopPropagation()}
                         />
                         <Button
                           size="sm"
                           variant="ghost"
                           className="h-6 w-6 p-0 hover:bg-green-100 rounded-lg"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSavePercentage(player);
-                          }}
+                          onClick={(e) => handleSavePercentage(player, e)}
                         >
                           <Check className="h-3 w-3 text-green-600" />
                         </Button>
@@ -140,10 +145,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                           size="sm"
                           variant="ghost"
                           className="h-6 w-6 p-0 hover:bg-red-100 rounded-lg"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleCancelEdit();
-                          }}
+                          onClick={handleCancelEdit}
                         >
                           <X className="h-3 w-3 text-red-500" />
                         </Button>
@@ -152,11 +154,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                       <>
                         <div 
                           className="font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors px-2 py-1 rounded bg-blue-50 border border-blue-200 text-xs"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            toggleBudgetBreakdown(player.id);
-                          }}
+                          onClick={(e) => toggleBudgetBreakdown(player.id, e)}
                         >
                           {player.costPercentage}%
                         </div>
@@ -180,10 +178,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                           size="sm"
                           variant="ghost"
                           className="h-5 w-5 p-0 hover:bg-blue-100 rounded-lg ml-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditPercentage(player);
-                          }}
+                          onClick={(e) => handleEditPercentage(player, e)}
                         >
                           <Edit2 className="h-3 w-3 text-blue-500" />
                         </Button>
