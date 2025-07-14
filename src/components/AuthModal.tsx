@@ -50,10 +50,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-bold text-green-800">
-              ⚽ FantaCalcio Manager
-            </DialogTitle>
-            <Button variant="ghost" size="icon" onClick={handleClose}>
+            <div className="flex-1 flex justify-center">
+              <img 
+                src="/lovable-uploads/4bb946aa-34da-400b-af38-1ad3a07aa0ce.png" 
+                alt="Logo" 
+                className="h-16 w-auto"
+              />
+            </div>
+            <Button variant="ghost" size="icon" onClick={handleClose} className="ml-2">
               <X className="w-4 h-4" />
             </Button>
           </div>
