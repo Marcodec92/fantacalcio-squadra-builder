@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ const Index = () => {
 
       {/* Header */}
       <div className="glass-card border-b border-white/10 backdrop-blur-2xl sticky top-0 z-50 slide-in-up">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between min-h-[80px]">
+        <div className="max-w-7xl mx-auto px-6 py-1 flex items-center justify-between min-h-[40px]">
           <div className="flex items-center space-x-6 slide-in-left">
             <div className="w-60 h-60 flex items-center justify-center">
               <img 
