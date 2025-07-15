@@ -29,7 +29,7 @@ export type Database = {
           ownership: number | null
           penalties_saved: number | null
           plus_categories: Database["public"]["Enums"]["plus_category"][] | null
-          role: Database["public"]["Enums"]["specific_role"]
+          role: Database["public"]["Enums"]["specific_role"] | null
           role_category: Database["public"]["Enums"]["player_role"]
           surname: string
           team: Database["public"]["Enums"]["team_name"] | null
@@ -57,7 +57,7 @@ export type Database = {
           plus_categories?:
             | Database["public"]["Enums"]["plus_category"][]
             | null
-          role: Database["public"]["Enums"]["specific_role"]
+          role?: Database["public"]["Enums"]["specific_role"] | null
           role_category: Database["public"]["Enums"]["player_role"]
           surname: string
           team?: Database["public"]["Enums"]["team_name"] | null
@@ -85,7 +85,7 @@ export type Database = {
           plus_categories?:
             | Database["public"]["Enums"]["plus_category"][]
             | null
-          role?: Database["public"]["Enums"]["specific_role"]
+          role?: Database["public"]["Enums"]["specific_role"] | null
           role_category?: Database["public"]["Enums"]["player_role"]
           surname?: string
           team?: Database["public"]["Enums"]["team_name"] | null
