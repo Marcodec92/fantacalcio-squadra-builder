@@ -50,20 +50,19 @@ const RoleSection: React.FC<RoleSectionProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap gap-4 justify-center">
+    <div className={`grid gap-4`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
       {slots.map(slot => (
-        <div key={slot} className="flex-shrink-0" style={{ minWidth: '280px', maxWidth: '320px' }}>
-          <PositionCard
-            slot={slot}
-            role={role}
-            label={getSlotLabel(slot)}
-            player={getPlayerForPosition(slot, role)}
-            selection={getSelectionForPosition(slot, role)}
-            onPositionClick={onPositionClick}
-            onRemovePlayer={onRemovePlayer}
-            calculateBonusTotal={calculateBonusTotal}
-          />
-        </div>
+        <PositionCard
+          key={slot}
+          slot={slot}
+          role={role}
+          label={getSlotLabel(slot)}
+          player={getPlayerForPosition(slot, role)}
+          selection={getSelectionForPosition(slot, role)}
+          onPositionClick={onPositionClick}
+          onRemovePlayer={onRemovePlayer}
+          calculateBonusTotal={calculateBonusTotal}
+        />
       ))}
     </div>
   );
