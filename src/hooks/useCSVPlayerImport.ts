@@ -9,19 +9,19 @@ export const useCSVPlayerImport = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
-  // Helper function to map role category to default generic role
-  const getDefaultGenericRole = (roleCategory: PlayerRole): SpecificRole => {
-    console.log('🎯 Mapping role category to generic role:', roleCategory);
+  // Helper function to map role category to default specific role
+  const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
+    console.log('🎯 Mapping role category to default specific role:', roleCategory);
     
     switch (roleCategory) {
       case 'Portiere':
         return 'Portiere';
       case 'Difensore':
-        return 'Difensore';
+        return 'Difensore centrale'; // Default to most common defender role
       case 'Centrocampista':
-        return 'Centrocampista';
+        return 'Mediano'; // Default to most common midfielder role
       case 'Attaccante':
-        return 'Attaccante';
+        return 'Attaccante centrale'; // Default to most common attacker role
       default:
         console.warn('Unknown role category:', roleCategory, 'defaulting to Portiere');
         return 'Portiere';
@@ -39,8 +39,8 @@ export const useCSVPlayerImport = () => {
     console.log('🔒 VERIFICA CRITICA: Importo SOLO questo giocatore, non una lista');
 
     try {
-      // IMPORTANTE: Impostiamo il ruolo generico di default basato sulla categoria
-      const defaultGenericRole = getDefaultGenericRole(playerData.roleCategory!);
+      // IMPORTANTE: Impostiamo un ruolo specifico di default basato sulla categoria
+      const defaultSpecificRole = getDefaultSpecificRole(playerData.roleCategory!);
       
       // Crea l'oggetto da inserire nel database con tutti i campi necessari
       const playerToInsert = {
@@ -49,7 +49,7 @@ export const useCSVPlayerImport = () => {
         surname: playerData.surname || '',
         team: playerData.team || null,
         role_category: playerData.roleCategory!,
-        role: defaultGenericRole, // RUOLO GENERICO DI DEFAULT - poi sarà modificato manualmente dall'utente
+        role: defaultSpecificRole, // RUOLO SPECIFICO DI DEFAULT - poi sarà modificato manualmente dall'utente
         tier: playerData.tier || '',
         cost_percentage: playerData.costPercentage || 0,
         fmv: playerData.fmv || 0,
@@ -71,7 +71,7 @@ export const useCSVPlayerImport = () => {
       console.log('👤 Nome:', playerToInsert.name);
       console.log('👤 Cognome:', playerToInsert.surname);
       console.log('⚽ Ruolo categoria:', playerToInsert.role_category);
-      console.log('⚽ Ruolo generico di default:', playerToInsert.role, '(sarà modificato manualmente)');
+      console.log('⚽ Ruolo specifico di default:', playerToInsert.role, '(sarà modificato manualmente)');
       console.log('🏟️ Team:', playerToInsert.team);
       console.log('🎯 Tier:', playerToInsert.tier);
       console.log('🔢 User ID:', playerToInsert.user_id);
@@ -97,16 +97,16 @@ export const useCSVPlayerImport = () => {
         return null;
       }
 
-      console.log('✅✅✅ SUCCESSO! Giocatore inserito con ruolo generico di default:');
+      console.log('✅✅✅ SUCCESSO! Giocatore inserito con ruolo specifico di default:');
       console.log('🆔 ID inserito:', data.id);
       console.log('👤 Nome inserito:', data.name);
       console.log('👤 Cognome inserito:', data.surname);
       console.log('⚽ Ruolo categoria inserito:', data.role_category);
-      console.log('⚽ Ruolo generico inserito:', data.role, '(default - da specificare manualmente)');
+      console.log('⚽ Ruolo specifico inserito:', data.role, '(default - da specificare manualmente)');
       console.log('🎯 Tier inserito:', data.tier);
       console.log('🔢 Conteggio inserimenti: 1 (UNO SOLO)');
       
-      toast.success(`Giocatore ${playerData.surname} aggiunto con ruolo ${defaultGenericRole}! Ora puoi specificare il ruolo dettagliato.`);
+      toast.success(`Giocatore ${playerData.surname} aggiunto con ruolo ${defaultSpecificRole}! Ora puoi specificare il ruolo dettagliato.`);
       
       // Invalida la cache per aggiornare la lista dei giocatori
       console.log('🔄 Invalidando la cache dei giocatori...');
