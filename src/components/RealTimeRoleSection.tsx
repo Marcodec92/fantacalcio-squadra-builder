@@ -40,18 +40,19 @@ const RealTimeRoleSection: React.FC<RealTimeRoleSectionProps> = ({
   };
 
   return (
-    <div className={`grid gap-4`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+    <div className="flex flex-wrap gap-4 justify-center">
       {slots.map(slot => (
-        <RealTimePositionCard
-          key={slot}
-          slot={slot}
-          role={role}
-          label={getSlotLabel(slot)}
-          selection={getSelectionForPosition(slot, role)}
-          onPositionClick={onPositionClick}
-          onRemovePlayer={onRemovePlayer}
-          onUpdateCredits={onUpdateCredits}
-        />
+        <div key={slot} className="flex-shrink-0" style={{ minWidth: '280px', maxWidth: '320px' }}>
+          <RealTimePositionCard
+            slot={slot}
+            role={role}
+            label={getSlotLabel(slot)}
+            selection={getSelectionForPosition(slot, role)}
+            onPositionClick={onPositionClick}
+            onRemovePlayer={onRemovePlayer}
+            onUpdateCredits={onUpdateCredits}
+          />
+        </div>
       ))}
     </div>
   );
