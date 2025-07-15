@@ -23,7 +23,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "🥅",
       role: "Portiere" as PlayerRole,
       slots: [1, 2, 3],
-      columns: 2,
+      columns: 3,
       gradient: "from-blue-600 to-cyan-600"
     },
     {
