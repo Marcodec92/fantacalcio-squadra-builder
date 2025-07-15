@@ -50,7 +50,7 @@ const RoleSection: React.FC<RoleSectionProps> = ({
   };
 
   return (
-    <div className={`grid gap-4`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+    <div className={`grid gap-2`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
       {slots.map(slot => (
         <PositionCard
           key={slot}
