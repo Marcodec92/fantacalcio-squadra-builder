@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -215,20 +216,20 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 <div className="text-xs font-bold text-gray-700 mb-1 text-center">Stats</div>
                 <div className="space-y-0.5">
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-600">G:</span>
+                    <span className="text-gray-600">Gol:</span>
                     <span className="font-semibold text-green-600">{player.goals || 0}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-600">A:</span>
+                    <span className="text-gray-600">Assist:</span>
                     <span className="font-semibold text-blue-600">{player.assists || 0}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-600">M:</span>
+                    <span className="text-gray-600">Malus:</span>
                     <span className="font-semibold text-red-600">{player.malus || 0}</span>
                   </div>
                   {player.roleCategory !== 'Portiere' && (
                     <div className="flex justify-between text-xs">
-                      <span className="text-gray-600">B:</span>
+                      <span className="text-gray-600">Bonus tot:</span>
                       <span className={`font-bold ${bonusTotal < 0 ? 'text-red-500' : 'text-emerald-600'}`}>
                         {bonusTotal > 0 ? '+' : ''}{bonusTotal.toFixed(1)}
                       </span>
@@ -266,10 +267,6 @@ const PositionCard: React.FC<PositionCardProps> = ({
                         <span className="text-gray-600">xA:</span>
                         <span className="font-semibold text-blue-600">{(player.xA || 0).toFixed(1)}</span>
                       </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-gray-600">Amm:</span>
-                        <span className="font-semibold text-yellow-600">{player.yellowCards || 0}</span>
-                      </div>
                     </>
                   )}
                 </div>
@@ -277,7 +274,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
 
               {/* Titolarità con colori aggiornati */}
               <div className="bg-white/40 rounded-md p-1">
-                <div className="text-xs font-bold text-gray-700 mb-1 text-center">Tit</div>
+                <div className="text-xs font-bold text-gray-700 mb-1 text-center">Titolarità</div>
                 <div className="space-y-0.5">
                   <div className="w-full bg-gray-200 rounded-full h-1.5 mb-0.5">
                     <div 
@@ -291,26 +288,21 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 </div>
               </div>
 
-              {/* Categoria Plus */}
+              {/* Categoria Plus - tutte le categorie in verticale */}
               <div className="bg-white/40 rounded-md p-1">
                 <div className="text-xs font-bold text-gray-700 mb-1 text-center">Plus</div>
                 <div className="space-y-0.5">
                   {player.plusCategories && player.plusCategories.length > 0 ? (
-                    <div className="flex flex-wrap gap-0.5 justify-center">
-                      {player.plusCategories.slice(0, 1).map((category, index) => (
+                    <div className="flex flex-col gap-0.5">
+                      {player.plusCategories.map((category, index) => (
                         <Badge 
                           key={index} 
                           variant="secondary" 
-                          className="text-xs bg-blue-100 text-blue-700 px-1 py-0 h-auto text-xs"
+                          className="text-xs bg-blue-100 text-blue-700 px-1 py-0 h-auto text-xs text-center"
                         >
-                          {category.length > 4 ? category.substring(0, 4) + '...' : category}
+                          {category.length > 6 ? category.substring(0, 6) + '...' : category}
                         </Badge>
                       ))}
-                      {player.plusCategories.length > 1 && (
-                        <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-600 px-1 py-0 h-auto text-xs">
-                          +{player.plusCategories.length - 1}
-                        </Badge>
-                      )}
                     </div>
                   ) : (
                     <div className="text-center">
