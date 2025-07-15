@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -150,7 +149,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                 <div className="flex justify-between items-center gap-2 mt-1 pt-1 border-t border-gray-200/50">
                   <div className="flex items-center gap-1">
                     <span className="text-xs font-medium text-gray-600">FMV:</span>
-                    <span className="font-bold text-purple-600 text-xs">{player.fmv}M</span>
+                    <span className="font-bold text-purple-600 text-xs">{player.fmv}</span>
                   </div>
                   <div className="flex items-center gap-1" onClick={handleBudgetSectionClick}>
                     <span className="text-xs font-medium text-gray-600">Budget:</span>
