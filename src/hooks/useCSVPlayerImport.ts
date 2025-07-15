@@ -3,11 +3,27 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Player } from '@/types/Player';
+import { Player, PlayerRole, SpecificRole } from '@/types/Player';
 
 export const useCSVPlayerImport = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+
+  // Helper function to map role category to default specific role
+  const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
+    switch (roleCategory) {
+      case 'Portiere':
+        return 'Portiere';
+      case 'Difensore':
+        return 'Difensore centrale';
+      case 'Centrocampista':
+        return 'Mediano';
+      case 'Attaccante':
+        return 'Attaccante centrale';
+      default:
+        return 'Portiere';
+    }
+  };
 
   const importSingleCSVPlayer = async (playerData: Partial<Player>) => {
     if (!user) {
@@ -20,15 +36,17 @@ export const useCSVPlayerImport = () => {
     console.log('🔒 VERIFICA CRITICA: Importo SOLO questo giocatore, non una lista');
 
     try {
+      // IMPORTANTE: Ora impostiamo il ruolo generico come default specifico
+      const defaultSpecificRole = getDefaultSpecificRole(playerData.roleCategory!);
+      
       // Crea l'oggetto da inserire nel database con tutti i campi necessari
-      // IMPORTANTE: NON mappiamo il ruolo specifico - resta NULL finché non viene impostato manualmente
       const playerToInsert = {
         user_id: user.id,
         name: playerData.name || '',
         surname: playerData.surname || '',
         team: playerData.team || null,
         role_category: playerData.roleCategory!,
-        role: null, // Ruolo specifico NON impostato - resta NULL
+        role: defaultSpecificRole, // Ruolo specifico impostato al valore generico di default
         tier: playerData.tier || '',
         cost_percentage: playerData.costPercentage || 0,
         fmv: playerData.fmv || 0,
@@ -50,7 +68,7 @@ export const useCSVPlayerImport = () => {
       console.log('👤 Nome:', playerToInsert.name);
       console.log('👤 Cognome:', playerToInsert.surname);
       console.log('⚽ Ruolo categoria:', playerToInsert.role_category);
-      console.log('⚽ Ruolo specifico:', playerToInsert.role, '(NULL - da impostare manualmente)');
+      console.log('⚽ Ruolo specifico DEFAULT:', playerToInsert.role, '(impostato automaticamente come generico)');
       console.log('🏟️ Team:', playerToInsert.team);
       console.log('🎯 Tier:', playerToInsert.tier);
       console.log('🔢 User ID:', playerToInsert.user_id);
@@ -76,16 +94,16 @@ export const useCSVPlayerImport = () => {
         return null;
       }
 
-      console.log('✅✅✅ SUCCESSO! Giocatore inserito con ruolo generico:');
+      console.log('✅✅✅ SUCCESSO! Giocatore inserito con ruolo generico di default:');
       console.log('🆔 ID inserito:', data.id);
       console.log('👤 Nome inserito:', data.name);
       console.log('👤 Cognome inserito:', data.surname);
       console.log('⚽ Ruolo categoria inserito:', data.role_category);
-      console.log('⚽ Ruolo specifico inserito:', data.role, '(NULL - da completare)');
+      console.log('⚽ Ruolo specifico inserito:', data.role, '(generico di default)');
       console.log('🎯 Tier inserito:', data.tier);
       console.log('🔢 Conteggio inserimenti: 1 (UNO SOLO)');
       
-      toast.success(`Giocatore ${playerData.surname} aggiunto! Ricordati di impostare il ruolo specifico.`);
+      toast.success(`Giocatore ${playerData.surname} aggiunto con ruolo generico! Puoi ora impostare il ruolo specifico.`);
       
       // Invalida la cache per aggiornare la lista dei giocatori
       console.log('🔄 Invalidando la cache dei giocatori...');

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -51,22 +50,6 @@ export const useCSVPlayers = () => {
       }
     }
   }, [csvPlayers]);
-  
-  // Helper function to map role category to specific role
-  const getDefaultSpecificRole = (roleCategory: PlayerRole): SpecificRole => {
-    switch (roleCategory) {
-      case 'Portiere':
-        return 'Portiere';
-      case 'Difensore':
-        return 'Difensore centrale';
-      case 'Centrocampista':
-        return 'Mediano';
-      case 'Attaccante':
-        return 'Attaccante centrale';
-      default:
-        return 'Portiere';
-    }
-  };
 
   // Helper function to validate and convert team name
   const validateTeamName = (teamName: string): Team | null => {
@@ -191,10 +174,11 @@ export const useCSVPlayers = () => {
       };
 
       players.push(player);
-      console.log(`✅ Giocatore aggiunto:`, player);
+      console.log(`✅ Giocatore aggiunto con ruolo generico:`, player);
     }
     
     console.log('🎯 Totale giocatori parsati:', players.length);
+    console.log('📝 I giocatori saranno importati con ruoli generici di default');
     return players;
   };
 
