@@ -87,51 +87,60 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
       'Portiere': { 
-        emoji: '🥅', 
+        name: 'Portieri',
         slots: [1, 2, 3], 
         rows: 1, 
         cols: 3,
         color: [59, 130, 246] as [number, number, number], // Blue
-        lightColor: [147, 197, 253] as [number, number, number]
+        lightColor: [147, 197, 253] as [number, number, number],
+        glassColor: [59, 130, 246, 0.1] as [number, number, number, number]
       },
       'Difensore': { 
-        emoji: '🛡️', 
+        name: 'Difensori',
         slots: [1, 2, 3, 4, 5, 6, 7, 8], 
         rows: 2, 
         cols: 4,
         color: [16, 185, 129] as [number, number, number], // Green
-        lightColor: [110, 231, 183] as [number, number, number]
+        lightColor: [110, 231, 183] as [number, number, number],
+        glassColor: [16, 185, 129, 0.1] as [number, number, number, number]
       },
       'Centrocampista': { 
-        emoji: '⚡', 
+        name: 'Centrocampisti',
         slots: [1, 2, 3, 4, 5, 6, 7, 8], 
         rows: 2, 
         cols: 4,
         color: [139, 92, 246] as [number, number, number], // Purple
-        lightColor: [196, 181, 253] as [number, number, number]
+        lightColor: [196, 181, 253] as [number, number, number],
+        glassColor: [139, 92, 246, 0.1] as [number, number, number, number]
       },
       'Attaccante': { 
-        emoji: '🎯', 
+        name: 'Attaccanti',
         slots: [1, 2, 3, 4, 5, 6], 
         rows: 2, 
         cols: 3,
         color: [239, 68, 68] as [number, number, number], // Red
-        lightColor: [252, 165, 165] as [number, number, number]
+        lightColor: [252, 165, 165] as [number, number, number],
+        glassColor: [239, 68, 68, 0.1] as [number, number, number, number]
       }
     };
     
     roles.forEach((role) => {
       const config = roleConfig[role];
       
-      // Header colorato per ogni ruolo - più compatto
+      // Header colorato per ogni ruolo con effetto glassmorphism
       doc.setFillColor(...config.color);
       doc.roundedRect(15, yPosition - 3, 180, 10, 2, 2, 'F');
       
-      // Titolo ruolo con emoji - più piccolo
+      // Overlay glassmorphism (simulato con trasparenza)
+      doc.setFillColor(255, 255, 255, 0.1);
+      doc.roundedRect(15, yPosition - 3, 180, 10, 2, 2, 'F');
+      
+      // Titolo ruolo CENTRATO nel rettangolo
       doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255);
-      doc.text(`${config.emoji} ${role}`, 20, yPosition + 1);
-      yPosition += 12; // Riduciamo lo spazio
+      doc.text(config.name, 105, yPosition + 1, { align: 'center' }); // Centrato
+      yPosition += 12;
       
       // Dimensioni ottimizzate per il layout a griglia
       const cardWidth = 38; // Ridotto da 42
@@ -231,7 +240,75 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     });
     
     // Footer con totale crediti - più compatto
-    yPosition += 5; // Ridotto da 10
+    yPosition += 5;
+    
+    // Calcoli per le statistiche per ruolo
+    const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
+    const filledSlots = selections.filter(s => s.player).length;
+    const totalSlots = roles.reduce((sum, role) => sum + roleConfig[role].slots.length, 0);
+    
+    // Infografica spesa per ruolo
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 255, 255);
+    doc.text('SPESA PER RUOLO', 105, yPosition, { align: 'center' });
+    yPosition += 8;
+    
+    // Statistiche per ogni ruolo
+    const roleStats = roles.map(role => {
+      const config = roleConfig[role];
+      const roleSelections = selections.filter(s => s.role_category === role && s.player);
+      const roleCredits = roleSelections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
+      const rolePercentage = totalCredits > 0 ? (roleCredits / totalCredits * 100) : 0;
+      
+      return {
+        role,
+        name: config.name,
+        credits: roleCredits,
+        percentage: rolePercentage,
+        color: config.color,
+        players: roleSelections.length,
+        maxPlayers: config.slots.length
+      };
+    });
+    
+    // Layout a 2x2 per le statistiche dei ruoli
+    const statWidth = 85;
+    const statHeight = 12;
+    const statSpacing = 90;
+    
+    roleStats.forEach((stat, index) => {
+      const row = Math.floor(index / 2);
+      const col = index % 2;
+      const x = 20 + col * statSpacing;
+      const y = yPosition + row * 16;
+      
+      // Sfondo colorato per ogni statistica
+      doc.setFillColor(...stat.color, 0.3);
+      doc.roundedRect(x, y, statWidth, statHeight, 2, 2, 'F');
+      
+      // Bordo colorato
+      doc.setDrawColor(...stat.color);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(x, y, statWidth, statHeight, 2, 2, 'S');
+      
+      // Nome ruolo
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...stat.color);
+      doc.text(stat.name, x + 2, y + 4);
+      
+      // Crediti spesi
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(255, 255, 255);
+      doc.text(`${stat.credits} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 8);
+      
+      // Giocatori selezionati
+      doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 11);
+    });
+    
+    yPosition += 40; // Spazio per le 2 righe di statistiche
     
     // Sezione totale crediti con design moderno
     doc.setFillColor(50, 50, 50);
@@ -241,10 +318,6 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setDrawColor(255, 215, 0);
     doc.setLineWidth(1);
     doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'S');
-    
-    const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
-    const filledSlots = selections.filter(s => s.player).length;
-    const totalSlots = roles.reduce((sum, role) => sum + roleConfig[role].slots.length, 0);
     
     // Testo totale crediti
     doc.setFontSize(14);
