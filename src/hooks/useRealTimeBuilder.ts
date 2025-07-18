@@ -10,6 +10,10 @@ export const useRealTimeBuilder = () => {
     const savedBudget = localStorage.getItem('fantaTeamBudget');
     return savedBudget ? parseInt(savedBudget) : 500;
   });
+  const [teamName, setTeamName] = useState<string>(() => {
+    // Carica il nome squadra salvato dal localStorage
+    return localStorage.getItem('fantaTeamName') || '';
+  });
   const [selections, setSelections] = useState<RealTimeSelection[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
@@ -45,6 +49,13 @@ export const useRealTimeBuilder = () => {
     setMaxBudget(newBudget);
     localStorage.setItem('fantaTeamBudget', newBudget.toString());
     console.log('💰 Budget massimo aggiornato a:', newBudget);
+  };
+
+  // Salva il nome squadra nel localStorage quando cambia
+  const handleTeamNameChange = (newName: string) => {
+    setTeamName(newName);
+    localStorage.setItem('fantaTeamName', newName);
+    console.log('📝 Nome squadra aggiornato a:', newName);
   };
 
   const handlePositionClick = (slot: number, role: PlayerRole) => {
@@ -154,6 +165,9 @@ export const useRealTimeBuilder = () => {
     maxBudget,
     setMaxBudget,
     handleBudgetChange,
+    teamName,
+    setTeamName,
+    handleTeamNameChange,
     selections,
     setSelections,
     isModalOpen,

@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer, Upload, RotateCcw } from "lucide-react";
+import { FileSpreadsheet, Users, Sparkles, Zap, Target, Shield, Timer, Upload, RotateCcw, Download } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
@@ -15,6 +15,7 @@ import AuthModal from '@/components/AuthModal';
 import CSVPlayerSelectionModal from '@/components/CSVPlayerSelectionModal';
 import { Player, PlayerRole } from '@/types/Player';
 import { useCSVFileHandler } from '@/hooks/useCSVFileHandler';
+import { usePDFGenerator } from '@/hooks/usePDFGenerator';
 import { toast } from "@/components/ui/use-toast";
 
 const Index = () => {
@@ -23,6 +24,7 @@ const Index = () => {
   const { addPlayer, updatePlayer, deletePlayer } = usePlayers();
   const { importSingleCSVPlayer } = useCSVPlayerImport();
   const { data: allPlayers = [] } = usePlayersData();
+  const { generateDatabasePDF } = usePDFGenerator();
   
   const [selectedRole, setSelectedRole] = useState<PlayerRole>('Portiere');
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -310,6 +312,16 @@ const Index = () => {
                             >
                               <RotateCcw className="w-4 h-4 mr-2" />
                               Reset Database
+                            </Button>
+                          )}
+                          {allPlayers.length > 0 && (
+                            <Button
+                              onClick={() => generateDatabasePDF(allPlayers)}
+                              className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium"
+                              size="sm"
+                            >
+                              <Download className="w-4 h-4 mr-2" />
+                              Scarica PDF
                             </Button>
                           )}
                         </>

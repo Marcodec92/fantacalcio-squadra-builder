@@ -1,14 +1,16 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Trash2, AlertCircle, CheckCircle2, Download } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { PlayerRole } from '@/types/Player';
 import CSVPlayerModal from '@/components/CSVPlayerModal';
 import RealTimeBudgetLayout from '@/components/RealTimeBudgetLayout';
+import TeamNameInput from '@/components/TeamNameInput';
 import { useRealTimeBuilder } from '@/hooks/useRealTimeBuilder';
 import { useCSVFileHandler } from '@/hooks/useCSVFileHandler';
+import { usePDFGenerator } from '@/hooks/usePDFGenerator';
 
 export interface RealTimePlayer {
   id: string;
@@ -34,6 +36,8 @@ const RealTimeBuilder = () => {
     maxBudget,
     setMaxBudget,
     handleBudgetChange,
+    teamName,
+    handleTeamNameChange,
     selections,
     isModalOpen,
     setIsModalOpen,
@@ -52,6 +56,8 @@ const RealTimeBuilder = () => {
     csvPlayers,
     dbLoading
   } = useRealTimeBuilder();
+
+  const { generateTeamPDF } = usePDFGenerator();
 
   const {
     loading,
@@ -140,6 +146,15 @@ const RealTimeBuilder = () => {
             <div className="flex items-center space-x-2">
               {selections.length > 0 && (
                 <Button
+                  onClick={() => generateTeamPDF(selections, teamName)}
+                  className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Scarica PDF
+                </Button>
+              )}
+              {selections.length > 0 && (
+                <Button
                   variant="outline"
                   onClick={clearSelections}
                   className="glass-button border-red-300/20 hover:border-red-300/30 text-red-400 hover:text-red-300"
@@ -151,6 +166,14 @@ const RealTimeBuilder = () => {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Nome squadra */}
+        <div className="mb-8">
+          <TeamNameInput
+            teamName={teamName}
+            onTeamNameChange={handleTeamNameChange}
+          />
         </div>
 
         {/* Stato CSV con persistenza */}
