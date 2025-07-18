@@ -69,62 +69,86 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     const doc = new jsPDF();
     
     // Titolo con nome squadra
-    doc.setFontSize(20);
-    doc.text(teamName || 'Fanta Team', 105, 20, { align: 'center' });
+    doc.setFontSize(18);
+    doc.text(teamName || 'Fanta Team', 105, 15, { align: 'center' });
     
-    let yPosition = 40;
+    let yPosition = 30;
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
-      'Portiere': { emoji: '🥅', slots: [1, 2, 3] },
-      'Difensore': { emoji: '🛡️', slots: [1, 2, 3, 4, 5, 6, 7, 8] },
-      'Centrocampista': { emoji: '⚡', slots: [1, 2, 3, 4, 5, 6, 7, 8] },
-      'Attaccante': { emoji: '🎯', slots: [1, 2, 3, 4, 5, 6] }
+      'Portiere': { emoji: '🥅', slots: [1, 2, 3], rows: 1, cols: 3 },
+      'Difensore': { emoji: '🛡️', slots: [1, 2, 3, 4, 5, 6, 7, 8], rows: 2, cols: 4 },
+      'Centrocampista': { emoji: '⚡', slots: [1, 2, 3, 4, 5, 6, 7, 8], rows: 2, cols: 4 },
+      'Attaccante': { emoji: '🎯', slots: [1, 2, 3, 4, 5, 6], rows: 2, cols: 3 }
     };
     
     roles.forEach((role) => {
       const config = roleConfig[role];
       
       // Titolo ruolo con emoji
-      doc.setFontSize(16);
+      doc.setFontSize(14);
       doc.text(`${config.emoji} ${role}`, 20, yPosition);
-      yPosition += 15;
+      yPosition += 8;
       
-      // Slot del ruolo
-      config.slots.forEach((slot) => {
+      // Dimensioni per il layout a griglia
+      const cardWidth = 45;
+      const cardHeight = 18;
+      const startX = 20;
+      const spacingX = 47;
+      const spacingY = 20;
+      
+      // Disposizione dei giocatori in griglia
+      config.slots.forEach((slot, index) => {
         const selection = selections.find(s => s.role_category === role && s.position_slot === slot);
         
+        // Calcolo posizione nella griglia
+        const row = Math.floor(index / config.cols);
+        const col = index % config.cols;
+        
+        // Centrare la griglia nella pagina
+        const totalGridWidth = config.cols * spacingX - 2;
+        const offsetX = (170 - totalGridWidth) / 2;
+        
+        const x = startX + offsetX + col * spacingX;
+        const y = yPosition + row * spacingY;
+        
         // Box per ogni slot
-        doc.rect(20, yPosition - 10, 170, 20);
+        doc.rect(x, y, cardWidth, cardHeight);
         
         // Etichetta slot
-        doc.setFontSize(12);
+        doc.setFontSize(8);
         const roleAbbrev = role === 'Portiere' ? 'P' : 
                           role === 'Difensore' ? 'D' : 
                           role === 'Centrocampista' ? 'C' : 'A';
-        doc.text(`${roleAbbrev}${slot}`, 25, yPosition - 2);
+        doc.text(`${roleAbbrev}${slot}`, x + 2, y + 6);
         
         if (selection?.player) {
-          // Dati giocatore
-          doc.setFontSize(10);
-          doc.text(`${selection.player.name} ${selection.player.surname}`, 50, yPosition - 5);
-          doc.text(`Team: ${selection.player.team}`, 50, yPosition);
-          doc.text(`Crediti: ${selection.player.credits}`, 140, yPosition - 2);
+          // Nome giocatore
+          doc.setFontSize(7);
+          const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
+          doc.text(playerName.length > 12 ? playerName.substring(0, 12) + '...' : playerName, x + 2, y + 10);
+          
+          // Team
+          doc.setFontSize(6);
+          doc.text(`${selection.player.team || ''}`, x + 2, y + 13);
+          
+          // Crediti
+          doc.setFontSize(7);
+          doc.text(`${selection.player.credits}`, x + cardWidth - 8, y + 10);
         } else {
           // Slot vuoto
-          doc.setFontSize(10);
-          doc.text('Slot libero', 50, yPosition - 2);
+          doc.setFontSize(6);
+          doc.text('Vuoto', x + 2, y + 10);
         }
-        
-        yPosition += 25;
       });
       
-      yPosition += 10;
+      // Spazio dopo ogni ruolo
+      yPosition += config.rows * spacingY + 15;
     });
     
     // Totale crediti
     const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
-    doc.setFontSize(14);
+    doc.setFontSize(12);
     doc.text(`Totale Crediti: ${totalCredits}`, 105, yPosition, { align: 'center' });
     
     const fileName = teamName ? `${teamName.replace(/\s+/g, '-').toLowerCase()}-team.pdf` : 'fanta-team.pdf';
