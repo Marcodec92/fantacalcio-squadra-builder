@@ -82,19 +82,28 @@ const RealTimeBuilder = () => {
     await handleDrop(e);
   };
 
-  // Real Time Builder ha accesso a TUTTI i giocatori CSV, senza filtri
+  // Real Time Builder ha accesso a TUTTI i giocatori CSV, esclusi quelli già selezionati
   const getFilteredPlayers = (role: PlayerRole) => {
     console.log('🔍 Real Time Builder - getFilteredPlayers per ruolo:', role);
     console.log('🔍 Totale CSV players disponibili:', csvPlayers.length);
     
+    // Ottieni tutti i giocatori già selezionati (indipendentemente dal ruolo)
+    const selectedPlayerIds = selections
+      .filter(selection => selection.player)
+      .map(selection => selection.player!.id);
+    
+    console.log('🚫 Giocatori già selezionati:', selectedPlayerIds);
+    
     const filtered = csvPlayers
       .filter(p => p.role === role)
+      .filter(p => !selectedPlayerIds.includes(p.id)) // Escludi giocatori già selezionati
       .filter(p => 
         searchTerm === '' || 
         `${p.name} ${p.surname}`.toLowerCase().includes(searchTerm.toLowerCase())
       );
     
     console.log('🔍 Giocatori filtrati per', role, ':', filtered.length);
+    console.log('🔍 (Esclusi', selectedPlayerIds.length, 'giocatori già selezionati)');
     return filtered;
   };
 
