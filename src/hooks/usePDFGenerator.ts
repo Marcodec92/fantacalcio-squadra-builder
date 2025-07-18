@@ -251,17 +251,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setFillColor(34, 39, 54); // Background scuro
     doc.rect(0, 0, 210, 297, 'F');
     
-    // Titolo principale con design moderno - ben bilanciato
-    doc.setFontSize(20); // Aumentato per utilizzare spazio
+    // Titolo principale ottimizzato per spazio
+    doc.setFontSize(18); // Ridotto da 20 per guadagnare spazio
     doc.setTextColor(255, 255, 255);
-    doc.text(teamName || 'Fanta Team', 105, 15, { align: 'center' });
+    doc.text(teamName || 'Fanta Team', 105, 13, { align: 'center' }); // Ridotto Y da 15
     
-    // Sottotitolo ben proporzionato
-    doc.setFontSize(9); // Aumentato
+    // Sottotitolo compatto
+    doc.setFontSize(8); // Ridotto da 9
     doc.setTextColor(180, 180, 180);
-    doc.text('Fantasy Football Team Builder', 105, 22, { align: 'center' });
+    doc.text('Fantasy Football Team Builder', 105, 19, { align: 'center' }); // Ridotto Y da 22
     
-    let yPosition = 35; // Spazio adeguato dall'alto
+    let yPosition = 28; // Ridotto da 35 per guadagnare spazio
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
@@ -338,7 +338,7 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setTextColor(255, 255, 255); // Testo bianco per massima leggibilità
       const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
       doc.text(config.name, 105, centerY, { align: 'center' });
-      yPosition += 18; // Spazio equilibrato tra header e slot
+      yPosition += 14; // Ridotto da 18 per guadagnare spazio senza compromettere le dimensioni slot
       
       // Dimensioni ben proporzionate per utilizzare meglio lo spazio
       const cardWidth = 40; // Aumentato da 32 a 40
@@ -433,8 +433,7 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         }
       });
       
-      // Spazio dopo ogni ruolo - ben bilanciato
-      yPosition += config.rows * spacingY + 8; // Aumentato spazio
+      yPosition += config.rows * spacingY + 4; // Ridotto da 8 a 4 per guadagnare spazio
     });
     
     // Footer con totale crediti - spazio ultra ridotto
