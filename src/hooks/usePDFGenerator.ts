@@ -18,18 +18,18 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     width: number, 
     role: PlayerRole
   ) => {
-    // Background con gradiente e migliore contrasto
-    doc.setFillColor(45, 55, 75, 0.6); // Grigio blu per migliore contrasto
-    doc.roundedRect(x, y - 1, width, 13, 8, 8, 'F');
+    // Background con gradiente e migliore contrasto - più arrotondato
+    doc.setFillColor(45, 55, 75, 0.6);
+    doc.roundedRect(x, y - 1, width, 13, 15, 15, 'F'); // Aumentato border radius da 8 a 15
     
-    // Layer gradiente per profondità
+    // Layer gradiente per profondità - più arrotondato
     doc.setFillColor(55, 65, 85, 0.4);
-    doc.roundedRect(x + 1, y - 0.5, width - 2, 12, 7, 7, 'F');
+    doc.roundedRect(x + 1, y - 0.5, width - 2, 12, 14, 14, 'F'); // Border radius proporzionale
     
-    // Bordo colorato del ruolo con gradiente
+    // Bordo colorato del ruolo molto più sottile
     doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
-    doc.setLineWidth(0.8);
-    doc.roundedRect(x, y - 1, width, 13, 8, 8, 'S');
+    doc.setLineWidth(0.3); // Ridotto da 0.8 a 0.3 per essere molto più sottile
+    doc.roundedRect(x, y - 1, width, 13, 15, 15, 'S'); // Più arrotondato
     
     // Forma colorata con gradiente per il ruolo
     doc.setFillColor(config.color[0], config.color[1], config.color[2]);
@@ -481,18 +481,18 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const y = yPosition + row * 16;
       
       // Sfondo colorato per ogni statistica
-      doc.setFillColor(...stat.color, 0.3);
+      doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
       doc.roundedRect(x, y, statWidth, statHeight, 2, 2, 'F');
       
       // Bordo colorato
-      doc.setDrawColor(...stat.color);
+      doc.setDrawColor(stat.color[0], stat.color[1], stat.color[2]);
       doc.setLineWidth(0.5);
       doc.roundedRect(x, y, statWidth, statHeight, 2, 2, 'S');
       
       // Nome ruolo
       doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(...stat.color);
+      doc.setTextColor(stat.color[0], stat.color[1], stat.color[2]);
       doc.text(stat.name, x + 2, y + 4);
       
       // Crediti spesi
