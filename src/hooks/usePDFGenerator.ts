@@ -11,56 +11,153 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
   const generateDatabasePDF = (players: Player[]) => {
     const doc = new jsPDF();
     
-    // Titolo
-    doc.setFontSize(20);
-    doc.text('Database Giocatori', 105, 20, { align: 'center' });
+    // Imposta sfondo scuro moderno come nel Real Time Builder
+    doc.setFillColor(34, 39, 54);
+    doc.rect(0, 0, 210, 297, 'F');
     
-    let yPosition = 40;
+    // Titolo principale con design moderno
+    doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Database Giocatori', 105, 15, { align: 'center' });
+    
+    // Sottotitolo
+    doc.setFontSize(8);
+    doc.setTextColor(180, 180, 180);
+    doc.text('Lista completa dei giocatori del database', 105, 21, { align: 'center' });
+    
+    let yPosition = 30;
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
+    const roleConfig = {
+      'Portiere': { 
+        name: 'Portieri',
+        color: [59, 130, 246] as [number, number, number] // Blue
+      },
+      'Difensore': { 
+        name: 'Difensori',
+        color: [16, 185, 129] as [number, number, number] // Green
+      },
+      'Centrocampista': { 
+        name: 'Centrocampisti',
+        color: [139, 92, 246] as [number, number, number] // Purple
+      },
+      'Attaccante': { 
+        name: 'Attaccanti',
+        color: [239, 68, 68] as [number, number, number] // Red
+      }
+    };
     
     roles.forEach((role) => {
+      const config = roleConfig[role];
       const rolePlayers = players.filter(p => p.roleCategory === role);
       
       if (rolePlayers.length > 0) {
-        // Titolo ruolo
-        doc.setFontSize(16);
-        doc.text(`${role} (${rolePlayers.length})`, 20, yPosition);
+        // Header del ruolo con design moderno
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        const textWidth = doc.getTextWidth(`${config.name} (${rolePlayers.length})`);
+        const rectWidth = textWidth + 30;
+        const rectX = (210 - rectWidth) / 2;
+        
+        // Sfondo scuro per il titolo
+        doc.setFillColor(20, 20, 20);
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'F');
+        
+        // Bordo colorato
+        doc.setDrawColor(...config.color);
+        doc.setLineWidth(2);
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'S');
+        
+        // Overlay colorato semi-trasparente
+        doc.setFillColor(...config.color, 0.2);
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'F');
+        
+        // Titolo centrato
+        doc.setTextColor(255, 255, 255);
+        doc.text(`${config.name} (${rolePlayers.length})`, 105, yPosition + 3, { align: 'center' });
+        yPosition += 18;
+        
+        // Header tabella con design moderno
+        doc.setFillColor(50, 50, 50);
+        doc.roundedRect(15, yPosition - 2, 180, 8, 2, 2, 'F');
+        
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(200, 200, 200);
+        doc.text('Nome', 20, yPosition + 2);
+        doc.text('Cognome', 55, yPosition + 2);
+        doc.text('Team', 90, yPosition + 2);
+        doc.text('FMV', 125, yPosition + 2);
+        doc.text('Goals', 145, yPosition + 2);
+        doc.text('Assists', 165, yPosition + 2);
         yPosition += 10;
         
-        // Header tabella
-        doc.setFontSize(10);
-        doc.text('Nome', 20, yPosition);
-        doc.text('Cognome', 60, yPosition);
-        doc.text('Team', 100, yPosition);
-        doc.text('FMV', 130, yPosition);
-        doc.text('Goals', 150, yPosition);
-        doc.text('Assists', 170, yPosition);
-        yPosition += 5;
-        
-        // Linea separatrice
-        doc.line(20, yPosition, 190, yPosition);
-        yPosition += 5;
-        
-        // Giocatori
-        rolePlayers.forEach((player) => {
+        // Giocatori - TUTTI inclusi
+        rolePlayers.forEach((player, index) => {
+          // Controlla se serve una nuova pagina
           if (yPosition > 270) {
             doc.addPage();
+            // Ripeti il background sulla nuova pagina
+            doc.setFillColor(34, 39, 54);
+            doc.rect(0, 0, 210, 297, 'F');
             yPosition = 20;
           }
           
-          doc.text(player.name || '', 20, yPosition);
-          doc.text(player.surname || '', 60, yPosition);
-          doc.text(player.team || '', 100, yPosition);
-          doc.text((player.fmv || 0).toString(), 130, yPosition);
-          doc.text((player.goals || 0).toString(), 150, yPosition);
-          doc.text((player.assists || 0).toString(), 170, yPosition);
-          yPosition += 5;
+          // Alterna i colori delle righe per migliore leggibilità
+          if (index % 2 === 0) {
+            doc.setFillColor(40, 40, 40, 0.3);
+            doc.roundedRect(15, yPosition - 2, 180, 6, 1, 1, 'F');
+          }
+          
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(7);
+          doc.setTextColor(255, 255, 255);
+          
+          doc.text(player.name || '', 20, yPosition + 1);
+          doc.text(player.surname || '', 55, yPosition + 1);
+          doc.text(player.team || '', 90, yPosition + 1);
+          doc.text((player.fmv || 0).toString(), 125, yPosition + 1);
+          doc.text((player.goals || 0).toString(), 145, yPosition + 1);
+          doc.text((player.assists || 0).toString(), 165, yPosition + 1);
+          yPosition += 6;
         });
         
-        yPosition += 10;
+        yPosition += 8; // Spazio tra ruoli
       }
     });
+    
+    // Footer con statistiche
+    yPosition += 10;
+    if (yPosition > 250) {
+      doc.addPage();
+      doc.setFillColor(34, 39, 54);
+      doc.rect(0, 0, 210, 297, 'F');
+      yPosition = 30;
+    }
+    
+    // Box statistiche finali
+    doc.setFillColor(50, 50, 50);
+    doc.roundedRect(40, yPosition, 130, 25, 3, 3, 'F');
+    
+    doc.setDrawColor(255, 215, 0);
+    doc.setLineWidth(1);
+    doc.roundedRect(40, yPosition, 130, 25, 3, 3, 'S');
+    
+    doc.setFontSize(12);
+    doc.setTextColor(255, 215, 0);
+    doc.text('STATISTICHE DATABASE', 105, yPosition + 8, { align: 'center' });
+    
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`Totale giocatori: ${players.length}`, 105, yPosition + 15, { align: 'center' });
+    
+    // Data generazione
+    yPosition += 35;
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    const now = new Date();
+    const dateString = now.toLocaleDateString('it-IT');
+    doc.text(`Generato il ${dateString} - Fantasy Football Database`, 105, yPosition, { align: 'center' });
     
     doc.save('database-giocatori.pdf');
   };
