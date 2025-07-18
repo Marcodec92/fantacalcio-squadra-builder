@@ -77,25 +77,10 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         doc.text(`${config.name} (${rolePlayers.length})`, 105, yPosition + 3, { align: 'center' });
         yPosition += 18;
         
-        // Header tabella con design moderno
-        doc.setFillColor(50, 50, 50);
-        doc.roundedRect(15, yPosition - 2, 180, 8, 2, 2, 'F');
-        
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(200, 200, 200);
-        doc.text('Nome', 20, yPosition + 2);
-        doc.text('Cognome', 55, yPosition + 2);
-        doc.text('Team', 90, yPosition + 2);
-        doc.text('FMV', 125, yPosition + 2);
-        doc.text('Goals', 145, yPosition + 2);
-        doc.text('Assists', 165, yPosition + 2);
-        yPosition += 10;
-        
-        // Giocatori - TUTTI inclusi
+        // Giocatori - TUTTI inclusi con dettagli completi
         rolePlayers.forEach((player, index) => {
           // Controlla se serve una nuova pagina
-          if (yPosition > 270) {
+          if (yPosition > 250) {
             doc.addPage();
             // Ripeti il background sulla nuova pagina
             doc.setFillColor(34, 39, 54);
@@ -106,20 +91,73 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           // Alterna i colori delle righe per migliore leggibilità
           if (index % 2 === 0) {
             doc.setFillColor(40, 40, 40, 0.3);
-            doc.roundedRect(15, yPosition - 2, 180, 6, 1, 1, 'F');
+            doc.roundedRect(10, yPosition - 3, 190, 25, 2, 2, 'F');
           }
           
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(7);
+          // Nome e Cognome - PIÙ GRANDE E BOLD
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
           doc.setTextColor(255, 255, 255);
+          const fullName = `${player.name || ''} ${player.surname || ''}`.trim();
+          doc.text(fullName, 15, yPosition + 3);
           
-          doc.text(player.name || '', 20, yPosition + 1);
-          doc.text(player.surname || '', 55, yPosition + 1);
-          doc.text(player.team || '', 90, yPosition + 1);
-          doc.text((player.fmv || 0).toString(), 125, yPosition + 1);
-          doc.text((player.goals || 0).toString(), 145, yPosition + 1);
-          doc.text((player.assists || 0).toString(), 165, yPosition + 1);
-          yPosition += 6;
+          // Team e Ruolo specifico
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(200, 200, 200);
+          const teamText = player.team || 'N/A';
+          const roleText = player.role || 'N/A';
+          doc.text(`${teamText} - ${roleText}`, 15, yPosition + 8);
+          
+          // Prima riga di statistiche
+          doc.setFontSize(7);
+          doc.setTextColor(180, 180, 180);
+          
+          // FMV e Tier
+          const fmvText = `FMV: ${player.fmv || 0}`;
+          const tierText = `Tier: ${player.tier || 'N/A'}`;
+          doc.text(`${fmvText} | ${tierText}`, 15, yPosition + 12);
+          
+          // Budget percentages (based on 300, 500, 650 credits)
+          const fmv = player.fmv || 0;
+          const budget300 = fmv > 0 ? ((fmv / 300) * 100).toFixed(1) : '0';
+          const budget500 = fmv > 0 ? ((fmv / 500) * 100).toFixed(1) : '0';
+          const budget650 = fmv > 0 ? ((fmv / 650) * 100).toFixed(1) : '0';
+          doc.text(`Budget: ${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, 100, yPosition + 3);
+          
+          // Statistiche specifiche per ruolo
+          if (role === 'Portiere') {
+            // Statistiche portieri
+            const goalsConceded = player.goalsConceded || 0;
+            const penaltiesSaved = player.penaltiesSaved || 0;
+            const yellowCards = player.yellowCards || 0;
+            const goalsPerGame = goalsConceded > 0 ? (goalsConceded / 30).toFixed(2) : '0'; // Assumiamo 30 partite stagione
+            
+            doc.text(`Gol subiti: ${goalsConceded} | Rigori parati: ${penaltiesSaved}`, 100, yPosition + 8);
+            doc.text(`Cartellini: ${yellowCards} | Gol/partita: ${goalsPerGame}`, 100, yPosition + 12);
+          } else {
+            // Statistiche giocatori di movimento
+            const goals = player.goals || 0;
+            const assists = player.assists || 0;
+            const malus = player.malus || 0;
+            const xG = player.xG || 0;
+            const xA = player.xA || 0;
+            const totalBonus = goals + assists - malus; // Calcolo bonus totali
+            
+            doc.text(`Gol: ${goals} | Assist: ${assists} | Malus: ${malus}`, 100, yPosition + 8);
+            doc.text(`Bonus tot: ${totalBonus} | xG: ${xG} | xA: ${xA}`, 100, yPosition + 12);
+          }
+          
+          // Ownership percentage e Plus categories
+          const ownership = player.ownership || 0;
+          const plusCategories = player.plusCategories && player.plusCategories.length > 0 
+            ? player.plusCategories.join(', ') 
+            : 'Nessuna';
+          
+          doc.text(`Titolarità: ${ownership}%`, 15, yPosition + 16);
+          doc.text(`Plus: ${plusCategories}`, 100, yPosition + 16);
+          
+          yPosition += 28; // Spazio maggiore tra giocatori
         });
         
         yPosition += 8; // Spazio tra ruoli
