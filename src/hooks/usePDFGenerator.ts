@@ -57,31 +57,31 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rolePlayers = players.filter(p => p.roleCategory === role);
       
       if (rolePlayers.length > 0) {
-        // Header del ruolo con design moderno e colorato
+        // Header del ruolo con forme più rotonde e moderne
         doc.setFontSize(11);
         doc.setFont('helvetica', 'bold');
         const textWidth = doc.getTextWidth(`${config.name} (${rolePlayers.length})`);
         const rectWidth = textWidth + 40;
         const rectX = (297 - rectWidth) / 2;
         
-        // Background colorato del ruolo
+        // Background colorato del ruolo con maggiore rotondità
         doc.setFillColor(...config.color, 0.15);
-        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'F');
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 15, 15, 'F');
         
-        // Bordo colorato senza ombra
+        // Bordo colorato senza ombra con maggiore rotondità
         doc.setDrawColor(...config.color);
         doc.setLineWidth(1.2);
-        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'S');
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 15, 15, 'S');
         
         // Titolo centrato con colore del ruolo
         doc.setTextColor(...config.color);
         doc.text(`${config.name} (${rolePlayers.length})`, 148.5, yPosition + 3, { align: 'center' });
-        yPosition += 15; // Ridotto spazio header
+        yPosition += 12; // Ridotto spazio header per più giocatori
         
         // Giocatori - Layout landscape ottimizzato con glassmorphism
         rolePlayers.forEach((player, index) => {
-          // Controlla se serve una nuova pagina (spazio ottimizzato)
-          if (yPosition > 175) {
+          // Controlla se serve una nuova pagina (spazio super ottimizzato)
+          if (yPosition > 185) {
             doc.addPage();
             // Ripeti il background sulla nuova pagina
             doc.setFillColor(34, 39, 54);
@@ -89,61 +89,66 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
             yPosition = 20;
           }
           
-          // Background moderno con accento colorato del ruolo
+          // Background moderno più compatto
           doc.setFillColor(255, 255, 255, 0.05);
-          doc.roundedRect(8, yPosition - 2, 281, 16, 6, 6, 'F');
+          doc.roundedRect(8, yPosition - 1, 281, 13, 8, 8, 'F');
           
           // Bordo colorato del ruolo
           doc.setDrawColor(...config.color, 0.3);
           doc.setLineWidth(0.8);
-          doc.roundedRect(8, yPosition - 2, 281, 16, 6, 6, 'S');
+          doc.roundedRect(8, yPosition - 1, 281, 13, 8, 8, 'S');
           
-          // Accento colorato del ruolo (barra laterale più spessa)
-          doc.setFillColor(...config.color, 0.8);
-          doc.roundedRect(8, yPosition - 2, 5, 16, 3, 3, 'F');
+          // Forma colorata circolare prima del nome del giocatore
+          doc.setFillColor(...config.color, 0.9);
+          doc.circle(18, yPosition + 5.5, 3, 'F');
           
-          // Nome e Cognome - PIÙ GRANDE E BOLD (colonna 1)
+          // Bordo del cerchio
+          doc.setDrawColor(...config.color);
+          doc.setLineWidth(0.5);
+          doc.circle(18, yPosition + 5.5, 3, 'S');
+          
+          // Nome e Cognome - compatto accanto al cerchio colorato
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(10);
+          doc.setFontSize(9);
           doc.setTextColor(255, 255, 255);
           const fullName = `${player.name || ''} ${player.surname || ''}`.trim();
-          doc.text(fullName, 15, yPosition + 3);
+          doc.text(fullName, 25, yPosition + 3);
           
-          // Team e Ruolo specifico
+          // Team e Ruolo specifico più compatto
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(7);
+          doc.setFontSize(6);
           doc.setTextColor(200, 200, 200);
           const teamText = player.team || 'N/A';
           const roleText = player.role || 'N/A';
-          doc.text(`${teamText} - ${roleText}`, 15, yPosition + 7);
+          doc.text(`${teamText} - ${roleText}`, 25, yPosition + 7);
           
-          // FMV e Tier
-          doc.setFontSize(6);
+          // FMV e Tier ultra compatto
+          doc.setFontSize(5);
           doc.setTextColor(180, 180, 180);
           const fmvText = `FMV: ${player.fmv || 0}`;
           const tierText = `Tier: ${player.tier || 'N/A'}`;
-          doc.text(`${fmvText} | ${tierText}`, 15, yPosition + 11);
+          doc.text(`${fmvText} | ${tierText}`, 25, yPosition + 10);
           
-          // Budget percentages compatto (colonna 2)
+          // Budget percentages compatto
           const fmv = player.fmv || 0;
           const budget300 = fmv > 0 ? ((fmv / 300) * 100).toFixed(1) : '0';
           const budget500 = fmv > 0 ? ((fmv / 500) * 100).toFixed(1) : '0';
           const budget650 = fmv > 0 ? ((fmv / 650) * 100).toFixed(1) : '0';
-          doc.setFontSize(6);
+          doc.setFontSize(5);
           doc.setTextColor(180, 180, 180);
-          doc.text('Budget:', 85, yPosition + 2);
-          doc.text(`${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, 85, yPosition + 6);
+          doc.text('Budget:', 90, yPosition + 2);
+          doc.text(`${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, 90, yPosition + 6);
           
-          // Statistiche compatte per ruolo (colonna 3)
+          // Statistiche compatte per ruolo
           if (role === 'Portiere') {
             const goalsConceded = player.goalsConceded || 0;
             const penaltiesSaved = player.penaltiesSaved || 0;
             const yellowCards = player.yellowCards || 0;
             const goalsPerGame = goalsConceded > 0 ? (goalsConceded / 30).toFixed(1) : '0';
             
-            doc.text('Stats:', 155, yPosition + 2);
-            doc.text(`Sub: ${goalsConceded} | Rig: ${penaltiesSaved} | Cart: ${yellowCards}`, 155, yPosition + 6);
-            doc.text(`Gol/partita: ${goalsPerGame}`, 155, yPosition + 10);
+            doc.text('Stats:', 160, yPosition + 2);
+            doc.text(`Sub: ${goalsConceded} | Rig: ${penaltiesSaved} | Cart: ${yellowCards}`, 160, yPosition + 6);
+            doc.text(`Gol/partita: ${goalsPerGame}`, 160, yPosition + 9);
           } else {
             const goals = player.goals || 0;
             const assists = player.assists || 0;
@@ -152,26 +157,26 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
             const xA = player.xA || 0;
             const totalBonus = goals + assists - malus;
             
-            doc.text('Stats:', 155, yPosition + 2);
-            doc.text(`G: ${goals} | A: ${assists} | M: ${malus} | Tot: ${totalBonus}`, 155, yPosition + 6);
-            doc.text(`xG: ${xG} | xA: ${xA}`, 155, yPosition + 10);
+            doc.text('Stats:', 160, yPosition + 2);
+            doc.text(`G: ${goals} | A: ${assists} | M: ${malus} | Tot: ${totalBonus}`, 160, yPosition + 6);
+            doc.text(`xG: ${xG} | xA: ${xA}`, 160, yPosition + 9);
           }
           
-          // Ownership e Plus compatto (colonna 4)
+          // Ownership e Plus compatto
           const ownership = player.ownership || 0;
           const plusCategories = player.plusCategories && player.plusCategories.length > 0 
             ? player.plusCategories.join(', ') 
             : 'Nessuna';
           
-          doc.text('Extra:', 230, yPosition + 2);
-          doc.text(`Titolarità: ${ownership}%`, 230, yPosition + 6);
-          const truncatedPlus = plusCategories.length > 25 ? plusCategories.substring(0, 25) + '...' : plusCategories;
-          doc.text(`Plus: ${truncatedPlus}`, 230, yPosition + 10);
+          doc.text('Extra:', 235, yPosition + 2);
+          doc.text(`Titolarità: ${ownership}%`, 235, yPosition + 6);
+          const truncatedPlus = plusCategories.length > 20 ? plusCategories.substring(0, 20) + '...' : plusCategories;
+          doc.text(`Plus: ${truncatedPlus}`, 235, yPosition + 9);
           
-          yPosition += 18; // Spazio ridotto tra giocatori per maggiore densità
+          yPosition += 15; // Spazio ultra ridotto tra giocatori per massima densità
         });
         
-        yPosition += 8; // Spazio tra ruoli
+        yPosition += 6; // Spazio ridotto tra ruoli
       }
     });
     
@@ -281,14 +286,14 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rectWidth = textWidth + 30; // Padding laterale
       const rectX = (210 - rectWidth) / 2; // Centra il rettangolo nella pagina
       
-      // Background moderno con gradient effect simulato
+      // Background moderno con forme più rotonde
       doc.setFillColor(...config.color, 0.15);
-      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'F');
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 20, 20, 'F');
       
-      // Bordo colorato senza ombra
+      // Bordo colorato senza ombra con forme molto rotonde
       doc.setDrawColor(...config.color);
       doc.setLineWidth(1.5);
-      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'S');
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 20, 20, 'S');
       
       // Titolo ruolo con colore del ruolo
       doc.setTextColor(...config.color);
