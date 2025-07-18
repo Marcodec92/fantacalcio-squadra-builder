@@ -438,8 +438,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       yPosition += config.rows * spacingY + 5; // Ridotto da 8 a 5
     });
     
-    // Footer con totale crediti - spazio ridotto
+    // Footer con totale crediti - controllo spazio disponibile
     yPosition += 2;
+    
+    // Controllo se serve una nuova pagina per il footer (stimiamo 80mm necessari)
+    if (yPosition > 217) { // Se siamo troppo vicini al fondo della pagina
+      doc.addPage();
+      // Ripeti il background sulla nuova pagina
+      doc.setFillColor(34, 39, 54);
+      doc.rect(0, 0, 210, 297, 'F');
+      yPosition = 20; // Inizio nuova pagina
+    }
     
     // Calcoli per le statistiche per ruolo
     const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
