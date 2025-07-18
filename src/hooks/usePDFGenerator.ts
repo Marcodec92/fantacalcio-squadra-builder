@@ -57,32 +57,32 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rolePlayers = players.filter(p => p.roleCategory === role);
       
       if (rolePlayers.length > 0) {
-        // Header del ruolo con forme completamente rotonde (ovale/capsula)
-        doc.setFontSize(11);
+        // Header del ruolo con forme più compatte
+        doc.setFontSize(10);
         doc.setFont('helvetica', 'bold');
         const textWidth = doc.getTextWidth(`${config.name} (${rolePlayers.length})`);
-        const rectWidth = textWidth + 50;
-        const rectHeight = 14;
+        const rectWidth = textWidth + 24; // Ridotto padding laterale
+        const rectHeight = 10; // Ridotto altezza
         const rectX = (297 - rectWidth) / 2;
         const cornerRadius = rectHeight / 2; // Raggio = metà altezza per forma ovale perfetta
         
-        // Sfondo con gradiente simulato (più chiaro al centro)
+        // Sfondo con gradiente simulato più compatto
         doc.setFillColor(...config.color, 0.08);
-        doc.roundedRect(rectX, yPosition - 4, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
+        doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
         
         // Secondo layer per effetto gradiente
         doc.setFillColor(...config.color, 0.12);
-        doc.roundedRect(rectX + 2, yPosition - 3, rectWidth - 4, rectHeight - 2, cornerRadius - 1, cornerRadius - 1, 'F');
+        doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
         
-        // Bordo colorato con spessore maggiore per design moderno
+        // Bordo colorato più sottile
         doc.setDrawColor(...config.color);
-        doc.setLineWidth(2);
-        doc.roundedRect(rectX, yPosition - 4, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
+        doc.setLineWidth(1.5);
+        doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
         
-        // Titolo centrato con effetto luminoso
+        // Titolo centrato con dimensioni adeguate
         doc.setTextColor(...config.color);
-        doc.text(`${config.name} (${rolePlayers.length})`, 148.5, yPosition + 2, { align: 'center' });
-        yPosition += 12; // Ridotto spazio header per più giocatori
+        doc.text(`${config.name} (${rolePlayers.length})`, 148.5, yPosition + 1.5, { align: 'center' });
+        yPosition += 15; // Maggiore spazio per evitare sovrapposizioni
         
         // Giocatori - Layout landscape ottimizzato con glassmorphism
         rolePlayers.forEach((player, index) => {
@@ -285,33 +285,34 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     roles.forEach((role) => {
       const config = roleConfig[role];
       
-      // Calcola la larghezza del testo per adattare il rettangolo
-      doc.setFontSize(11);
+      // Calcola la larghezza del testo per adattare il rettangolo compatto
+      doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       const textWidth = doc.getTextWidth(config.name);
-      const rectWidth = textWidth + 30; // Padding laterale
+      const rectWidth = textWidth + 20; // Ridotto padding laterale
       const rectX = (210 - rectWidth) / 2; // Centra il rettangolo nella pagina
       
-      // Background con forma ovale perfetta (capsula)
-      const rectHeight = 14;
-      const cornerRadius = rectHeight / 2; // Raggio = metà altezza per forma ovale perfetta
+      // Background con forma ovale più compatta
+      const rectHeight = 10; // Ridotto altezza
+      const cornerRadius = rectHeight / 2;
       
-      // Sfondo con gradiente simulato
+      // Sfondo con gradiente simulato compatto
       doc.setFillColor(...config.color, 0.08);
-      doc.roundedRect(rectX, yPosition - 4, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
+      doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
       
       // Layer centrale per effetto gradiente
       doc.setFillColor(...config.color, 0.15);
-      doc.roundedRect(rectX + 2, yPosition - 3, rectWidth - 4, rectHeight - 2, cornerRadius - 1, cornerRadius - 1, 'F');
+      doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
       
-      // Bordo colorato spesso per design moderno
+      // Bordo colorato più sottile
       doc.setDrawColor(...config.color);
-      doc.setLineWidth(2.5);
-      doc.roundedRect(rectX, yPosition - 4, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
+      doc.setLineWidth(1.8);
+      doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
       
-      // Titolo ruolo con effetto luminoso
+      // Titolo ruolo compatto
       doc.setTextColor(...config.color);
-      doc.text(config.name, 105, yPosition + 2, { align: 'center' });
+      doc.text(config.name, 105, yPosition + 1.5, { align: 'center' });
+      yPosition += 15; // Spazio adeguato per evitare sovrapposizioni
       yPosition += 15;
       
       // Dimensioni ottimizzate - etichette più piccole, nomi più grandi
