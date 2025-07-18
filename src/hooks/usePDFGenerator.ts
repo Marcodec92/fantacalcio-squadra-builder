@@ -251,17 +251,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setFillColor(34, 39, 54); // Background scuro
     doc.rect(0, 0, 210, 297, 'F');
     
-    // Titolo principale con design moderno - ultra compatto
-    doc.setFontSize(16); // Ridotto da 18
+    // Titolo principale con design moderno - ben bilanciato
+    doc.setFontSize(20); // Aumentato per utilizzare spazio
     doc.setTextColor(255, 255, 255);
-    doc.text(teamName || 'Fanta Team', 105, 12, { align: 'center' }); // Ridotto da 13
+    doc.text(teamName || 'Fanta Team', 105, 15, { align: 'center' });
     
-    // Sottotitolo più piccolo e compatto
-    doc.setFontSize(7); // Ridotto da 8
+    // Sottotitolo ben proporzionato
+    doc.setFontSize(9); // Aumentato
     doc.setTextColor(180, 180, 180);
-    doc.text('Fantasy Football Team Builder', 105, 17, { align: 'center' }); // Ridotto da 19
+    doc.text('Fantasy Football Team Builder', 105, 22, { align: 'center' });
     
-    let yPosition = 24; // Ridotto drasticamente da 28
+    let yPosition = 35; // Spazio adeguato dall'alto
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
@@ -338,14 +338,14 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setTextColor(255, 255, 255); // Testo bianco per massima leggibilità
       const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
       doc.text(config.name, 105, centerY, { align: 'center' });
-      yPosition += 10; // Ridotto drasticamente da 15
+      yPosition += 18; // Spazio equilibrato tra header e slot
       
-      // Dimensioni ultra ottimizzate per massima compattezza
-      const cardWidth = 32; // Ridotto da 36
-      const cardHeight = 13; // Ridotto da 15
+      // Dimensioni ben proporzionate per utilizzare meglio lo spazio
+      const cardWidth = 40; // Aumentato da 32 a 40
+      const cardHeight = 18; // Aumentato da 13 a 18
       const startX = 20;
-      const spacingX = 34; // Ridotto da 38
-      const spacingY = 15; // Ridotto da 17
+      const spacingX = 42; // Aumentato da 34 a 42
+      const spacingY = 20; // Aumentato da 15 a 20
       
       // Disposizione dei giocatori in griglia
       config.slots.forEach((slot, index) => {
@@ -365,41 +365,41 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         if (selection?.player) {
           // Carta con giocatore - sfondo colorato
           doc.setFillColor(config.lightColor[0], config.lightColor[1], config.lightColor[2]);
-          doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'F');
+          doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'F'); // Aumentato border radius
           
           // Bordo colorato
           doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
           doc.setLineWidth(1);
-          doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
+          doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'S');
           
-          // Etichetta slot in alto a sinistra - MOLTO PIÙ PICCOLA
+          // Etichetta slot in alto a sinistra - ridimensionata proporzionalmente
           doc.setFillColor(config.color[0], config.color[1], config.color[2]);
-          doc.roundedRect(x + 1, y + 1, 8, 4, 1, 1, 'F');
+          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F'); // Aumentata dimensione
           
-          doc.setFontSize(4); // Ulteriormente ridotto
+          doc.setFontSize(5); // Aumentato font per leggibilità
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 1.2, y + 3.5);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
           
-          // Nome giocatore - ANCORA PIÙ GRANDE E BOLD
-          doc.setFont('helvetica', 'bold'); // Imposta font bold
-          doc.setFontSize(10); // Aumentato ulteriormente da 9 a 10
-          doc.setTextColor(30, 30, 30); // Più scuro per maggior contrasto
+          // Nome giocatore - ben leggibile
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8); // Leggermente ridotto per adattarsi alla nuova larghezza
+          doc.setTextColor(30, 30, 30);
           const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
-          const truncatedName = playerName.length > 9 ? playerName.substring(0, 9) + '...' : playerName;
-          doc.text(truncatedName, x + 2, y + 9); // Aggiustato Y per spazio etichetta più piccola
+          const truncatedName = playerName.length > 12 ? playerName.substring(0, 12) + '...' : playerName; // Aumentato limite caratteri
+          doc.text(truncatedName, x + 2, y + 10);
           
-          // Team in corsivo - più piccolo per dare spazio al nome
-          doc.setFont('helvetica', 'normal'); // Reset font
-          doc.setFontSize(5); // Ridotto da 6
+          // Team - ben leggibile
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(6); // Aumentato per leggibilità
           doc.setTextColor(70, 70, 70);
-          doc.text(selection.player.team || '', x + 2, y + 13);
+          doc.text(selection.player.team || '', x + 2, y + 15);
           
-          // Badge crediti in basso a destra
+          // Badge crediti in basso a destra - proporzionato
           const creditsText = `${selection.player.credits}`;
-          const creditsWidth = doc.getTextWidth(creditsText) + 4;
+          const creditsWidth = doc.getTextWidth(creditsText) + 5;
           doc.setFillColor(50, 50, 50);
           doc.roundedRect(x + cardWidth - creditsWidth - 2, y + cardHeight - 8, creditsWidth, 6, 1, 1, 'F');
           
@@ -412,29 +412,29 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setDrawColor(120, 120, 120);
           doc.setLineWidth(0.5);
           doc.setLineDashPattern([2, 2], 0);
-          doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
-          doc.setLineDashPattern([], 0); // Reset dash pattern
+          doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'S');
+          doc.setLineDashPattern([], 0);
           
-          // Etichetta slot per slot vuoti - MOLTO PIÙ PICCOLA
+          // Etichetta slot per slot vuoti
           doc.setFillColor(120, 120, 120);
-          doc.roundedRect(x + 1, y + 1, 8, 4, 1, 1, 'F');
+          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F');
           
-          doc.setFontSize(4); // Ulteriormente ridotto
+          doc.setFontSize(5);
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 1.2, y + 3.5);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
           
           // Testo "Disponibile"
-          doc.setFontSize(5); // Ulteriormente ridotto
+          doc.setFontSize(6); // Aumentato per leggibilità
           doc.setTextColor(120, 120, 120);
-          doc.text('Disponibile', x + 2, y + 10);
+          doc.text('Disponibile', x + 2, y + 12);
         }
       });
       
-      // Spazio dopo ogni ruolo - ultra compatto
-      yPosition += config.rows * spacingY + 3; // Ridotto da 5 a 3
+      // Spazio dopo ogni ruolo - ben bilanciato
+      yPosition += config.rows * spacingY + 8; // Aumentato spazio
     });
     
     // Footer con totale crediti - spazio ultra ridotto
@@ -506,34 +506,34 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 9); // Ridotto Y
     });
     
-    yPosition += 28; // Ridotto ulteriormente da 35 per massima compattezza
+    yPosition += 25; // Spazio equilibrato per utilizzare meglio l'A4
     
-    // Sezione totale crediti con design moderno - più compatta
+    // Sezione totale crediti con design moderno - ben dimensionata
     doc.setFillColor(50, 50, 50);
-    doc.roundedRect(40, yPosition - 3, 130, 16, 3, 3, 'F'); // Ridotto altezza da 20 a 16
+    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'F'); // Ripristinato dimensioni adeguate
     
     // Bordo dorato per il totale
     doc.setDrawColor(255, 215, 0);
     doc.setLineWidth(1);
-    doc.roundedRect(40, yPosition - 3, 130, 16, 3, 3, 'S'); // Ridotto altezza
+    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'S');
     
-    // Testo totale crediti - più compatto
-    doc.setFontSize(12); // Ridotto da 14
+    // Testo totale crediti - ben leggibile
+    doc.setFontSize(14); // Ripristinato per leggibilità
     doc.setTextColor(255, 215, 0);
-    doc.text('TOTALE CREDITI', 105, yPosition + 2, { align: 'center' }); // Aggiustato Y
+    doc.text('TOTALE CREDITI', 105, yPosition + 3, { align: 'center' });
     
-    doc.setFontSize(16); // Ridotto da 18
+    doc.setFontSize(18); // Ripristinato per importanza
     doc.setTextColor(255, 255, 255);
-    doc.text(`${totalCredits}`, 105, yPosition + 8, { align: 'center' }); // Aggiustato Y
+    doc.text(`${totalCredits}`, 105, yPosition + 10, { align: 'center' });
     
-    // Info slot riempiti - più compatto
-    yPosition += 20; // Ridotto da 25
-    doc.setFontSize(9); // Ridotto da 10
+    // Info slot riempiti - ben spaziato
+    yPosition += 25; // Spazio adeguato
+    doc.setFontSize(10); // Ripristinato per leggibilità
     doc.setTextColor(180, 180, 180);
     doc.text(`Giocatori selezionati: ${filledSlots}/${totalSlots}`, 105, yPosition, { align: 'center' });
     
-    // Footer con data - più compatto
-    yPosition += 12; // Ridotto da 15
+    // Footer con data - spazio finale adeguato
+    yPosition += 15; // Spazio finale equilibrato
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
     const now = new Date();
