@@ -8,6 +8,112 @@ interface UsePDFGeneratorReturn {
 }
 
 export const usePDFGenerator = (): UsePDFGeneratorReturn => {
+  // Funzione helper per disegnare una carta giocatore
+  const drawPlayerCard = (
+    doc: jsPDF, 
+    player: Player, 
+    config: any, 
+    x: number, 
+    y: number, 
+    width: number, 
+    role: PlayerRole
+  ) => {
+    // Background con gradiente e migliore contrasto
+    doc.setFillColor(45, 55, 75, 0.6); // Grigio blu per migliore contrasto
+    doc.roundedRect(x, y - 1, width, 13, 8, 8, 'F');
+    
+    // Layer gradiente per profondità
+    doc.setFillColor(55, 65, 85, 0.4);
+    doc.roundedRect(x + 1, y - 0.5, width - 2, 12, 7, 7, 'F');
+    
+    // Bordo colorato del ruolo con gradiente
+    doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
+    doc.setLineWidth(0.8);
+    doc.roundedRect(x, y - 1, width, 13, 8, 8, 'S');
+    
+    // Forma colorata con gradiente per il ruolo
+    doc.setFillColor(config.color[0], config.color[1], config.color[2]);
+    doc.circle(x + 10, y + 5.5, 3, 'F');
+    
+    // Layer gradiente interno
+    doc.setFillColor(config.color[0], config.color[1], config.color[2]);
+    doc.circle(x + 10, y + 5.5, 2, 'F');
+    
+    // Bordo del cerchio con leggero glow
+    doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
+    doc.setLineWidth(0.5);
+    doc.circle(x + 10, y + 5.5, 3, 'S');
+    
+    // Nome e Cognome - compatto accanto al cerchio colorato
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    const fullName = `${player.name || ''} ${player.surname || ''}`.trim();
+    doc.text(fullName, x + 17, y + 3);
+    
+    // Team e Ruolo specifico più compatto
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6);
+    doc.setTextColor(200, 200, 200);
+    const teamText = player.team || 'N/A';
+    const roleText = player.role || 'N/A';
+    doc.text(`${teamText} - ${roleText}`, x + 17, y + 7);
+    
+    // FMV e Tier ultra compatto
+    doc.setFontSize(5);
+    doc.setTextColor(180, 180, 180);
+    const fmvText = `FMV: ${player.fmv || 0}`;
+    const tierText = `Tier: ${player.tier || 'N/A'}`;
+    doc.text(`${fmvText} | ${tierText}`, x + 17, y + 10);
+    
+    // Budget percentages compatto - posizione proporzionale alla larghezza
+    const fmv = player.fmv || 0;
+    const budget300 = fmv > 0 ? ((fmv / 300) * 100).toFixed(1) : '0';
+    const budget500 = fmv > 0 ? ((fmv / 500) * 100).toFixed(1) : '0';
+    const budget650 = fmv > 0 ? ((fmv / 650) * 100).toFixed(1) : '0';
+    doc.setFontSize(5);
+    doc.setTextColor(180, 180, 180);
+    const budgetX = x + width * 0.35; // 35% della larghezza
+    doc.text('Budget:', budgetX, y + 2);
+    doc.text(`${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, budgetX, y + 6);
+    
+    // Statistiche compatte per ruolo - posizione proporzionale
+    const statsX = x + width * 0.58; // 58% della larghezza
+    if (role === 'Portiere') {
+      const goalsConceded = player.goalsConceded || 0;
+      const penaltiesSaved = player.penaltiesSaved || 0;
+      const yellowCards = player.yellowCards || 0;
+      const goalsPerGame = goalsConceded > 0 ? (goalsConceded / 30).toFixed(1) : '0';
+      
+      doc.text('Stats:', statsX, y + 2);
+      doc.text(`Sub: ${goalsConceded} | Rig: ${penaltiesSaved} | Cart: ${yellowCards}`, statsX, y + 6);
+      doc.text(`Gol/partita: ${goalsPerGame}`, statsX, y + 9);
+    } else {
+      const goals = player.goals || 0;
+      const assists = player.assists || 0;
+      const malus = player.malus || 0;
+      const xG = player.xG || 0;
+      const xA = player.xA || 0;
+      const totalBonus = goals + assists - malus;
+      
+      doc.text('Stats:', statsX, y + 2);
+      doc.text(`G: ${goals} | A: ${assists} | M: ${malus} | Tot: ${totalBonus}`, statsX, y + 6);
+      doc.text(`xG: ${xG} | xA: ${xA}`, statsX, y + 9);
+    }
+    
+    // Ownership e Plus compatto - posizione proporzionale
+    const ownership = player.ownership || 0;
+    const plusCategories = player.plusCategories && player.plusCategories.length > 0 
+      ? player.plusCategories.join(', ') 
+      : 'Nessuna';
+    
+    const extraX = x + width * 0.82; // 82% della larghezza
+    doc.text('Extra:', extraX, y + 2);
+    doc.text(`Titolarità: ${ownership}%`, extraX, y + 6);
+    const truncatedPlus = plusCategories.length > 20 ? plusCategories.substring(0, 20) + '...' : plusCategories;
+    doc.text(`Plus: ${truncatedPlus}`, extraX, y + 9);
+  };
+
   const generateDatabasePDF = (players: Player[]) => {
     // Orientamento landscape (29.7 x 21 cm)
     const doc = new jsPDF('landscape', 'mm', 'a4');
@@ -67,31 +173,31 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         const cornerRadius = rectHeight / 2; // Raggio = metà altezza per forma ovale perfetta
         
         // Sfondo con gradiente simulato più vibrante
-        doc.setFillColor(...config.color, 0.12);
+        doc.setFillColor(config.color[0], config.color[1], config.color[2]);
         doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
         
         // Layer gradiente centrale più intenso
-        doc.setFillColor(...config.color, 0.18);
+        doc.setFillColor(config.color[0], config.color[1], config.color[2]);
         doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
         
         // Layer interno per effetto gradiente
-        doc.setFillColor(...config.color, 0.25);
+        doc.setFillColor(config.color[0], config.color[1], config.color[2]);
         doc.roundedRect(rectX + 2, yPosition - 1, rectWidth - 4, rectHeight - 2, cornerRadius - 1, cornerRadius - 1, 'F');
         
         // Bordo colorato molto sottile
-        doc.setDrawColor(...config.color);
+        doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
         doc.setLineWidth(0.5); // Drasticamente ridotto da 1.5 a 0.5
         doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
         
         // Titolo perfettamente centrato (X e Y)
-        doc.setTextColor(...config.color);
+        doc.setTextColor(config.color[0], config.color[1], config.color[2]);
         const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
         doc.text(`${config.name} (${rolePlayers.length})`, 148.5, centerY, { align: 'center' });
         yPosition += 15; // Maggiore spazio per evitare sovrapposizioni
         
-        // Giocatori - Layout landscape ottimizzato con glassmorphism
-        rolePlayers.forEach((player, index) => {
-          // Controlla se serve una nuova pagina (spazio super ottimizzato)
+        // Giocatori - Layout a due colonne per riga
+        for (let i = 0; i < rolePlayers.length; i += 2) {
+          // Controlla se serve una nuova pagina
           if (yPosition > 185) {
             doc.addPage();
             // Ripeti il background sulla nuova pagina
@@ -100,100 +206,20 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
             yPosition = 20;
           }
           
-          // Background con gradiente e migliore contrasto
-          doc.setFillColor(45, 55, 75, 0.6); // Grigio blu per migliore contrasto
-          doc.roundedRect(8, yPosition - 1, 281, 13, 8, 8, 'F');
-          
-          // Layer gradiente per profondità
-          doc.setFillColor(55, 65, 85, 0.4);
-          doc.roundedRect(9, yPosition - 0.5, 279, 12, 7, 7, 'F');
-          
-          // Bordo colorato del ruolo con gradiente
-          doc.setDrawColor(...config.color, 0.4);
-          doc.setLineWidth(0.8);
-          doc.roundedRect(8, yPosition - 1, 281, 13, 8, 8, 'S');
-          
-          // Forma colorata con gradiente per il ruolo
-          doc.setFillColor(...config.color, 0.9);
-          doc.circle(18, yPosition + 5.5, 3, 'F');
-          
-          // Layer gradiente interno
-          doc.setFillColor(...config.color, 1.0);
-          doc.circle(18, yPosition + 5.5, 2, 'F');
-          
-          // Bordo del cerchio con leggero glow
-          doc.setDrawColor(...config.color);
-          doc.setLineWidth(0.5);
-          doc.circle(18, yPosition + 5.5, 3, 'S');
-          
-          // Nome e Cognome - compatto accanto al cerchio colorato
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9);
-          doc.setTextColor(255, 255, 255);
-          const fullName = `${player.name || ''} ${player.surname || ''}`.trim();
-          doc.text(fullName, 25, yPosition + 3);
-          
-          // Team e Ruolo specifico più compatto
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(6);
-          doc.setTextColor(200, 200, 200);
-          const teamText = player.team || 'N/A';
-          const roleText = player.role || 'N/A';
-          doc.text(`${teamText} - ${roleText}`, 25, yPosition + 7);
-          
-          // FMV e Tier ultra compatto
-          doc.setFontSize(5);
-          doc.setTextColor(180, 180, 180);
-          const fmvText = `FMV: ${player.fmv || 0}`;
-          const tierText = `Tier: ${player.tier || 'N/A'}`;
-          doc.text(`${fmvText} | ${tierText}`, 25, yPosition + 10);
-          
-          // Budget percentages compatto
-          const fmv = player.fmv || 0;
-          const budget300 = fmv > 0 ? ((fmv / 300) * 100).toFixed(1) : '0';
-          const budget500 = fmv > 0 ? ((fmv / 500) * 100).toFixed(1) : '0';
-          const budget650 = fmv > 0 ? ((fmv / 650) * 100).toFixed(1) : '0';
-          doc.setFontSize(5);
-          doc.setTextColor(180, 180, 180);
-          doc.text('Budget:', 90, yPosition + 2);
-          doc.text(`${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, 90, yPosition + 6);
-          
-          // Statistiche compatte per ruolo
-          if (role === 'Portiere') {
-            const goalsConceded = player.goalsConceded || 0;
-            const penaltiesSaved = player.penaltiesSaved || 0;
-            const yellowCards = player.yellowCards || 0;
-            const goalsPerGame = goalsConceded > 0 ? (goalsConceded / 30).toFixed(1) : '0';
-            
-            doc.text('Stats:', 160, yPosition + 2);
-            doc.text(`Sub: ${goalsConceded} | Rig: ${penaltiesSaved} | Cart: ${yellowCards}`, 160, yPosition + 6);
-            doc.text(`Gol/partita: ${goalsPerGame}`, 160, yPosition + 9);
-          } else {
-            const goals = player.goals || 0;
-            const assists = player.assists || 0;
-            const malus = player.malus || 0;
-            const xG = player.xG || 0;
-            const xA = player.xA || 0;
-            const totalBonus = goals + assists - malus;
-            
-            doc.text('Stats:', 160, yPosition + 2);
-            doc.text(`G: ${goals} | A: ${assists} | M: ${malus} | Tot: ${totalBonus}`, 160, yPosition + 6);
-            doc.text(`xG: ${xG} | xA: ${xA}`, 160, yPosition + 9);
+          // Prima colonna (giocatore sinistro)
+          const leftPlayer = rolePlayers[i];
+          if (leftPlayer) {
+            drawPlayerCard(doc, leftPlayer, config, 8, yPosition, 138.5, role); // Larghezza metà pagina
           }
           
-          // Ownership e Plus compatto
-          const ownership = player.ownership || 0;
-          const plusCategories = player.plusCategories && player.plusCategories.length > 0 
-            ? player.plusCategories.join(', ') 
-            : 'Nessuna';
+          // Seconda colonna (giocatore destro)
+          const rightPlayer = rolePlayers[i + 1];
+          if (rightPlayer) {
+            drawPlayerCard(doc, rightPlayer, config, 150.5, yPosition, 138.5, role); // Metà destra
+          }
           
-          doc.text('Extra:', 235, yPosition + 2);
-          doc.text(`Titolarità: ${ownership}%`, 235, yPosition + 6);
-          const truncatedPlus = plusCategories.length > 20 ? plusCategories.substring(0, 20) + '...' : plusCategories;
-          doc.text(`Plus: ${truncatedPlus}`, 235, yPosition + 9);
-          
-          yPosition += 15; // Spazio ultra ridotto tra giocatori per massima densità
-        });
+          yPosition += 15; // Spazio tra le righe
+        }
         
         yPosition += 6; // Spazio ridotto tra ruoli
       }
@@ -290,24 +316,24 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const cornerRadius = rectHeight / 2;
       
       // Sfondo con gradiente moderno più intenso
-      doc.setFillColor(...config.color, 0.12);
+      doc.setFillColor(config.color[0], config.color[1], config.color[2]);
       doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
       
       // Layer gradiente centrale
-      doc.setFillColor(...config.color, 0.18);
+      doc.setFillColor(config.color[0], config.color[1], config.color[2]);
       doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
       
       // Layer interno per massimo effetto gradiente
-      doc.setFillColor(...config.color, 0.25);
+      doc.setFillColor(config.color[0], config.color[1], config.color[2]);
       doc.roundedRect(rectX + 2, yPosition - 1, rectWidth - 4, rectHeight - 2, cornerRadius - 1, cornerRadius - 1, 'F');
       
       // Bordo colorato molto sottile
-      doc.setDrawColor(...config.color);
+      doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
       doc.setLineWidth(0.5); // Drasticamente ridotto
       doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
       
       // Titolo perfettamente centrato (X e Y)
-      doc.setTextColor(...config.color);
+      doc.setTextColor(config.color[0], config.color[1], config.color[2]);
       const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
       doc.text(config.name, 105, centerY, { align: 'center' });
       yPosition += 15; // Spazio adeguato per evitare sovrapposizioni
@@ -337,16 +363,16 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         
         if (selection?.player) {
           // Carta con giocatore - sfondo colorato
-          doc.setFillColor(...config.lightColor);
+          doc.setFillColor(config.lightColor[0], config.lightColor[1], config.lightColor[2]);
           doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'F');
           
           // Bordo colorato
-          doc.setDrawColor(...config.color);
+          doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
           doc.setLineWidth(1);
           doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
           
           // Etichetta slot in alto a sinistra - MOLTO PIÙ PICCOLA
-          doc.setFillColor(...config.color);
+          doc.setFillColor(config.color[0], config.color[1], config.color[2]);
           doc.roundedRect(x + 1, y + 1, 8, 4, 1, 1, 'F');
           
           doc.setFontSize(4); // Ulteriormente ridotto
