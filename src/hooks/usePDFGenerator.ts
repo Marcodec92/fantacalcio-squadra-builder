@@ -18,19 +18,20 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     width: number, 
     role: PlayerRole
   ) => {
-    // Background con gradiente e migliore contrasto - capsula perfettamente arrotondata
+    // Background con gradiente e migliore contrasto - stessa forma dell'header
     doc.setFillColor(45, 55, 75, 0.6);
-    const capsuleRadius = 25; // Radius molto alto per forma perfettamente arrotondata
-    doc.roundedRect(x, y - 1, width, 13, capsuleRadius, capsuleRadius, 'F');
+    const capsuleHeight = 13;
+    const capsuleRadius = capsuleHeight / 2; // Stessa logica dell'header: raggio = metà altezza
+    doc.roundedRect(x, y - 1, width, capsuleHeight, capsuleRadius, capsuleRadius, 'F');
     
-    // Layer gradiente per profondità - capsula perfetta
+    // Layer gradiente per profondità - forma identica all'header
     doc.setFillColor(55, 65, 85, 0.4);
-    doc.roundedRect(x + 1, y - 0.5, width - 2, 12, capsuleRadius - 1, capsuleRadius - 1, 'F');
+    doc.roundedRect(x + 1, y - 0.5, width - 2, capsuleHeight - 1, capsuleRadius - 0.5, capsuleRadius - 0.5, 'F');
     
-    // Bordo colorato molto sottile per capsula perfetta
+    // Bordo colorato molto sottile - forma identica all'header
     doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
-    doc.setLineWidth(0.2); // Ancora più sottile per effetto moderno
-    doc.roundedRect(x, y - 1, width, 13, capsuleRadius, capsuleRadius, 'S');
+    doc.setLineWidth(0.2);
+    doc.roundedRect(x, y - 1, width, capsuleHeight, capsuleRadius, capsuleRadius, 'S');
     
     // Forma colorata con gradiente per il ruolo
     doc.setFillColor(config.color[0], config.color[1], config.color[2]);
