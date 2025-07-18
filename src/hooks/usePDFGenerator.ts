@@ -32,19 +32,23 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     const roleConfig = {
       'Portiere': { 
         name: 'Portieri',
-        color: [59, 130, 246] as [number, number, number] // Blue
+        color: [34, 197, 94] as [number, number, number], // Modern green
+        gradient: [34, 197, 94, 16, 185, 129] as [number, number, number, number, number, number]
       },
       'Difensore': { 
         name: 'Difensori',
-        color: [16, 185, 129] as [number, number, number] // Green
+        color: [59, 130, 246] as [number, number, number], // Modern blue
+        gradient: [59, 130, 246, 37, 99, 235] as [number, number, number, number, number, number]
       },
       'Centrocampista': { 
         name: 'Centrocampisti',
-        color: [139, 92, 246] as [number, number, number] // Purple
+        color: [168, 85, 247] as [number, number, number], // Modern purple
+        gradient: [168, 85, 247, 147, 51, 234] as [number, number, number, number, number, number]
       },
       'Attaccante': { 
         name: 'Attaccanti',
-        color: [239, 68, 68] as [number, number, number] // Red
+        color: [245, 101, 101] as [number, number, number], // Modern red
+        gradient: [245, 101, 101, 239, 68, 68] as [number, number, number, number, number, number]
       }
     };
     
@@ -53,29 +57,24 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rolePlayers = players.filter(p => p.roleCategory === role);
       
       if (rolePlayers.length > 0) {
-        // Header del ruolo con glassmorphism
+        // Header del ruolo con design moderno e colorato
         doc.setFontSize(11);
         doc.setFont('helvetica', 'bold');
         const textWidth = doc.getTextWidth(`${config.name} (${rolePlayers.length})`);
-        const rectWidth = textWidth + 30;
+        const rectWidth = textWidth + 40;
         const rectX = (297 - rectWidth) / 2;
         
-        // Glassmorphism per header ruolo
-        doc.setFillColor(255, 255, 255, 0.12);
-        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 6, 6, 'F');
+        // Background colorato del ruolo
+        doc.setFillColor(...config.color, 0.15);
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'F');
         
-        // Bordo glassmorphism sottile
-        doc.setDrawColor(255, 255, 255, 0.3);
-        doc.setLineWidth(0.5);
-        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 6, 6, 'S');
+        // Bordo colorato senza ombra
+        doc.setDrawColor(...config.color);
+        doc.setLineWidth(1.2);
+        doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'S');
         
-        // Accento colorato per il ruolo (bordo interno)
-        doc.setDrawColor(...config.color, 0.8);
-        doc.setLineWidth(1.5);
-        doc.roundedRect(rectX + 1, yPosition - 2, rectWidth - 2, 10, 5, 5, 'S');
-        
-        // Titolo centrato
-        doc.setTextColor(255, 255, 255);
+        // Titolo centrato con colore del ruolo
+        doc.setTextColor(...config.color);
         doc.text(`${config.name} (${rolePlayers.length})`, 148.5, yPosition + 3, { align: 'center' });
         yPosition += 15; // Ridotto spazio header
         
@@ -90,18 +89,18 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
             yPosition = 20;
           }
           
-          // Glassmorphism effect - rettangolo semi-trasparente con bordo sottile
-          doc.setFillColor(255, 255, 255, 0.08); // Bianco semi-trasparente per glassmorphism
-          doc.roundedRect(8, yPosition - 2, 281, 16, 4, 4, 'F');
+          // Background moderno con accento colorato del ruolo
+          doc.setFillColor(255, 255, 255, 0.05);
+          doc.roundedRect(8, yPosition - 2, 281, 16, 6, 6, 'F');
           
-          // Bordo glassmorphism molto sottile
-          doc.setDrawColor(255, 255, 255, 0.2);
-          doc.setLineWidth(0.3);
-          doc.roundedRect(8, yPosition - 2, 281, 16, 4, 4, 'S');
+          // Bordo colorato del ruolo
+          doc.setDrawColor(...config.color, 0.3);
+          doc.setLineWidth(0.8);
+          doc.roundedRect(8, yPosition - 2, 281, 16, 6, 6, 'S');
           
-          // Accento colorato del ruolo (linea sottile laterale)
-          doc.setFillColor(...config.color, 0.6);
-          doc.roundedRect(8, yPosition - 2, 3, 16, 2, 2, 'F');
+          // Accento colorato del ruolo (barra laterale più spessa)
+          doc.setFillColor(...config.color, 0.8);
+          doc.roundedRect(8, yPosition - 2, 5, 16, 3, 3, 'F');
           
           // Nome e Cognome - PIÙ GRANDE E BOLD (colonna 1)
           doc.setFont('helvetica', 'bold');
@@ -239,36 +238,36 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         slots: [1, 2, 3], 
         rows: 1, 
         cols: 3,
-        color: [59, 130, 246] as [number, number, number], // Blue
-        lightColor: [147, 197, 253] as [number, number, number],
-        glassColor: [59, 130, 246, 0.1] as [number, number, number, number]
+        color: [34, 197, 94] as [number, number, number], // Modern green
+        lightColor: [134, 239, 172] as [number, number, number],
+        glassColor: [34, 197, 94, 0.15] as [number, number, number, number]
       },
       'Difensore': { 
         name: 'Difensori',
         slots: [1, 2, 3, 4, 5, 6, 7, 8], 
         rows: 2, 
         cols: 4,
-        color: [16, 185, 129] as [number, number, number], // Green
-        lightColor: [110, 231, 183] as [number, number, number],
-        glassColor: [16, 185, 129, 0.1] as [number, number, number, number]
+        color: [59, 130, 246] as [number, number, number], // Modern blue
+        lightColor: [147, 197, 253] as [number, number, number],
+        glassColor: [59, 130, 246, 0.15] as [number, number, number, number]
       },
       'Centrocampista': { 
         name: 'Centrocampisti',
         slots: [1, 2, 3, 4, 5, 6, 7, 8], 
         rows: 2, 
         cols: 4,
-        color: [139, 92, 246] as [number, number, number], // Purple
+        color: [168, 85, 247] as [number, number, number], // Modern purple
         lightColor: [196, 181, 253] as [number, number, number],
-        glassColor: [139, 92, 246, 0.1] as [number, number, number, number]
+        glassColor: [168, 85, 247, 0.15] as [number, number, number, number]
       },
       'Attaccante': { 
         name: 'Attaccanti',
         slots: [1, 2, 3, 4, 5, 6], 
         rows: 2, 
         cols: 3,
-        color: [239, 68, 68] as [number, number, number], // Red
+        color: [245, 101, 101] as [number, number, number], // Modern red
         lightColor: [252, 165, 165] as [number, number, number],
-        glassColor: [239, 68, 68, 0.1] as [number, number, number, number]
+        glassColor: [245, 101, 101, 0.15] as [number, number, number, number]
       }
     };
     
@@ -282,22 +281,18 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rectWidth = textWidth + 30; // Padding laterale
       const rectX = (210 - rectWidth) / 2; // Centra il rettangolo nella pagina
       
-      doc.setFillColor(20, 20, 20); // Background molto scuro per contrasto
-      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'F');
+      // Background moderno con gradient effect simulato
+      doc.setFillColor(...config.color, 0.15);
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'F');
       
-      // Bordo colorato del ruolo con opacità
+      // Bordo colorato senza ombra
       doc.setDrawColor(...config.color);
-      doc.setLineWidth(2);
-      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'S');
+      doc.setLineWidth(1.5);
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 8, 8, 'S');
       
-      // Overlay colorato semi-trasparente
-      doc.setFillColor(...config.color, 0.2);
-      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'F');
-      
-      // Titolo ruolo PERFETTAMENTE CENTRATO nel rettangolo (sia X che Y)
-      doc.setTextColor(255, 255, 255);
-      // Centrato orizzontalmente e verticalmente nel rettangolo di altezza 12
-      doc.text(config.name, 105, yPosition + 3, { align: 'center' }); // Aggiustato Y per centraggio perfetto
+      // Titolo ruolo con colore del ruolo
+      doc.setTextColor(...config.color);
+      doc.text(config.name, 105, yPosition + 3, { align: 'center' });
       yPosition += 15;
       
       // Dimensioni ottimizzate - etichette più piccole, nomi più grandi
