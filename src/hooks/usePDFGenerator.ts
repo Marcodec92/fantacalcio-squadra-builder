@@ -9,21 +9,22 @@ interface UsePDFGeneratorReturn {
 
 export const usePDFGenerator = (): UsePDFGeneratorReturn => {
   const generateDatabasePDF = (players: Player[]) => {
-    const doc = new jsPDF();
+    // Orientamento landscape (29.7 x 21 cm)
+    const doc = new jsPDF('landscape', 'mm', 'a4');
     
-    // Imposta sfondo scuro moderno come nel Real Time Builder
+    // Imposta sfondo scuro moderno (dimensioni landscape)
     doc.setFillColor(34, 39, 54);
-    doc.rect(0, 0, 210, 297, 'F');
+    doc.rect(0, 0, 297, 210, 'F');
     
-    // Titolo principale con design moderno
+    // Titolo principale con design moderno (centrato per landscape)
     doc.setFontSize(18);
     doc.setTextColor(255, 255, 255);
-    doc.text('Database Giocatori', 105, 15, { align: 'center' });
+    doc.text('Database Giocatori', 148.5, 15, { align: 'center' });
     
     // Sottotitolo
     doc.setFontSize(8);
     doc.setTextColor(180, 180, 180);
-    doc.text('Lista completa dei giocatori del database', 105, 21, { align: 'center' });
+    doc.text('Lista completa dei giocatori del database', 148.5, 21, { align: 'center' });
     
     let yPosition = 30;
     
@@ -52,12 +53,12 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rolePlayers = players.filter(p => p.roleCategory === role);
       
       if (rolePlayers.length > 0) {
-        // Header del ruolo con design moderno
+        // Header del ruolo con design moderno (centrato per landscape)
         doc.setFontSize(11);
         doc.setFont('helvetica', 'bold');
         const textWidth = doc.getTextWidth(`${config.name} (${rolePlayers.length})`);
         const rectWidth = textWidth + 30;
-        const rectX = (210 - rectWidth) / 2;
+        const rectX = (297 - rectWidth) / 2; // Aggiornato per landscape
         
         // Sfondo scuro per il titolo
         doc.setFillColor(20, 20, 20);
@@ -74,67 +75,75 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         
         // Titolo centrato
         doc.setTextColor(255, 255, 255);
-        doc.text(`${config.name} (${rolePlayers.length})`, 105, yPosition + 3, { align: 'center' });
+        doc.text(`${config.name} (${rolePlayers.length})`, 148.5, yPosition + 3, { align: 'center' });
         yPosition += 18;
         
-        // Giocatori - TUTTI inclusi con dettagli completi
+        // Giocatori - Layout landscape con rettangoli distinti
         rolePlayers.forEach((player, index) => {
-          // Controlla se serve una nuova pagina
-          if (yPosition > 250) {
+          // Controlla se serve una nuova pagina (aggiornato per landscape)
+          if (yPosition > 170) {
             doc.addPage();
-            // Ripeti il background sulla nuova pagina
+            // Ripeti il background sulla nuova pagina (dimensioni landscape)
             doc.setFillColor(34, 39, 54);
-            doc.rect(0, 0, 210, 297, 'F');
+            doc.rect(0, 0, 297, 210, 'F');
             yPosition = 20;
           }
           
-          // Alterna i colori delle righe per migliore leggibilità
-          if (index % 2 === 0) {
-            doc.setFillColor(40, 40, 40, 0.3);
-            doc.roundedRect(10, yPosition - 3, 190, 25, 2, 2, 'F');
-          }
+          // Rettangolo distinto per ogni giocatore (sfrutta l'orizzontale)
+          doc.setFillColor(45, 45, 45, 0.8);
+          doc.roundedRect(10, yPosition - 3, 277, 20, 3, 3, 'F');
           
-          // Nome e Cognome - PIÙ GRANDE E BOLD
+          // Bordo sottile per definire meglio il rettangolo
+          doc.setDrawColor(...config.color, 0.3);
+          doc.setLineWidth(0.5);
+          doc.roundedRect(10, yPosition - 3, 277, 20, 3, 3, 'S');
+          
+          // Nome e Cognome - PIÙ GRANDE E BOLD (colonna sinistra)
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(11);
           doc.setTextColor(255, 255, 255);
           const fullName = `${player.name || ''} ${player.surname || ''}`.trim();
-          doc.text(fullName, 15, yPosition + 3);
+          doc.text(fullName, 15, yPosition + 4);
           
-          // Team e Ruolo specifico
+          // Team e Ruolo specifico sotto il nome
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(8);
           doc.setTextColor(200, 200, 200);
           const teamText = player.team || 'N/A';
           const roleText = player.role || 'N/A';
-          doc.text(`${teamText} - ${roleText}`, 15, yPosition + 8);
+          doc.text(`${teamText} - ${roleText}`, 15, yPosition + 10);
           
-          // Prima riga di statistiche
+          // FMV e Tier sotto team/ruolo
           doc.setFontSize(7);
           doc.setTextColor(180, 180, 180);
-          
-          // FMV e Tier
           const fmvText = `FMV: ${player.fmv || 0}`;
           const tierText = `Tier: ${player.tier || 'N/A'}`;
-          doc.text(`${fmvText} | ${tierText}`, 15, yPosition + 12);
+          doc.text(`${fmvText} | ${tierText}`, 15, yPosition + 15);
           
-          // Budget percentages (based on 300, 500, 650 credits)
+          // Budget percentages (seconda colonna)
           const fmv = player.fmv || 0;
           const budget300 = fmv > 0 ? ((fmv / 300) * 100).toFixed(1) : '0';
           const budget500 = fmv > 0 ? ((fmv / 500) * 100).toFixed(1) : '0';
           const budget650 = fmv > 0 ? ((fmv / 650) * 100).toFixed(1) : '0';
-          doc.text(`Budget: ${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, 100, yPosition + 3);
+          doc.setFontSize(7);
+          doc.setTextColor(180, 180, 180);
+          doc.text('Budget:', 90, yPosition + 4);
+          doc.text(`${budget300}%(300)`, 90, yPosition + 8);
+          doc.text(`${budget500}%(500)`, 90, yPosition + 12);
+          doc.text(`${budget650}%(650)`, 90, yPosition + 16);
           
-          // Statistiche specifiche per ruolo
+          // Statistiche specifiche per ruolo (terza colonna)
           if (role === 'Portiere') {
             // Statistiche portieri
             const goalsConceded = player.goalsConceded || 0;
             const penaltiesSaved = player.penaltiesSaved || 0;
             const yellowCards = player.yellowCards || 0;
-            const goalsPerGame = goalsConceded > 0 ? (goalsConceded / 30).toFixed(2) : '0'; // Assumiamo 30 partite stagione
+            const goalsPerGame = goalsConceded > 0 ? (goalsConceded / 30).toFixed(2) : '0';
             
-            doc.text(`Gol subiti: ${goalsConceded} | Rigori parati: ${penaltiesSaved}`, 100, yPosition + 8);
-            doc.text(`Cartellini: ${yellowCards} | Gol/partita: ${goalsPerGame}`, 100, yPosition + 12);
+            doc.text('Statistiche:', 150, yPosition + 4);
+            doc.text(`Gol subiti: ${goalsConceded}`, 150, yPosition + 8);
+            doc.text(`Rigori parati: ${penaltiesSaved}`, 150, yPosition + 12);
+            doc.text(`Cartellini: ${yellowCards} | Gol/partita: ${goalsPerGame}`, 150, yPosition + 16);
           } else {
             // Statistiche giocatori di movimento
             const goals = player.goals || 0;
@@ -142,52 +151,56 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
             const malus = player.malus || 0;
             const xG = player.xG || 0;
             const xA = player.xA || 0;
-            const totalBonus = goals + assists - malus; // Calcolo bonus totali
+            const totalBonus = goals + assists - malus;
             
-            doc.text(`Gol: ${goals} | Assist: ${assists} | Malus: ${malus}`, 100, yPosition + 8);
-            doc.text(`Bonus tot: ${totalBonus} | xG: ${xG} | xA: ${xA}`, 100, yPosition + 12);
+            doc.text('Statistiche:', 150, yPosition + 4);
+            doc.text(`Gol: ${goals} | Assist: ${assists}`, 150, yPosition + 8);
+            doc.text(`Malus: ${malus} | Bonus tot: ${totalBonus}`, 150, yPosition + 12);
+            doc.text(`xG: ${xG} | xA: ${xA}`, 150, yPosition + 16);
           }
           
-          // Ownership percentage e Plus categories
+          // Ownership e Plus categories (quarta colonna)
           const ownership = player.ownership || 0;
           const plusCategories = player.plusCategories && player.plusCategories.length > 0 
             ? player.plusCategories.join(', ') 
             : 'Nessuna';
           
-          doc.text(`Titolarità: ${ownership}%`, 15, yPosition + 16);
-          doc.text(`Plus: ${plusCategories}`, 100, yPosition + 16);
+          doc.text('Altro:', 220, yPosition + 4);
+          doc.text(`Titolarità: ${ownership}%`, 220, yPosition + 8);
+          const truncatedPlus = plusCategories.length > 35 ? plusCategories.substring(0, 35) + '...' : plusCategories;
+          doc.text(`Plus: ${truncatedPlus}`, 220, yPosition + 12);
           
-          yPosition += 28; // Spazio maggiore tra giocatori
+          yPosition += 25; // Spazio tra giocatori
         });
         
         yPosition += 8; // Spazio tra ruoli
       }
     });
     
-    // Footer con statistiche
+    // Footer con statistiche (aggiornato per landscape)
     yPosition += 10;
-    if (yPosition > 250) {
+    if (yPosition > 170) {
       doc.addPage();
       doc.setFillColor(34, 39, 54);
-      doc.rect(0, 0, 210, 297, 'F');
+      doc.rect(0, 0, 297, 210, 'F');
       yPosition = 30;
     }
     
-    // Box statistiche finali
+    // Box statistiche finali (centrato per landscape)
     doc.setFillColor(50, 50, 50);
-    doc.roundedRect(40, yPosition, 130, 25, 3, 3, 'F');
+    doc.roundedRect(83, yPosition, 130, 25, 3, 3, 'F');
     
     doc.setDrawColor(255, 215, 0);
     doc.setLineWidth(1);
-    doc.roundedRect(40, yPosition, 130, 25, 3, 3, 'S');
+    doc.roundedRect(83, yPosition, 130, 25, 3, 3, 'S');
     
     doc.setFontSize(12);
     doc.setTextColor(255, 215, 0);
-    doc.text('STATISTICHE DATABASE', 105, yPosition + 8, { align: 'center' });
+    doc.text('STATISTICHE DATABASE', 148.5, yPosition + 8, { align: 'center' });
     
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text(`Totale giocatori: ${players.length}`, 105, yPosition + 15, { align: 'center' });
+    doc.text(`Totale giocatori: ${players.length}`, 148.5, yPosition + 15, { align: 'center' });
     
     // Data generazione
     yPosition += 35;
@@ -195,7 +208,7 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setTextColor(120, 120, 120);
     const now = new Date();
     const dateString = now.toLocaleDateString('it-IT');
-    doc.text(`Generato il ${dateString} - Fantasy Football Database`, 105, yPosition, { align: 'center' });
+    doc.text(`Generato il ${dateString} - Fantasy Football Database`, 148.5, yPosition, { align: 'center' });
     
     doc.save('database-giocatori.pdf');
   };
