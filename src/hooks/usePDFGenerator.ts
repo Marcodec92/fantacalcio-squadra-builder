@@ -74,14 +74,15 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         doc.setFillColor(...config.color, 0.12);
         doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
         
-        // Bordo colorato più sottile
+        // Bordo colorato molto sottile
         doc.setDrawColor(...config.color);
-        doc.setLineWidth(1.5);
+        doc.setLineWidth(0.5); // Drasticamente ridotto da 1.5 a 0.5
         doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
         
-        // Titolo centrato con dimensioni adeguate
+        // Titolo perfettamente centrato (X e Y)
         doc.setTextColor(...config.color);
-        doc.text(`${config.name} (${rolePlayers.length})`, 148.5, yPosition + 1.5, { align: 'center' });
+        const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
+        doc.text(`${config.name} (${rolePlayers.length})`, 148.5, centerY, { align: 'center' });
         yPosition += 15; // Maggiore spazio per evitare sovrapposizioni
         
         // Giocatori - Layout landscape ottimizzato con glassmorphism
@@ -304,14 +305,15 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setFillColor(...config.color, 0.15);
       doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
       
-      // Bordo colorato più sottile
+      // Bordo colorato molto sottile
       doc.setDrawColor(...config.color);
-      doc.setLineWidth(1.8);
+      doc.setLineWidth(0.5); // Drasticamente ridotto
       doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
       
-      // Titolo ruolo compatto
+      // Titolo perfettamente centrato (X e Y)
       doc.setTextColor(...config.color);
-      doc.text(config.name, 105, yPosition + 1.5, { align: 'center' });
+      const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
+      doc.text(config.name, 105, centerY, { align: 'center' });
       yPosition += 15; // Spazio adeguato per evitare sovrapposizioni
       yPosition += 15;
       
