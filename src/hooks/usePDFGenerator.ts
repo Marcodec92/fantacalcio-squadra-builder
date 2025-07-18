@@ -434,32 +434,24 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         }
       });
       
-      // Spazio dopo ogni ruolo - ulteriormente ridotto
-      yPosition += config.rows * spacingY + 5; // Ridotto da 8 a 5
+      // Spazio dopo ogni ruolo - ultra compatto
+      yPosition += config.rows * spacingY + 3; // Ridotto da 5 a 3
     });
     
-    // Footer con totale crediti - controllo spazio disponibile
-    yPosition += 2;
-    
-    // Controllo se serve una nuova pagina per il footer (stimiamo 80mm necessari)
-    if (yPosition > 217) { // Se siamo troppo vicini al fondo della pagina
-      doc.addPage();
-      // Ripeti il background sulla nuova pagina
-      doc.setFillColor(34, 39, 54);
-      doc.rect(0, 0, 210, 297, 'F');
-      yPosition = 20; // Inizio nuova pagina
-    }
+    // Footer con totale crediti - spazio ultra ridotto
+    yPosition += 1; // Ridotto da 2 a 1
     
     // Calcoli per le statistiche per ruolo
     const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
     const filledSlots = selections.filter(s => s.player).length;
     const totalSlots = roles.reduce((sum, role) => sum + roleConfig[role].slots.length, 0);
     
-    // Infografica spesa per ruolo
-    doc.setFontSize(10);
+    // Infografica spesa per ruolo - più compatta
+    doc.setFontSize(9); // Ridotto da 10
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(255, 255, 255);
     doc.text('SPESA PER RUOLO', 105, yPosition, { align: 'center' });
+    yPosition += 6; // Ridotto da 8
     yPosition += 8;
     
     // Statistiche per ogni ruolo
@@ -516,34 +508,34 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 11);
     });
     
-    yPosition += 40; // Spazio per le 2 righe di statistiche
+    yPosition += 35; // Ridotto da 40 per compattare
     
-    // Sezione totale crediti con design moderno
+    // Sezione totale crediti con design moderno - più compatta
     doc.setFillColor(50, 50, 50);
-    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'F');
+    doc.roundedRect(40, yPosition - 3, 130, 16, 3, 3, 'F'); // Ridotto altezza da 20 a 16
     
     // Bordo dorato per il totale
     doc.setDrawColor(255, 215, 0);
     doc.setLineWidth(1);
-    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'S');
+    doc.roundedRect(40, yPosition - 3, 130, 16, 3, 3, 'S'); // Ridotto altezza
     
-    // Testo totale crediti
-    doc.setFontSize(14);
+    // Testo totale crediti - più compatto
+    doc.setFontSize(12); // Ridotto da 14
     doc.setTextColor(255, 215, 0);
-    doc.text('TOTALE CREDITI', 105, yPosition + 3, { align: 'center' });
+    doc.text('TOTALE CREDITI', 105, yPosition + 2, { align: 'center' }); // Aggiustato Y
     
-    doc.setFontSize(18);
+    doc.setFontSize(16); // Ridotto da 18
     doc.setTextColor(255, 255, 255);
-    doc.text(`${totalCredits}`, 105, yPosition + 10, { align: 'center' });
+    doc.text(`${totalCredits}`, 105, yPosition + 8, { align: 'center' }); // Aggiustato Y
     
-    // Info slot riempiti
-    yPosition += 25;
-    doc.setFontSize(10);
+    // Info slot riempiti - più compatto
+    yPosition += 20; // Ridotto da 25
+    doc.setFontSize(9); // Ridotto da 10
     doc.setTextColor(180, 180, 180);
     doc.text(`Giocatori selezionati: ${filledSlots}/${totalSlots}`, 105, yPosition, { align: 'center' });
     
-    // Footer con data
-    yPosition += 15;
+    // Footer con data - più compatto
+    yPosition += 12; // Ridotto da 15
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
     const now = new Date();
