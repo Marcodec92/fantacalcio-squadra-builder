@@ -73,16 +73,16 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.rect(0, 0, 210, 297, 'F');
     
     // Titolo con design moderno - più compatto
-    doc.setFontSize(20);
+    doc.setFontSize(18);
     doc.setTextColor(255, 255, 255);
-    doc.text(teamName || 'Fanta Team', 105, 15, { align: 'center' });
+    doc.text(teamName || 'Fanta Team', 105, 13, { align: 'center' });
     
     // Sottotitolo più piccolo
-    doc.setFontSize(10);
+    doc.setFontSize(8);
     doc.setTextColor(180, 180, 180);
-    doc.text('Fantasy Football Team Builder', 105, 22, { align: 'center' });
+    doc.text('Fantasy Football Team Builder', 105, 19, { align: 'center' });
     
-    let yPosition = 35; // Iniziamo più in alto
+    let yPosition = 28; // Iniziamo ancora più in alto
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
@@ -127,27 +127,33 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     roles.forEach((role) => {
       const config = roleConfig[role];
       
-      // Header colorato per ogni ruolo con effetto glassmorphism
-      doc.setFillColor(...config.color);
-      doc.roundedRect(15, yPosition - 3, 180, 10, 2, 2, 'F');
+      // Header colorato per ogni ruolo con maggior contrasto e arrotondamenti
+      doc.setFillColor(20, 20, 20); // Background molto scuro per contrasto
+      doc.roundedRect(15, yPosition - 3, 180, 12, 4, 4, 'F');
       
-      // Overlay glassmorphism (simulato con trasparenza)
-      doc.setFillColor(255, 255, 255, 0.1);
-      doc.roundedRect(15, yPosition - 3, 180, 10, 2, 2, 'F');
+      // Bordo colorato del ruolo con opacità
+      doc.setDrawColor(...config.color);
+      doc.setLineWidth(2);
+      doc.roundedRect(15, yPosition - 3, 180, 12, 4, 4, 'S');
       
-      // Titolo ruolo CENTRATO nel rettangolo
-      doc.setFontSize(12);
+      // Overlay colorato semi-trasparente
+      doc.setFillColor(...config.color, 0.2);
+      doc.roundedRect(15, yPosition - 3, 180, 12, 4, 4, 'F');
+      
+      // Titolo ruolo PERFETTAMENTE CENTRATO nel rettangolo (sia X che Y)
+      doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255);
-      doc.text(config.name, 105, yPosition + 1, { align: 'center' }); // Centrato
-      yPosition += 12;
+      // Centrato orizzontalmente e verticalmente nel rettangolo di altezza 12
+      doc.text(config.name, 105, yPosition + 2.5, { align: 'center' }); 
+      yPosition += 15;
       
-      // Dimensioni ottimizzate per il layout a griglia
-      const cardWidth = 38; // Ridotto da 42
-      const cardHeight = 17; // Ridotto da 20
+      // Dimensioni ancora più ottimizzate per risparmiare spazio
+      const cardWidth = 36; // Ulteriormente ridotto
+      const cardHeight = 15; // Ulteriormente ridotto
       const startX = 20;
-      const spacingX = 40; // Ridotto da 44
-      const spacingY = 19; // Ridotto da 22
+      const spacingX = 38; // Ulteriormente ridotto
+      const spacingY = 17; // Ulteriormente ridotto
       
       // Disposizione dei giocatori in griglia
       config.slots.forEach((slot, index) => {
@@ -174,16 +180,16 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setLineWidth(1);
           doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
           
-          // Etichetta slot in alto a sinistra
+          // Etichetta slot in alto a sinistra - PIÙ PICCOLA
           doc.setFillColor(...config.color);
-          doc.roundedRect(x + 1, y + 1, 12, 6, 1, 1, 'F');
+          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F');
           
-          doc.setFontSize(7);
+          doc.setFontSize(5); // Ridotto da 7 a 5
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 2, y + 5);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
           
           // Nome giocatore - PIÙ GRANDE E BOLD
           doc.setFont('helvetica', 'bold'); // Imposta font bold
@@ -217,21 +223,21 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
           doc.setLineDashPattern([], 0); // Reset dash pattern
           
-          // Etichetta slot per slot vuoti
+          // Etichetta slot per slot vuoti - PIÙ PICCOLA
           doc.setFillColor(120, 120, 120);
-          doc.roundedRect(x + 1, y + 1, 12, 6, 1, 1, 'F');
+          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F');
           
-          doc.setFontSize(7);
+          doc.setFontSize(5); // Ridotto da 7 a 5
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 2, y + 5);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
           
           // Testo "Disponibile"
-          doc.setFontSize(7);
+          doc.setFontSize(6); // Ridotto da 7 a 6
           doc.setTextColor(120, 120, 120);
-          doc.text('Disponibile', x + 2, y + 12);
+          doc.text('Disponibile', x + 2, y + 11);
         }
       });
       
