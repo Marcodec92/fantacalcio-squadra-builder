@@ -18,18 +18,19 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     width: number, 
     role: PlayerRole
   ) => {
-    // Background con gradiente e migliore contrasto - più arrotondato
+    // Background con gradiente e migliore contrasto - capsula perfettamente arrotondata
     doc.setFillColor(45, 55, 75, 0.6);
-    doc.roundedRect(x, y - 1, width, 13, 15, 15, 'F'); // Aumentato border radius da 8 a 15
+    const capsuleRadius = 25; // Radius molto alto per forma perfettamente arrotondata
+    doc.roundedRect(x, y - 1, width, 13, capsuleRadius, capsuleRadius, 'F');
     
-    // Layer gradiente per profondità - più arrotondato
+    // Layer gradiente per profondità - capsula perfetta
     doc.setFillColor(55, 65, 85, 0.4);
-    doc.roundedRect(x + 1, y - 0.5, width - 2, 12, 14, 14, 'F'); // Border radius proporzionale
+    doc.roundedRect(x + 1, y - 0.5, width - 2, 12, capsuleRadius - 1, capsuleRadius - 1, 'F');
     
-    // Bordo colorato del ruolo molto più sottile
+    // Bordo colorato molto sottile per capsula perfetta
     doc.setDrawColor(config.color[0], config.color[1], config.color[2]);
-    doc.setLineWidth(0.3); // Ridotto da 0.8 a 0.3 per essere molto più sottile
-    doc.roundedRect(x, y - 1, width, 13, 15, 15, 'S'); // Più arrotondato
+    doc.setLineWidth(0.2); // Ancora più sottile per effetto moderno
+    doc.roundedRect(x, y - 1, width, 13, capsuleRadius, capsuleRadius, 'S');
     
     // Forma colorata con gradiente per il ruolo
     doc.setFillColor(config.color[0], config.color[1], config.color[2]);
@@ -189,8 +190,8 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         doc.setLineWidth(0.5); // Drasticamente ridotto da 1.5 a 0.5
         doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
         
-        // Titolo perfettamente centrato (X e Y)
-        doc.setTextColor(config.color[0], config.color[1], config.color[2]);
+        // Titolo perfettamente centrato (X e Y) - Bianco su sfondo colorato
+        doc.setTextColor(255, 255, 255); // Testo bianco per massima leggibilità
         const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
         doc.text(`${config.name} (${rolePlayers.length})`, 148.5, centerY, { align: 'center' });
         yPosition += 15; // Maggiore spazio per evitare sovrapposizioni
@@ -332,8 +333,8 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setLineWidth(0.5); // Drasticamente ridotto
       doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'S');
       
-      // Titolo perfettamente centrato (X e Y)
-      doc.setTextColor(config.color[0], config.color[1], config.color[2]);
+      // Titolo perfettamente centrato (X e Y) - Bianco su sfondo colorato
+      doc.setTextColor(255, 255, 255); // Testo bianco per massima leggibilità
       const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
       doc.text(config.name, 105, centerY, { align: 'center' });
       yPosition += 15; // Spazio adeguato per evitare sovrapposizioni
