@@ -72,17 +72,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setFillColor(34, 39, 54); // Background scuro
     doc.rect(0, 0, 210, 297, 'F');
     
-    // Titolo con design moderno
-    doc.setFontSize(24);
+    // Titolo con design moderno - più compatto
+    doc.setFontSize(20);
     doc.setTextColor(255, 255, 255);
-    doc.text(teamName || 'Fanta Team', 105, 20, { align: 'center' });
+    doc.text(teamName || 'Fanta Team', 105, 15, { align: 'center' });
     
-    // Sottotitolo
-    doc.setFontSize(12);
+    // Sottotitolo più piccolo
+    doc.setFontSize(10);
     doc.setTextColor(180, 180, 180);
-    doc.text('Fantasy Football Team Builder', 105, 28, { align: 'center' });
+    doc.text('Fantasy Football Team Builder', 105, 22, { align: 'center' });
     
-    let yPosition = 45;
+    let yPosition = 35; // Iniziamo più in alto
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
@@ -123,22 +123,22 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     roles.forEach((role) => {
       const config = roleConfig[role];
       
-      // Header colorato per ogni ruolo
+      // Header colorato per ogni ruolo - più compatto
       doc.setFillColor(...config.color);
-      doc.roundedRect(15, yPosition - 5, 180, 12, 2, 2, 'F');
+      doc.roundedRect(15, yPosition - 3, 180, 10, 2, 2, 'F');
       
-      // Titolo ruolo con emoji
-      doc.setFontSize(14);
+      // Titolo ruolo con emoji - più piccolo
+      doc.setFontSize(12);
       doc.setTextColor(255, 255, 255);
-      doc.text(`${config.emoji} ${role}`, 20, yPosition + 2);
-      yPosition += 18;
+      doc.text(`${config.emoji} ${role}`, 20, yPosition + 1);
+      yPosition += 12; // Riduciamo lo spazio
       
-      // Dimensioni per il layout a griglia
-      const cardWidth = 42;
-      const cardHeight = 20;
+      // Dimensioni ottimizzate per il layout a griglia
+      const cardWidth = 38; // Ridotto da 42
+      const cardHeight = 17; // Ridotto da 20
       const startX = 20;
-      const spacingX = 44;
-      const spacingY = 22;
+      const spacingX = 40; // Ridotto da 44
+      const spacingY = 19; // Ridotto da 22
       
       // Disposizione dei giocatori in griglia
       config.slots.forEach((slot, index) => {
@@ -176,17 +176,19 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
                             role === 'Centrocampista' ? 'C' : 'A';
           doc.text(`${roleAbbrev}${slot}`, x + 2, y + 5);
           
-          // Nome giocatore
-          doc.setFontSize(8);
-          doc.setTextColor(50, 50, 50);
+          // Nome giocatore - PIÙ GRANDE E BOLD
+          doc.setFont('helvetica', 'bold'); // Imposta font bold
+          doc.setFontSize(9); // Aumentato da 8
+          doc.setTextColor(30, 30, 30); // Più scuro per maggior contrasto
           const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
-          const truncatedName = playerName.length > 11 ? playerName.substring(0, 11) + '...' : playerName;
+          const truncatedName = playerName.length > 10 ? playerName.substring(0, 10) + '...' : playerName;
           doc.text(truncatedName, x + 2, y + 10);
           
-          // Team in corsivo
-          doc.setFontSize(6);
-          doc.setTextColor(80, 80, 80);
-          doc.text(selection.player.team || '', x + 2, y + 14);
+          // Team in corsivo - più piccolo per dare spazio al nome
+          doc.setFont('helvetica', 'normal'); // Reset font
+          doc.setFontSize(5); // Ridotto da 6
+          doc.setTextColor(70, 70, 70);
+          doc.text(selection.player.team || '', x + 2, y + 13);
           
           // Badge crediti in basso a destra
           const creditsText = `${selection.player.credits}`;
@@ -224,12 +226,12 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         }
       });
       
-      // Spazio dopo ogni ruolo
-      yPosition += config.rows * spacingY + 15;
+      // Spazio dopo ogni ruolo - ottimizzato
+      yPosition += config.rows * spacingY + 8; // Ridotto da 15 a 8
     });
     
-    // Footer con totale crediti
-    yPosition += 10;
+    // Footer con totale crediti - più compatto
+    yPosition += 5; // Ridotto da 10
     
     // Sezione totale crediti con design moderno
     doc.setFillColor(50, 50, 50);
