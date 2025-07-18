@@ -251,17 +251,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setFillColor(34, 39, 54); // Background scuro
     doc.rect(0, 0, 210, 297, 'F');
     
-    // Titolo con design moderno - più compatto
-    doc.setFontSize(18);
+    // Titolo principale con design moderno - ultra compatto
+    doc.setFontSize(16); // Ridotto da 18
     doc.setTextColor(255, 255, 255);
-    doc.text(teamName || 'Fanta Team', 105, 13, { align: 'center' });
+    doc.text(teamName || 'Fanta Team', 105, 12, { align: 'center' }); // Ridotto da 13
     
-    // Sottotitolo più piccolo
-    doc.setFontSize(8);
+    // Sottotitolo più piccolo e compatto
+    doc.setFontSize(7); // Ridotto da 8
     doc.setTextColor(180, 180, 180);
-    doc.text('Fantasy Football Team Builder', 105, 19, { align: 'center' });
+    doc.text('Fantasy Football Team Builder', 105, 17, { align: 'center' }); // Ridotto da 19
     
-    let yPosition = 28; // Iniziamo ancora più in alto
+    let yPosition = 24; // Ridotto drasticamente da 28
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
@@ -338,15 +338,14 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setTextColor(255, 255, 255); // Testo bianco per massima leggibilità
       const centerY = yPosition + (rectHeight / 2) - 1; // Centro verticale della forma
       doc.text(config.name, 105, centerY, { align: 'center' });
-      yPosition += 15; // Spazio adeguato per evitare sovrapposizioni
-      yPosition += 15;
+      yPosition += 10; // Ridotto drasticamente da 15
       
-      // Dimensioni ottimizzate - etichette più piccole, nomi più grandi
-      const cardWidth = 36;
-      const cardHeight = 15;
+      // Dimensioni ultra ottimizzate per massima compattezza
+      const cardWidth = 32; // Ridotto da 36
+      const cardHeight = 13; // Ridotto da 15
       const startX = 20;
-      const spacingX = 38;
-      const spacingY = 17;
+      const spacingX = 34; // Ridotto da 38
+      const spacingY = 15; // Ridotto da 17
       
       // Disposizione dei giocatori in griglia
       config.slots.forEach((slot, index) => {
@@ -451,8 +450,7 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(255, 255, 255);
     doc.text('SPESA PER RUOLO', 105, yPosition, { align: 'center' });
-    yPosition += 6; // Ridotto da 8
-    yPosition += 8;
+    yPosition += 5; // Ultra compatto
     
     // Statistiche per ogni ruolo
     const roleStats = roles.map(role => {
@@ -472,16 +470,16 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       };
     });
     
-    // Layout a 2x2 per le statistiche dei ruoli
-    const statWidth = 85;
-    const statHeight = 12;
-    const statSpacing = 90;
+    // Layout a 2x2 per le statistiche dei ruoli - ultra compatto
+    const statWidth = 80; // Ridotto da 85
+    const statHeight = 10; // Ridotto da 12
+    const statSpacing = 85; // Ridotto da 90
     
     roleStats.forEach((stat, index) => {
       const row = Math.floor(index / 2);
       const col = index % 2;
-      const x = 20 + col * statSpacing;
-      const y = yPosition + row * 16;
+      const x = 25 + col * statSpacing; // Centrato meglio
+      const y = yPosition + row * 12; // Ridotto da 16
       
       // Sfondo colorato per ogni statistica
       doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
@@ -492,23 +490,23 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setLineWidth(0.5);
       doc.roundedRect(x, y, statWidth, statHeight, 2, 2, 'S');
       
-      // Nome ruolo
-      doc.setFontSize(8);
+      // Nome ruolo - compatto
+      doc.setFontSize(7); // Ridotto da 8
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(stat.color[0], stat.color[1], stat.color[2]);
-      doc.text(stat.name, x + 2, y + 4);
+      doc.text(stat.name, x + 2, y + 3); // Ridotto Y
       
-      // Crediti spesi
-      doc.setFontSize(7);
+      // Crediti spesi - compatto
+      doc.setFontSize(6); // Ridotto da 7
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(255, 255, 255);
-      doc.text(`${stat.credits} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 8);
+      doc.text(`${stat.credits} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 6); // Ridotto Y
       
-      // Giocatori selezionati
-      doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 11);
+      // Giocatori selezionati - compatto
+      doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 9); // Ridotto Y
     });
     
-    yPosition += 35; // Ridotto da 40 per compattare
+    yPosition += 28; // Ridotto ulteriormente da 35 per massima compattezza
     
     // Sezione totale crediti con design moderno - più compatta
     doc.setFillColor(50, 50, 50);
