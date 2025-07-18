@@ -68,34 +68,77 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
   const generateTeamPDF = (selections: RealTimeSelection[], teamName: string) => {
     const doc = new jsPDF();
     
-    // Titolo con nome squadra
-    doc.setFontSize(18);
-    doc.text(teamName || 'Fanta Team', 105, 15, { align: 'center' });
+    // Imposta sfondo con gradiente (simula il design glassmorphism)
+    doc.setFillColor(34, 39, 54); // Background scuro
+    doc.rect(0, 0, 210, 297, 'F');
     
-    let yPosition = 30;
+    // Titolo con design moderno
+    doc.setFontSize(24);
+    doc.setTextColor(255, 255, 255);
+    doc.text(teamName || 'Fanta Team', 105, 20, { align: 'center' });
+    
+    // Sottotitolo
+    doc.setFontSize(12);
+    doc.setTextColor(180, 180, 180);
+    doc.text('Fantasy Football Team Builder', 105, 28, { align: 'center' });
+    
+    let yPosition = 45;
     
     const roles: PlayerRole[] = ['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'];
     const roleConfig = {
-      'Portiere': { emoji: '🥅', slots: [1, 2, 3], rows: 1, cols: 3 },
-      'Difensore': { emoji: '🛡️', slots: [1, 2, 3, 4, 5, 6, 7, 8], rows: 2, cols: 4 },
-      'Centrocampista': { emoji: '⚡', slots: [1, 2, 3, 4, 5, 6, 7, 8], rows: 2, cols: 4 },
-      'Attaccante': { emoji: '🎯', slots: [1, 2, 3, 4, 5, 6], rows: 2, cols: 3 }
+      'Portiere': { 
+        emoji: '🥅', 
+        slots: [1, 2, 3], 
+        rows: 1, 
+        cols: 3,
+        color: [59, 130, 246] as [number, number, number], // Blue
+        lightColor: [147, 197, 253] as [number, number, number]
+      },
+      'Difensore': { 
+        emoji: '🛡️', 
+        slots: [1, 2, 3, 4, 5, 6, 7, 8], 
+        rows: 2, 
+        cols: 4,
+        color: [16, 185, 129] as [number, number, number], // Green
+        lightColor: [110, 231, 183] as [number, number, number]
+      },
+      'Centrocampista': { 
+        emoji: '⚡', 
+        slots: [1, 2, 3, 4, 5, 6, 7, 8], 
+        rows: 2, 
+        cols: 4,
+        color: [139, 92, 246] as [number, number, number], // Purple
+        lightColor: [196, 181, 253] as [number, number, number]
+      },
+      'Attaccante': { 
+        emoji: '🎯', 
+        slots: [1, 2, 3, 4, 5, 6], 
+        rows: 2, 
+        cols: 3,
+        color: [239, 68, 68] as [number, number, number], // Red
+        lightColor: [252, 165, 165] as [number, number, number]
+      }
     };
     
     roles.forEach((role) => {
       const config = roleConfig[role];
       
+      // Header colorato per ogni ruolo
+      doc.setFillColor(...config.color);
+      doc.roundedRect(15, yPosition - 5, 180, 12, 2, 2, 'F');
+      
       // Titolo ruolo con emoji
       doc.setFontSize(14);
-      doc.text(`${config.emoji} ${role}`, 20, yPosition);
-      yPosition += 8;
+      doc.setTextColor(255, 255, 255);
+      doc.text(`${config.emoji} ${role}`, 20, yPosition + 2);
+      yPosition += 18;
       
       // Dimensioni per il layout a griglia
-      const cardWidth = 45;
-      const cardHeight = 18;
+      const cardWidth = 42;
+      const cardHeight = 20;
       const startX = 20;
-      const spacingX = 47;
-      const spacingY = 20;
+      const spacingX = 44;
+      const spacingY = 22;
       
       // Disposizione dei giocatori in griglia
       config.slots.forEach((slot, index) => {
@@ -112,33 +155,72 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         const x = startX + offsetX + col * spacingX;
         const y = yPosition + row * spacingY;
         
-        // Box per ogni slot
-        doc.rect(x, y, cardWidth, cardHeight);
-        
-        // Etichetta slot
-        doc.setFontSize(8);
-        const roleAbbrev = role === 'Portiere' ? 'P' : 
-                          role === 'Difensore' ? 'D' : 
-                          role === 'Centrocampista' ? 'C' : 'A';
-        doc.text(`${roleAbbrev}${slot}`, x + 2, y + 6);
-        
         if (selection?.player) {
+          // Carta con giocatore - sfondo colorato
+          doc.setFillColor(...config.lightColor);
+          doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'F');
+          
+          // Bordo colorato
+          doc.setDrawColor(...config.color);
+          doc.setLineWidth(1);
+          doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
+          
+          // Etichetta slot in alto a sinistra
+          doc.setFillColor(...config.color);
+          doc.roundedRect(x + 1, y + 1, 12, 6, 1, 1, 'F');
+          
+          doc.setFontSize(7);
+          doc.setTextColor(255, 255, 255);
+          const roleAbbrev = role === 'Portiere' ? 'P' : 
+                            role === 'Difensore' ? 'D' : 
+                            role === 'Centrocampista' ? 'C' : 'A';
+          doc.text(`${roleAbbrev}${slot}`, x + 2, y + 5);
+          
           // Nome giocatore
-          doc.setFontSize(7);
+          doc.setFontSize(8);
+          doc.setTextColor(50, 50, 50);
           const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
-          doc.text(playerName.length > 12 ? playerName.substring(0, 12) + '...' : playerName, x + 2, y + 10);
+          const truncatedName = playerName.length > 11 ? playerName.substring(0, 11) + '...' : playerName;
+          doc.text(truncatedName, x + 2, y + 10);
           
-          // Team
+          // Team in corsivo
           doc.setFontSize(6);
-          doc.text(`${selection.player.team || ''}`, x + 2, y + 13);
+          doc.setTextColor(80, 80, 80);
+          doc.text(selection.player.team || '', x + 2, y + 14);
           
-          // Crediti
+          // Badge crediti in basso a destra
+          const creditsText = `${selection.player.credits}`;
+          const creditsWidth = doc.getTextWidth(creditsText) + 4;
+          doc.setFillColor(50, 50, 50);
+          doc.roundedRect(x + cardWidth - creditsWidth - 2, y + cardHeight - 8, creditsWidth, 6, 1, 1, 'F');
+          
           doc.setFontSize(7);
-          doc.text(`${selection.player.credits}`, x + cardWidth - 8, y + 10);
+          doc.setTextColor(255, 255, 255);
+          doc.text(creditsText, x + cardWidth - creditsWidth, y + cardHeight - 4);
+          
         } else {
-          // Slot vuoto
-          doc.setFontSize(6);
-          doc.text('Vuoto', x + 2, y + 10);
+          // Slot vuoto - design tratteggiato
+          doc.setDrawColor(120, 120, 120);
+          doc.setLineWidth(0.5);
+          doc.setLineDashPattern([2, 2], 0);
+          doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
+          doc.setLineDashPattern([], 0); // Reset dash pattern
+          
+          // Etichetta slot per slot vuoti
+          doc.setFillColor(120, 120, 120);
+          doc.roundedRect(x + 1, y + 1, 12, 6, 1, 1, 'F');
+          
+          doc.setFontSize(7);
+          doc.setTextColor(255, 255, 255);
+          const roleAbbrev = role === 'Portiere' ? 'P' : 
+                            role === 'Difensore' ? 'D' : 
+                            role === 'Centrocampista' ? 'C' : 'A';
+          doc.text(`${roleAbbrev}${slot}`, x + 2, y + 5);
+          
+          // Testo "Disponibile"
+          doc.setFontSize(7);
+          doc.setTextColor(120, 120, 120);
+          doc.text('Disponibile', x + 2, y + 12);
         }
       });
       
@@ -146,10 +228,44 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       yPosition += config.rows * spacingY + 15;
     });
     
-    // Totale crediti
+    // Footer con totale crediti
+    yPosition += 10;
+    
+    // Sezione totale crediti con design moderno
+    doc.setFillColor(50, 50, 50);
+    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'F');
+    
+    // Bordo dorato per il totale
+    doc.setDrawColor(255, 215, 0);
+    doc.setLineWidth(1);
+    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'S');
+    
     const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
-    doc.setFontSize(12);
-    doc.text(`Totale Crediti: ${totalCredits}`, 105, yPosition, { align: 'center' });
+    const filledSlots = selections.filter(s => s.player).length;
+    const totalSlots = roles.reduce((sum, role) => sum + roleConfig[role].slots.length, 0);
+    
+    // Testo totale crediti
+    doc.setFontSize(14);
+    doc.setTextColor(255, 215, 0);
+    doc.text('TOTALE CREDITI', 105, yPosition + 3, { align: 'center' });
+    
+    doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255);
+    doc.text(`${totalCredits}`, 105, yPosition + 10, { align: 'center' });
+    
+    // Info slot riempiti
+    yPosition += 25;
+    doc.setFontSize(10);
+    doc.setTextColor(180, 180, 180);
+    doc.text(`Giocatori selezionati: ${filledSlots}/${totalSlots}`, 105, yPosition, { align: 'center' });
+    
+    // Footer con data
+    yPosition += 15;
+    doc.setFontSize(8);
+    doc.setTextColor(120, 120, 120);
+    const now = new Date();
+    const dateString = now.toLocaleDateString('it-IT');
+    doc.text(`Generato il ${dateString} - Fantasy Football Team Builder`, 105, yPosition, { align: 'center' });
     
     const fileName = teamName ? `${teamName.replace(/\s+/g, '-').toLowerCase()}-team.pdf` : 'fanta-team.pdf';
     doc.save(fileName);
