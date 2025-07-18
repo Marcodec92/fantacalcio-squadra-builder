@@ -127,33 +127,37 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     roles.forEach((role) => {
       const config = roleConfig[role];
       
-      // Header colorato per ogni ruolo con maggior contrasto e arrotondamenti
+      // Calcola la larghezza del testo per adattare il rettangolo
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      const textWidth = doc.getTextWidth(config.name);
+      const rectWidth = textWidth + 30; // Padding laterale
+      const rectX = (210 - rectWidth) / 2; // Centra il rettangolo nella pagina
+      
       doc.setFillColor(20, 20, 20); // Background molto scuro per contrasto
-      doc.roundedRect(15, yPosition - 3, 180, 12, 4, 4, 'F');
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'F');
       
       // Bordo colorato del ruolo con opacità
       doc.setDrawColor(...config.color);
       doc.setLineWidth(2);
-      doc.roundedRect(15, yPosition - 3, 180, 12, 4, 4, 'S');
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'S');
       
       // Overlay colorato semi-trasparente
       doc.setFillColor(...config.color, 0.2);
-      doc.roundedRect(15, yPosition - 3, 180, 12, 4, 4, 'F');
+      doc.roundedRect(rectX, yPosition - 3, rectWidth, 12, 4, 4, 'F');
       
       // Titolo ruolo PERFETTAMENTE CENTRATO nel rettangolo (sia X che Y)
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255);
       // Centrato orizzontalmente e verticalmente nel rettangolo di altezza 12
-      doc.text(config.name, 105, yPosition + 2.5, { align: 'center' }); 
+      doc.text(config.name, 105, yPosition + 3, { align: 'center' }); // Aggiustato Y per centraggio perfetto
       yPosition += 15;
       
-      // Dimensioni ancora più ottimizzate per risparmiare spazio
-      const cardWidth = 36; // Ulteriormente ridotto
-      const cardHeight = 15; // Ulteriormente ridotto
+      // Dimensioni ottimizzate - etichette più piccole, nomi più grandi
+      const cardWidth = 36;
+      const cardHeight = 15;
       const startX = 20;
-      const spacingX = 38; // Ulteriormente ridotto
-      const spacingY = 17; // Ulteriormente ridotto
+      const spacingX = 38;
+      const spacingY = 17;
       
       // Disposizione dei giocatori in griglia
       config.slots.forEach((slot, index) => {
@@ -180,24 +184,24 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setLineWidth(1);
           doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
           
-          // Etichetta slot in alto a sinistra - PIÙ PICCOLA
+          // Etichetta slot in alto a sinistra - MOLTO PIÙ PICCOLA
           doc.setFillColor(...config.color);
-          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F');
+          doc.roundedRect(x + 1, y + 1, 8, 4, 1, 1, 'F');
           
-          doc.setFontSize(5); // Ridotto da 7 a 5
+          doc.setFontSize(4); // Ulteriormente ridotto
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.2, y + 3.5);
           
-          // Nome giocatore - PIÙ GRANDE E BOLD
+          // Nome giocatore - ANCORA PIÙ GRANDE E BOLD
           doc.setFont('helvetica', 'bold'); // Imposta font bold
-          doc.setFontSize(9); // Aumentato da 8
+          doc.setFontSize(10); // Aumentato ulteriormente da 9 a 10
           doc.setTextColor(30, 30, 30); // Più scuro per maggior contrasto
           const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
-          const truncatedName = playerName.length > 10 ? playerName.substring(0, 10) + '...' : playerName;
-          doc.text(truncatedName, x + 2, y + 10);
+          const truncatedName = playerName.length > 9 ? playerName.substring(0, 9) + '...' : playerName;
+          doc.text(truncatedName, x + 2, y + 9); // Aggiustato Y per spazio etichetta più piccola
           
           // Team in corsivo - più piccolo per dare spazio al nome
           doc.setFont('helvetica', 'normal'); // Reset font
@@ -223,30 +227,30 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.roundedRect(x, y, cardWidth, cardHeight, 2, 2, 'S');
           doc.setLineDashPattern([], 0); // Reset dash pattern
           
-          // Etichetta slot per slot vuoti - PIÙ PICCOLA
+          // Etichetta slot per slot vuoti - MOLTO PIÙ PICCOLA
           doc.setFillColor(120, 120, 120);
-          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F');
+          doc.roundedRect(x + 1, y + 1, 8, 4, 1, 1, 'F');
           
-          doc.setFontSize(5); // Ridotto da 7 a 5
+          doc.setFontSize(4); // Ulteriormente ridotto
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.2, y + 3.5);
           
           // Testo "Disponibile"
-          doc.setFontSize(6); // Ridotto da 7 a 6
+          doc.setFontSize(5); // Ulteriormente ridotto
           doc.setTextColor(120, 120, 120);
-          doc.text('Disponibile', x + 2, y + 11);
+          doc.text('Disponibile', x + 2, y + 10);
         }
       });
       
-      // Spazio dopo ogni ruolo - ottimizzato
-      yPosition += config.rows * spacingY + 8; // Ridotto da 15 a 8
+      // Spazio dopo ogni ruolo - ulteriormente ridotto
+      yPosition += config.rows * spacingY + 5; // Ridotto da 8 a 5
     });
     
-    // Footer con totale crediti - più compatto
-    yPosition += 5;
+    // Footer con totale crediti - spazio ridotto
+    yPosition += 2;
     
     // Calcoli per le statistiche per ruolo
     const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
