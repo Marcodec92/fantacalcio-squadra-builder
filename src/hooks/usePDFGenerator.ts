@@ -66,13 +66,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
         const rectX = (297 - rectWidth) / 2;
         const cornerRadius = rectHeight / 2; // Raggio = metà altezza per forma ovale perfetta
         
-        // Sfondo con gradiente simulato più compatto
-        doc.setFillColor(...config.color, 0.08);
+        // Sfondo con gradiente simulato più vibrante
+        doc.setFillColor(...config.color, 0.12);
         doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
         
-        // Secondo layer per effetto gradiente
-        doc.setFillColor(...config.color, 0.12);
+        // Layer gradiente centrale più intenso
+        doc.setFillColor(...config.color, 0.18);
         doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
+        
+        // Layer interno per effetto gradiente
+        doc.setFillColor(...config.color, 0.25);
+        doc.roundedRect(rectX + 2, yPosition - 1, rectWidth - 4, rectHeight - 2, cornerRadius - 1, cornerRadius - 1, 'F');
         
         // Bordo colorato molto sottile
         doc.setDrawColor(...config.color);
@@ -96,20 +100,28 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
             yPosition = 20;
           }
           
-          // Background moderno più compatto
-          doc.setFillColor(255, 255, 255, 0.05);
+          // Background con gradiente e migliore contrasto
+          doc.setFillColor(45, 55, 75, 0.6); // Grigio blu per migliore contrasto
           doc.roundedRect(8, yPosition - 1, 281, 13, 8, 8, 'F');
           
-          // Bordo colorato del ruolo
-          doc.setDrawColor(...config.color, 0.3);
+          // Layer gradiente per profondità
+          doc.setFillColor(55, 65, 85, 0.4);
+          doc.roundedRect(9, yPosition - 0.5, 279, 12, 7, 7, 'F');
+          
+          // Bordo colorato del ruolo con gradiente
+          doc.setDrawColor(...config.color, 0.4);
           doc.setLineWidth(0.8);
           doc.roundedRect(8, yPosition - 1, 281, 13, 8, 8, 'S');
           
-          // Forma colorata circolare prima del nome del giocatore
+          // Forma colorata con gradiente per il ruolo
           doc.setFillColor(...config.color, 0.9);
           doc.circle(18, yPosition + 5.5, 3, 'F');
           
-          // Bordo del cerchio
+          // Layer gradiente interno
+          doc.setFillColor(...config.color, 1.0);
+          doc.circle(18, yPosition + 5.5, 2, 'F');
+          
+          // Bordo del cerchio con leggero glow
           doc.setDrawColor(...config.color);
           doc.setLineWidth(0.5);
           doc.circle(18, yPosition + 5.5, 3, 'S');
@@ -187,7 +199,7 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       }
     });
     
-    // Footer con statistiche (aggiornato per landscape)
+    // Data generazione direttamente senza statistiche
     yPosition += 10;
     if (yPosition > 170) {
       doc.addPage();
@@ -195,26 +207,6 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.rect(0, 0, 297, 210, 'F');
       yPosition = 30;
     }
-    
-    // Box statistiche finali con glassmorphism
-    doc.setFillColor(255, 255, 255, 0.1);
-    doc.roundedRect(83, yPosition, 130, 25, 6, 6, 'F');
-    
-    // Bordo glassmorphism dorato
-    doc.setDrawColor(255, 215, 0, 0.8);
-    doc.setLineWidth(1);
-    doc.roundedRect(83, yPosition, 130, 25, 6, 6, 'S');
-    
-    doc.setFontSize(12);
-    doc.setTextColor(255, 215, 0);
-    doc.text('STATISTICHE DATABASE', 148.5, yPosition + 8, { align: 'center' });
-    
-    doc.setFontSize(10);
-    doc.setTextColor(255, 255, 255);
-    doc.text(`Totale giocatori: ${players.length}`, 148.5, yPosition + 15, { align: 'center' });
-    
-    // Data generazione
-    yPosition += 35;
     doc.setFontSize(8);
     doc.setTextColor(120, 120, 120);
     const now = new Date();
@@ -297,13 +289,17 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rectHeight = 10; // Ridotto altezza
       const cornerRadius = rectHeight / 2;
       
-      // Sfondo con gradiente simulato compatto
-      doc.setFillColor(...config.color, 0.08);
+      // Sfondo con gradiente moderno più intenso
+      doc.setFillColor(...config.color, 0.12);
       doc.roundedRect(rectX, yPosition - 2, rectWidth, rectHeight, cornerRadius, cornerRadius, 'F');
       
-      // Layer centrale per effetto gradiente
-      doc.setFillColor(...config.color, 0.15);
+      // Layer gradiente centrale
+      doc.setFillColor(...config.color, 0.18);
       doc.roundedRect(rectX + 1, yPosition - 1.5, rectWidth - 2, rectHeight - 1, cornerRadius - 0.5, cornerRadius - 0.5, 'F');
+      
+      // Layer interno per massimo effetto gradiente
+      doc.setFillColor(...config.color, 0.25);
+      doc.roundedRect(rectX + 2, yPosition - 1, rectWidth - 4, rectHeight - 2, cornerRadius - 1, cornerRadius - 1, 'F');
       
       // Bordo colorato molto sottile
       doc.setDrawColor(...config.color);
