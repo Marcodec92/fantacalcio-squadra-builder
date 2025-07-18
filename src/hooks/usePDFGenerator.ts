@@ -469,16 +469,16 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       };
     });
     
-    // Layout a 2x2 per le statistiche dei ruoli - ultra compatto
-    const statWidth = 80; // Ridotto da 85
-    const statHeight = 10; // Ridotto da 12
-    const statSpacing = 85; // Ridotto da 90
+    // Layout a 2x2 per le statistiche dei ruoli - ridimensionato per evitare sovrapposizioni
+    const statWidth = 75; // Ridotto da 80 per evitare sovrapposizioni
+    const statHeight = 10;
+    const statSpacing = 80; // Ridotto da 85
     
     roleStats.forEach((stat, index) => {
       const row = Math.floor(index / 2);
       const col = index % 2;
-      const x = 25 + col * statSpacing; // Centrato meglio
-      const y = yPosition + row * 12; // Ridotto da 16
+      const x = 30 + col * statSpacing; // Centrato meglio
+      const y = yPosition + row * 12;
       
       // Sfondo colorato per ogni statistica
       doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
@@ -490,22 +490,22 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.roundedRect(x, y, statWidth, statHeight, 2, 2, 'S');
       
       // Nome ruolo - compatto
-      doc.setFontSize(7); // Ridotto da 8
+      doc.setFontSize(7);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(stat.color[0], stat.color[1], stat.color[2]);
-      doc.text(stat.name, x + 2, y + 3); // Ridotto Y
+      doc.text(stat.name, x + 2, y + 3);
       
       // Crediti spesi - compatto
-      doc.setFontSize(6); // Ridotto da 7
+      doc.setFontSize(6);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(255, 255, 255);
-      doc.text(`${stat.credits} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 6); // Ridotto Y
+      doc.text(`${stat.credits} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 6);
       
       // Giocatori selezionati - compatto
-      doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 9); // Ridotto Y
+      doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 9);
     });
     
-    yPosition += 25; // Spazio equilibrato per utilizzare meglio l'A4
+    yPosition += 30; // Spazio sufficiente per evitare sovrapposizioni con totale crediti
     
     // Sezione totale crediti con design moderno - ben dimensionata
     doc.setFillColor(50, 50, 50);
