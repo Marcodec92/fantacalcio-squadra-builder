@@ -114,14 +114,14 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               <div className="text-sm sm:text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
               
               {/* Ruolo (desktop e mobile) */}
-              <div className="mt-1">
+              <div className="mt-1 sm:mt-3">
                 <div className="glass-card px-2 py-1 sm:px-3 text-xs sm:text-sm font-semibold text-gradient-secondary inline-block">
                   {player.role}
                 </div>
               </div>
               
               {/* Fascia sotto il ruolo, allineata a sinistra (solo desktop) */}
-              <div className="hidden sm:block mt-1">
+              <div className="hidden sm:block mt-3">
                 <div className="transform scale-125 origin-left">
                   <TierSelect 
                     roleCategory={player.roleCategory} 
