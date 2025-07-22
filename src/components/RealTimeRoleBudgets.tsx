@@ -20,29 +20,39 @@ const RealTimeRoleBudgets: React.FC<RealTimeRoleBudgetsProps> = ({
   ];
 
   return (
-    <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
-      <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Budget per Ruolo</h3>
-      <div className="space-y-4">
+    <Card className="p-2 sm:p-4 lg:p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
+      <h3 className="text-sm sm:text-lg lg:text-lg font-bold mb-2 sm:mb-4 text-center text-gray-800">Budget per Ruolo</h3>
+      <div className="space-y-2 sm:space-y-3 lg:space-y-4">
         {roleConfig.map(({ role, label, emoji, color }) => {
           const credits = roleCredits[role];
           // Calcola la percentuale basata sul budget totale, non sul totale speso
           const percentage = maxBudget > 0 ? (credits / maxBudget) * 100 : 0;
           
           return (
-            <div key={role} className="space-y-2">
+            <div key={role} className="space-y-1 sm:space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <span>{emoji}</span>
-                  <span className="text-sm font-medium text-gray-700">{label}</span>
+                <div className="flex items-center space-x-1 sm:space-x-2">
+                  <span className="text-xs sm:text-sm">{emoji}</span>
+                  <span className="text-xs sm:text-sm lg:text-sm font-medium text-gray-700 leading-tight">
+                    {/* Shortened labels for mobile */}
+                    <span className="block sm:hidden">
+                      {role === 'Portiere' ? 'Portieri' :
+                       role === 'Difensore' ? 'Difensori' :
+                       role === 'Centrocampista' ? 'Centroc.' :
+                       'Attaccanti'}
+                    </span>
+                    <span className="hidden sm:block">{label}</span>
+                  </span>
                 </div>
-                <span className="text-sm font-bold" style={{ color }}>
-                  {credits} crediti
+                <span className="text-xs sm:text-sm font-bold" style={{ color }}>
+                  {credits}
+                  <span className="hidden sm:inline"> crediti</span>
                 </span>
               </div>
               
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
                 <div
-                  className="h-2 rounded-full transition-all duration-500 ease-in-out"
+                  className="h-1.5 sm:h-2 rounded-full transition-all duration-500 ease-in-out"
                   style={{
                     width: `${Math.min(percentage, 100)}%`,
                     backgroundColor: color
@@ -50,8 +60,11 @@ const RealTimeRoleBudgets: React.FC<RealTimeRoleBudgetsProps> = ({
                 />
               </div>
               
-              <div className="text-xs text-center text-gray-500">
-                {percentage.toFixed(1)}% del budget totale ({maxBudget} crediti)
+              <div className="text-xs sm:text-xs text-center text-gray-500 leading-tight">
+                <span className="block sm:hidden">{percentage.toFixed(1)}%</span>
+                <span className="hidden sm:block">
+                  {percentage.toFixed(1)}% del budget totale ({maxBudget} crediti)
+                </span>
               </div>
             </div>
           );
