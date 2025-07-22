@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Zap, Target, Users, Trophy, Trash2 } from "lucide-react";
+import { ArrowLeft, Zap, Target, Users, Trophy, Trash2, Download } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePlayers } from '@/hooks/usePlayers';
 import { useSquadSelections } from '@/hooks/useSquadSelections';
+import { usePDFGenerator } from '@/hooks/usePDFGenerator';
 import SquadGrid from '@/components/SquadGrid';
 import PlayerSelectionModal from '@/components/PlayerSelectionModal';
 import BudgetWheel from '@/components/BudgetWheel';
@@ -20,6 +21,7 @@ const SquadBuilder = () => {
   const { user } = useAuth();
   const { players, isLoading: playersLoading, calculateBonusTotal } = usePlayers();
   const { squadSelections, addSelection, updateSelection, deleteSelection, clearAllSelections, isLoading: squadLoading } = useSquadSelections();
+  const { generateTeamPDF } = usePDFGenerator();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState<{
@@ -55,6 +57,30 @@ const SquadBuilder = () => {
 
   const handleResetTeam = () => {
     clearAllSelections();
+  };
+
+  const convertToRealTimeSelections = () => {
+    return squadSelections.map(selection => {
+      const player = players.find(p => p.id === selection.player_id);
+      return {
+        id: selection.id,
+        position_slot: selection.position_slot,
+        role_category: selection.role_category,
+        player: player ? {
+          id: player.id,
+          name: player.name,
+          surname: player.surname,
+          team: player.team,
+          role: player.roleCategory,
+          credits: Math.round(player.costPercentage)
+        } : undefined
+      };
+    });
+  };
+
+  const handleDownloadPDF = () => {
+    const realTimeSelections = convertToRealTimeSelections();
+    generateTeamPDF(realTimeSelections, "Team Prediction");
   };
 
   const calculateTotalBudget = () => {
@@ -152,7 +178,17 @@ const SquadBuilder = () => {
               </h1>
               <p className="text-muted-foreground font-medium text-sm sm:text-base lg:text-lg">Costruisci la tua formazione ideale</p>
             </div>
-            <div className="flex items-center space-x-1 sm:space-x-2">
+            <div className="flex items-center space-x-1 sm:space-x-2 flex-wrap justify-center">
+              {squadSelections.length > 0 && (
+                <Button
+                  onClick={handleDownloadPDF}
+                  className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium px-3 sm:px-4 py-2 text-xs sm:text-sm"
+                >
+                  <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Scarica PDF</span>
+                  <span className="sm:hidden">PDF</span>
+                </Button>
+              )}
               {squadSelections.length > 0 && (
                 <Button
                   variant="outline"
