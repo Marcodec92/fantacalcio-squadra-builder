@@ -339,9 +339,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                         <span className="text-xs">Malus:</span>
                         <span className="font-bold text-red-400 text-sm">{player.malus}</span>
                       </div>
-                      <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
-                        <span className="text-base font-bold">Bonus Totali:</span>
-                        <span className={`font-bold text-lg ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      <div className="flex justify-between border-t border-white/10 pt-1 mt-2">
+                        <span className="text-sm font-bold text-gradient">Bonus Totali:</span>
+                        <span className={`font-bold text-base ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
                         </span>
                       </div>
