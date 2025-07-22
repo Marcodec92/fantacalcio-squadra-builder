@@ -173,14 +173,16 @@ const SquadBuilder = () => {
           {/* Budget Wheels */}
           <div className="lg:col-span-1 space-y-4 sm:space-y-8 slide-in-left">
             {/* Budget sections side-by-side on mobile, vertical on desktop */}
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 sm:gap-4 lg:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 sm:gap-4 lg:gap-8 items-stretch">
               {/* Total Budget Wheel */}
-              <div className="glass-card p-2 sm:p-4 lg:p-8 shadow-xl pulse-glow">
+              <div className="glass-card p-2 sm:p-4 lg:p-8 shadow-xl pulse-glow flex flex-col h-full">
                 <h3 className="text-sm sm:text-lg lg:text-xl font-bold mb-2 sm:mb-4 lg:mb-6 text-center text-gradient">Budget Totale</h3>
-                <BudgetWheel 
-                  totalBudget={totalBudget}
-                  selectedCount={squadSelections.length}
-                />
+                <div className="flex-1 flex flex-col justify-center">
+                  <BudgetWheel 
+                    totalBudget={totalBudget}
+                    selectedCount={squadSelections.length}
+                  />
+                </div>
                 <div className="mt-2 sm:mt-4 lg:mt-6 text-center space-y-1 sm:space-y-2 lg:space-y-3">
                   <div className="glass-card p-2 sm:p-3 lg:p-4">
                     <p className="text-xs sm:text-sm font-medium flex items-center justify-between">
@@ -199,7 +201,7 @@ const SquadBuilder = () => {
               </div>
 
               {/* Budget Infographic (Costo Squadra) */}
-              <div className="lg:mt-0">
+              <div>
                 <BudgetInfographic totalBudgetPercentage={totalBudget} />
               </div>
             </div>

@@ -26,9 +26,9 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
   };
 
   return (
-    <Card className="p-2 sm:p-4 lg:p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
+    <Card className="p-2 sm:p-4 lg:p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl h-full flex flex-col">
       <h3 className="text-sm sm:text-lg lg:text-lg font-bold mb-2 sm:mb-4 text-center text-gray-800">Costo Squadra</h3>
-      <div className="space-y-2 sm:space-y-3 lg:space-y-4">
+      <div className="space-y-2 sm:space-y-3 lg:space-y-4 flex-1 flex flex-col justify-center">
         {budgets.map(({ credits, label }) => {
           const cost = calculateCost(credits);
           const isOver = isOverBudget(credits, cost);
