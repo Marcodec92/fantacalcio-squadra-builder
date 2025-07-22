@@ -342,45 +342,45 @@ const Index = () => {
                 </Card>
               </div>
 
-              <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 max-w-4xl mx-auto h-auto bg-transparent p-0">
+              <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 md:gap-4 max-w-3xl mx-auto h-auto bg-transparent p-0">
                 <TabsTrigger 
                   value="Portiere" 
-                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-xl md:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
-                    <Shield className="w-4 h-4 sm:w-6 sm:h-6" />
-                    <span className="text-xs sm:text-sm">Portieri</span>
-                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Portiere')})</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-1.5 md:space-y-2">
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    <span className="text-xs sm:text-sm md:text-sm">Portieri</span>
+                    <span className="text-[10px] sm:text-xs md:text-xs opacity-75">({getPlayerCountByRole('Portiere')})</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Difensore"
-                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-xl md:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
-                    <Shield className="w-4 h-4 sm:w-6 sm:h-6" />
-                    <span className="text-xs sm:text-sm">Difensori</span>
-                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Difensore')})</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-1.5 md:space-y-2">
+                    <Shield className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    <span className="text-xs sm:text-sm md:text-sm">Difensori</span>
+                    <span className="text-[10px] sm:text-xs md:text-xs opacity-75">({getPlayerCountByRole('Difensore')})</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Centrocampista"
-                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-xl md:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
-                    <Sparkles className="w-4 h-4 sm:w-6 sm:h-6" />
-                    <span className="text-xs sm:text-sm">Centrocampisti</span>
-                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Centrocampista')})</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-1.5 md:space-y-2">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    <span className="text-xs sm:text-sm md:text-sm">Centrocampisti</span>
+                    <span className="text-[10px] sm:text-xs md:text-xs opacity-75">({getPlayerCountByRole('Centrocampista')})</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Attaccante"
-                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-4 md:p-5 rounded-xl sm:rounded-xl md:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
-                    <Target className="w-4 h-4 sm:w-6 sm:h-6" />
-                    <span className="text-xs sm:text-sm">Attaccanti</span>
-                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Attaccante')})</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-1.5 md:space-y-2">
+                    <Target className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    <span className="text-xs sm:text-sm md:text-sm">Attaccanti</span>
+                    <span className="text-[10px] sm:text-xs md:text-xs opacity-75">({getPlayerCountByRole('Attaccante')})</span>
                   </div>
                 </TabsTrigger>
               </TabsList>
