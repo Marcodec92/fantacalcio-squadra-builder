@@ -171,25 +171,36 @@ const SquadBuilder = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Budget Wheels */}
-          <div className="lg:col-span-1 space-y-8 slide-in-left">
-            {/* Total Budget Wheel */}
-            <div className="glass-card p-8 shadow-xl pulse-glow">
-              <h3 className="text-xl font-bold mb-6 text-center text-gradient">Budget Totale</h3>
-              <BudgetWheel 
-                totalBudget={totalBudget}
-                selectedCount={squadSelections.length}
-              />
-              <div className="mt-6 text-center space-y-3">
-                <div className="glass-card p-4">
-                  <p className="text-sm font-medium flex items-center justify-between">
-                    <span className="text-muted-foreground">Giocatori:</span>
-                    <span className="text-gradient font-bold text-lg">{squadSelections.length}/25</span>
-                  </p>
-                  <p className="text-sm font-medium flex items-center justify-between mt-2">
-                    <span className="text-muted-foreground">Budget:</span>
-                    <span className="text-gradient-secondary font-bold text-lg">{totalBudget.toFixed(1)}%</span>
-                  </p>
+          <div className="lg:col-span-1 space-y-4 sm:space-y-8 slide-in-left">
+            {/* Budget sections side-by-side on mobile, vertical on desktop */}
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 sm:gap-4 lg:gap-8">
+              {/* Total Budget Wheel */}
+              <div className="glass-card p-2 sm:p-4 lg:p-8 shadow-xl pulse-glow">
+                <h3 className="text-sm sm:text-lg lg:text-xl font-bold mb-2 sm:mb-4 lg:mb-6 text-center text-gradient">Budget Totale</h3>
+                <BudgetWheel 
+                  totalBudget={totalBudget}
+                  selectedCount={squadSelections.length}
+                />
+                <div className="mt-2 sm:mt-4 lg:mt-6 text-center space-y-1 sm:space-y-2 lg:space-y-3">
+                  <div className="glass-card p-2 sm:p-3 lg:p-4">
+                    <p className="text-xs sm:text-sm font-medium flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        <span className="hidden sm:inline">Giocatori:</span>
+                        <span className="sm:hidden">Giocat.:</span>
+                      </span>
+                      <span className="text-gradient font-bold text-sm sm:text-base lg:text-lg">{squadSelections.length}/25</span>
+                    </p>
+                    <p className="text-xs sm:text-sm font-medium flex items-center justify-between mt-1 sm:mt-2">
+                      <span className="text-muted-foreground">Budget:</span>
+                      <span className="text-gradient-secondary font-bold text-sm sm:text-base lg:text-lg">{totalBudget.toFixed(1)}%</span>
+                    </p>
+                  </div>
                 </div>
+              </div>
+
+              {/* Budget Infographic (Costo Squadra) */}
+              <div className="lg:mt-0">
+                <BudgetInfographic totalBudgetPercentage={totalBudget} />
               </div>
             </div>
 
@@ -198,9 +209,6 @@ const SquadBuilder = () => {
               roleBudgets={roleBudgets}
               roleCounts={roleCounts}
             />
-
-            {/* Budget Infographic */}
-            <BudgetInfographic totalBudgetPercentage={totalBudget} />
           </div>
 
           {/* Squad Grid */}

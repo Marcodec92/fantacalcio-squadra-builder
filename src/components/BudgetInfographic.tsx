@@ -26,9 +26,9 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
   };
 
   return (
-    <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
-      <h3 className="text-lg font-bold mb-4 text-center text-gray-800">Costo Squadra</h3>
-      <div className="space-y-4">
+    <Card className="p-2 sm:p-4 lg:p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
+      <h3 className="text-sm sm:text-lg lg:text-lg font-bold mb-2 sm:mb-4 text-center text-gray-800">Costo Squadra</h3>
+      <div className="space-y-2 sm:space-y-3 lg:space-y-4">
         {budgets.map(({ credits, label }) => {
           const cost = calculateCost(credits);
           const isOver = isOverBudget(credits, cost);
@@ -36,10 +36,14 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
           
           return (
             <div key={credits} className="relative">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">{label}</span>
+              <div className="flex justify-between items-center mb-1 sm:mb-2">
+                <span className="text-xs sm:text-sm font-medium text-gray-700 leading-tight">
+                  {/* Shortened labels for mobile */}
+                  <span className="block sm:hidden">{credits}cr</span>
+                  <span className="hidden sm:block">{label}</span>
+                </span>
                 <span 
-                  className="text-sm font-bold"
+                  className="text-xs sm:text-sm font-bold"
                   style={{ color }}
                 >
                   {cost}/{credits}
@@ -47,7 +51,7 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
               </div>
               
               {/* Progress bar */}
-              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3 overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-500 ease-in-out"
                   style={{
@@ -57,16 +61,17 @@ const BudgetInfographic: React.FC<BudgetInfographicProps> = ({ totalBudgetPercen
                 />
               </div>
               
-              {/* Status indicator */}
-              <div className="mt-2 text-center">
+              {/* Status indicator - more compact on mobile */}
+              <div className="mt-1 sm:mt-2 text-center">
                 <div 
-                  className="inline-block px-2 py-1 rounded-full text-xs font-medium"
+                  className="inline-block px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium leading-tight"
                   style={{ 
                     backgroundColor: `${color}20`, 
                     color: color 
                   }}
                 >
-                  {isOver ? '⚠️ Limite superato' : '✅ Nei limiti'}
+                  <span className="block sm:hidden">{isOver ? '⚠️' : '✅'}</span>
+                  <span className="hidden sm:block">{isOver ? '⚠️ Limite superato' : '✅ Nei limiti'}</span>
                 </div>
               </div>
             </div>
