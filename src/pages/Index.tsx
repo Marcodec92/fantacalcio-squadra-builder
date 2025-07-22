@@ -285,12 +285,12 @@ const Index = () => {
                       <h3 className="text-lg sm:text-xl font-bold text-gradient mb-2">Carica Giocatori</h3>
                       <p className="text-muted-foreground text-xs sm:text-sm">
                         {csvPlayers.length > 0 
-                          ? `${csvPlayers.length} giocatori caricati dal CSV - Disponibili anche per Real Time Builder`
+                          ? `${csvPlayers.length} giocatori caricati dal CSV`
                           : 'Carica un file CSV per importare i giocatori'
                         }
                       </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2 sm:gap-3">
                       {csvLoading ? (
                         <div className="flex items-center gap-2">
                           <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>

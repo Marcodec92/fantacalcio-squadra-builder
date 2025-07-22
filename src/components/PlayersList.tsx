@@ -155,16 +155,16 @@ const PlayersList: React.FC<PlayersListProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className={`text-2xl font-bold bg-gradient-to-r ${getRoleGradient(roleCategory)} bg-clip-text text-transparent`}>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
+        <h2 className={`text-xl sm:text-2xl font-bold bg-gradient-to-r ${getRoleGradient(roleCategory)} bg-clip-text text-transparent`}>
           {getRoleTitle(roleCategory)}
         </h2>
         <Button 
           onClick={onAddPlayer} 
-          className={`bg-gradient-to-r ${getRoleGradient(roleCategory)} hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl font-medium`}
+          className={`w-full sm:w-auto bg-gradient-to-r ${getRoleGradient(roleCategory)} hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-2xl font-medium px-4 py-2 text-sm sm:text-base`}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Aggiungi {roleCategory.toLowerCase()}
+          <span className="truncate">Aggiungi {roleCategory.toLowerCase()}</span>
         </Button>
       </div>
 

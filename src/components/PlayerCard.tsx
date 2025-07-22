@@ -92,9 +92,9 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     return (
       <div className="glass-card p-2 sm:p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
         <div className="space-y-2 sm:space-y-3">
-          {/* Prima riga: Nome più grande, Fascia e MFV a destra e Azioni */}
-          <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0">
-            <div className="flex-1 w-full sm:w-auto">
+          {/* Header con nome e azioni in alto */}
+          <div className="flex justify-between items-start gap-2">
+            <div className="flex-1">
               <div className="font-bold text-lg sm:text-2xl text-gradient leading-tight break-words flex items-center gap-2">
                 {player.name} {player.surname}
                 {player.isFavorite && (
@@ -108,21 +108,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 {player.role}
               </div>
             </div>
-            {/* Fascia e MFV valorizzati - mobile: in riga, desktop: colonna */}
-            <div className="flex sm:flex-col items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-center sm:mt-2 sm:mr-8">
-              <div className="transform scale-100 sm:scale-125">
-                <TierSelect 
-                  roleCategory={player.roleCategory} 
-                  value={player.tier} 
-                  readonly 
-                />
-              </div>
-              <div className="glass-card px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base font-bold text-gradient">
-                MFV: {player.fmv.toFixed(2)}
-              </div>
-            </div>
-            {/* Azioni */}
-            <div className="flex gap-1 sm:gap-2 w-full sm:w-auto justify-end sm:justify-start">
+            {/* Azioni - sempre in alto a destra */}
+            <div className="flex gap-1 sm:gap-2 shrink-0">
               <Button
                 variant="outline"
                 size="sm"
@@ -139,6 +126,20 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               >
                 <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
+            </div>
+          </div>
+
+          {/* Seconda riga: Fascia e MFV */}
+          <div className="flex items-center gap-2 sm:gap-4 justify-center sm:justify-start">
+            <div className="transform scale-100 sm:scale-125">
+              <TierSelect 
+                roleCategory={player.roleCategory} 
+                value={player.tier} 
+                readonly 
+              />
+            </div>
+            <div className="glass-card px-2 py-1 sm:px-4 sm:py-2 text-sm sm:text-base font-bold text-gradient">
+              MFV: {player.fmv.toFixed(2)}
             </div>
           </div>
 
