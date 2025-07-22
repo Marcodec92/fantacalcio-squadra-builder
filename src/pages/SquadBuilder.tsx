@@ -174,7 +174,7 @@ const SquadBuilder = () => {
             </Button>
             <div className="text-center">
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gradient mb-2 sm:mb-3">
-                ⚽ Team Prediction
+                Team Prediction
               </h1>
               <p className="text-muted-foreground font-medium text-sm sm:text-base lg:text-lg">Costruisci la tua formazione ideale</p>
             </div>

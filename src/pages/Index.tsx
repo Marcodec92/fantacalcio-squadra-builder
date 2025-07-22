@@ -246,7 +246,6 @@ const Index = () => {
               className="glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 text-xs sm:text-sm"
               size="sm"
             >
-              <Timer className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Fanta Team</span>
               <span className="sm:hidden">Team</span>
             </Button>
@@ -255,7 +254,6 @@ const Index = () => {
               className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 text-xs sm:text-sm"
               size="sm"
             >
-              <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Team Prediction</span>
               <span className="sm:hidden">Pred</span>
             </Button>
