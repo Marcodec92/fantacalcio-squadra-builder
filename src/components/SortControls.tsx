@@ -83,14 +83,14 @@ const SortControls: React.FC<SortControlsProps> = ({
         {sortDirection === 'desc' ? (
           <>
             <ArrowDown className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="sm:hidden">Decrescente</span>
             <span className="hidden sm:inline">Decrescente</span>
-            <span className="sm:hidden">↓</span>
           </>
         ) : (
           <>
             <ArrowUp className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="sm:hidden">Crescente</span>
             <span className="hidden sm:inline">Crescente</span>
-            <span className="sm:hidden">↑</span>
           </>
         )}
       </Button>
