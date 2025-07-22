@@ -290,7 +290,7 @@ const Index = () => {
                         }
                       </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2 sm:gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       {csvLoading ? (
                         <div className="flex items-center gap-2">
                           <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
@@ -300,7 +300,7 @@ const Index = () => {
                         <>
                           <Button
                             onClick={triggerFileInput}
-                            className="glass-button gradient-secondary font-medium h-8 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
+                            className="glass-button gradient-secondary font-medium flex-1 sm:flex-none h-10 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
                             size="sm"
                           >
                             <Upload className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
@@ -310,7 +310,7 @@ const Index = () => {
                           {csvPlayers.length > 0 && (
                             <Button
                               onClick={resetDatabase}
-                              className="glass-button bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-2xl font-medium h-8 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
+                              className="glass-button bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-2xl font-medium flex-1 sm:flex-none h-10 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
                               size="sm"
                               disabled={csvLoading}
                             >
@@ -322,7 +322,7 @@ const Index = () => {
                           {allPlayers.length > 0 && (
                             <Button
                               onClick={() => generateDatabasePDF(allPlayers)}
-                              className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium h-8 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
+                              className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium flex-1 sm:flex-none h-10 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
                               size="sm"
                             >
                               <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
