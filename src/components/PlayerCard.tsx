@@ -120,10 +120,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
             </div>
             {/* Azioni e MFV allineati verticalmente (mobile) */}
             <div className="flex flex-col gap-1 sm:flex-row sm:gap-2 shrink-0">
-              {/* MFV allineato con i bottoni (solo mobile) */}
-              <div className="glass-card px-2 py-1 text-xs font-bold text-gradient sm:hidden">
-                MFV: {player.fmv.toFixed(2)}
-              </div>
+              {/* Bottoni in alto (mobile) */}
               <div className="flex gap-1 sm:gap-2">
                 <Button
                   variant="outline"
@@ -141,6 +138,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                 >
                   <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
+              </div>
+              {/* MFV sotto i bottoni (solo mobile) */}
+              <div className="glass-card px-2 py-1 text-xs font-bold text-gradient sm:hidden">
+                MFV: {player.fmv.toFixed(2)}
               </div>
             </div>
           </div>
