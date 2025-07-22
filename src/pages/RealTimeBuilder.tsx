@@ -210,9 +210,6 @@ const RealTimeBuilder = () => {
                     <p className="text-green-600 font-medium">
                       ✅ {csvPlayers.length} giocatori CSV disponibili
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      Lista completa e indipendente - Non influenzata dalle selezioni del database
-                    </p>
                   </div>
                 </>
               )}
