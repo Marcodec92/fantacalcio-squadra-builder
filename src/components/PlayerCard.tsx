@@ -85,8 +85,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
     };
   };
 
-  // Calcolo dei bonus totali per i giocatori non portieri - FORMULA CORRETTA
-  const bonusTotal = isGoalkeeper ? 0 : player.goals * 3 + player.assists - player.malus * 0.5;
+  // Calcolo dei bonus totali - FORMULA CORRETTA per portieri e giocatori di movimento
+  const bonusTotal = isGoalkeeper 
+    ? player.penaltiesSaved * 3 - player.goalsConceded - player.yellowCards * 0.5
+    : player.goals * 3 + player.assists - player.malus * 0.5;
 
   if (!isEditing) {
     return (
@@ -221,6 +223,12 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                           <span className="text-xs">Cartellini:</span>
                           <span className="font-bold text-yellow-400 text-xs">{player.yellowCards}</span>
                         </div>
+                        <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
+                          <span className="text-sm font-bold">Bonus Totali:</span>
+                          <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -320,6 +328,12 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                       <div className="flex justify-between">
                         <span className="text-xs">Cartellini:</span>
                         <span className="font-bold text-yellow-400 text-sm">{player.yellowCards}</span>
+                      </div>
+                      <div className="flex justify-between border-t border-white/10 pt-1 mt-2">
+                        <span className="text-sm font-bold text-gradient">Bonus Totali:</span>
+                        <span className={`font-bold text-base ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                        </span>
                       </div>
                     </div>
                   </div>
