@@ -100,42 +100,46 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
     <div className="mb-4">
       <div className="space-y-4">
         {/* Search and Favorites */}
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
               placeholder="Cerca per nome..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-10 bg-transparent border-white/20 text-white placeholder:text-white/60"
+              className="pl-10 bg-transparent border-white/20 text-white placeholder:text-white/60 h-10 sm:h-auto"
             />
           </div>
-          <Button
-            variant={showFavoritesOnly ? "default" : "outline"}
-            onClick={onFavoritesToggle}
-            className="shrink-0"
-          >
-            <Star className={`w-4 h-4 mr-2 ${showFavoritesOnly ? 'fill-current' : ''}`} />
-            Preferiti
-          </Button>
-          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger asChild>
-              <Button variant="outline" className="shrink-0">
-                <Filter className="w-4 h-4 mr-2" />
-                Filtri
-                {activeFiltersCount > 0 && (
-                  <Badge variant="secondary" className="ml-2 text-xs">
-                    {activeFiltersCount}
-                  </Badge>
-                )}
-              </Button>
-            </CollapsibleTrigger>
+          <div className="flex gap-2">
+            <Button
+              variant={showFavoritesOnly ? "default" : "outline"}
+              onClick={onFavoritesToggle}
+              className="shrink-0 h-10 px-3 sm:px-4 text-xs sm:text-sm"
+              size="sm"
+            >
+              <Star className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 ${showFavoritesOnly ? 'fill-current' : ''}`} />
+              <span className="hidden sm:inline">Preferiti</span>
+              <span className="sm:hidden">★</span>
+            </Button>
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="shrink-0 h-10 px-3 sm:px-4 text-xs sm:text-sm" size="sm">
+                  <Filter className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Filtri</span>
+                  <span className="sm:hidden">☰</span>
+                  {activeFiltersCount > 0 && (
+                    <Badge variant="secondary" className="ml-1 sm:ml-2 text-xs">
+                      {activeFiltersCount}
+                    </Badge>
+                  )}
+                </Button>
+              </CollapsibleTrigger>
             <CollapsibleContent className="mt-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Teams Filter */}
                 <div>
                   <Label className="text-sm font-medium mb-2 block text-white">Squadre</Label>
-                  <div className="max-h-32 overflow-y-auto space-y-1">
+                  <div className="max-h-32 sm:max-h-40 overflow-y-auto space-y-1">
                     {teams.map((team) => (
                       <div key={team} className="flex items-center space-x-2">
                         <Checkbox
@@ -200,6 +204,7 @@ const PlayerFilters: React.FC<PlayerFiltersProps> = ({
               )}
             </CollapsibleContent>
           </Collapsible>
+          </div>
         </div>
       </div>
     </div>

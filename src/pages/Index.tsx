@@ -279,52 +279,55 @@ const Index = () => {
             <div className="glass-card border-b border-white/10 p-4 sm:p-8">
               {/* CSV Upload Section */}
               <div className="mb-4 sm:mb-8">
-                <Card className="glass-card p-6 shadow-xl">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold text-gradient mb-2">Carica Giocatori</h3>
-                      <p className="text-muted-foreground text-sm">
+                <Card className="glass-card p-4 sm:p-6 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-gradient mb-2">Carica Giocatori</h3>
+                      <p className="text-muted-foreground text-xs sm:text-sm">
                         {csvPlayers.length > 0 
                           ? `${csvPlayers.length} giocatori caricati dal CSV - Disponibili anche per Real Time Builder`
                           : 'Carica un file CSV per importare i giocatori'
                         }
                       </p>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                       {csvLoading ? (
                         <div className="flex items-center gap-2">
                           <div className="animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                          <span className="text-sm">Caricamento...</span>
+                          <span className="text-xs sm:text-sm">Caricamento...</span>
                         </div>
                       ) : (
                         <>
                           <Button
                             onClick={triggerFileInput}
-                            className="glass-button gradient-secondary font-medium"
+                            className="glass-button gradient-secondary font-medium h-8 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
                             size="sm"
                           >
-                            <Upload className="w-4 h-4 mr-2" />
-                            {csvPlayers.length > 0 ? 'Aggiorna CSV' : 'Carica CSV'}
+                            <Upload className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                            <span className="hidden sm:inline">{csvPlayers.length > 0 ? 'Aggiorna CSV' : 'Carica CSV'}</span>
+                            <span className="sm:hidden">{csvPlayers.length > 0 ? 'Aggiorna' : 'CSV'}</span>
                           </Button>
                           {csvPlayers.length > 0 && (
                             <Button
                               onClick={resetDatabase}
-                              className="glass-button bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-2xl font-medium"
+                              className="glass-button bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-2xl font-medium h-8 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
                               size="sm"
                               disabled={csvLoading}
                             >
-                              <RotateCcw className="w-4 h-4 mr-2" />
-                              Reset Database
+                              <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                              <span className="hidden sm:inline">Reset Database</span>
+                              <span className="sm:hidden">Reset</span>
                             </Button>
                           )}
                           {allPlayers.length > 0 && (
                             <Button
                               onClick={() => generateDatabasePDF(allPlayers)}
-                              className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium"
+                              className="glass-button bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg hover:shadow-2xl font-medium h-8 sm:h-auto px-3 sm:px-4 text-xs sm:text-sm"
                               size="sm"
                             >
-                              <Download className="w-4 h-4 mr-2" />
-                              Scarica PDF
+                              <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                              <span className="hidden sm:inline">Scarica PDF</span>
+                              <span className="sm:hidden">PDF</span>
                             </Button>
                           )}
                         </>

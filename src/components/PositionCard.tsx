@@ -160,7 +160,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
                             type="number"
                             value={tempPercentage}
                             onChange={(e) => setTempPercentage(e.target.value)}
-                            className="w-12 h-5 text-xs p-1 rounded-md border-gray-300"
+                            className="w-14 sm:w-12 h-6 sm:h-5 text-xs p-1 rounded-md border-gray-300"
                             min="0"
                             max="100"
                             step="0.1"
@@ -169,18 +169,18 @@ const PositionCard: React.FC<PositionCardProps> = ({
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-5 w-5 p-0 hover:bg-green-100 rounded-md"
+                            className="h-6 w-6 sm:h-5 sm:w-5 p-0 hover:bg-green-100 rounded-md touch-manipulation"
                             onClick={(e) => handleSavePercentage(player, e)}
                           >
-                            <Check className="h-2 w-2 text-green-600" />
+                            <Check className="h-3 w-3 sm:h-2 sm:w-2 text-green-600" />
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-5 w-5 p-0 hover:bg-red-100 rounded-md"
+                            className="h-6 w-6 sm:h-5 sm:w-5 p-0 hover:bg-red-100 rounded-md touch-manipulation"
                             onClick={handleCancelEdit}
                           >
-                            <X className="h-2 w-2 text-red-500" />
+                            <X className="h-3 w-3 sm:h-2 sm:w-2 text-red-500" />
                           </Button>
                         </div>
                       ) : (
@@ -210,10 +210,10 @@ const PositionCard: React.FC<PositionCardProps> = ({
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-4 w-4 p-0 hover:bg-blue-100 rounded-md ml-1"
+                            className="h-5 w-5 sm:h-4 sm:w-4 p-0 hover:bg-blue-100 rounded-md ml-1 touch-manipulation"
                             onClick={(e) => handleEditPercentage(player, e)}
                           >
-                            <Edit2 className="h-2 w-2 text-blue-500" />
+                            <Edit2 className="h-3 w-3 sm:h-2 sm:w-2 text-blue-500" />
                           </Button>
                         </>
                       )}

@@ -53,11 +53,11 @@ const SortControls: React.FC<SortControlsProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-3 mb-4">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-4">
+      <div className="flex items-center gap-2 w-full sm:w-auto">
         <span className="text-sm font-medium text-white">Ordina per:</span>
         <Select value={sortBy} onValueChange={handleSortByChange}>
-          <SelectTrigger className="w-48 bg-transparent border-white/20 text-white">
+          <SelectTrigger className="w-full sm:w-48 bg-transparent border-white/20 text-white">
             <SelectValue className="text-white" />
           </SelectTrigger>
           <SelectContent className="bg-white border shadow-lg z-50">
@@ -78,17 +78,19 @@ const SortControls: React.FC<SortControlsProps> = ({
         variant="outline"
         size="sm"
         onClick={toggleSortDirection}
-        className="flex items-center gap-2"
+        className="flex items-center gap-1 sm:gap-2 w-full sm:w-auto justify-center h-10 px-3 text-xs sm:text-sm"
       >
         {sortDirection === 'desc' ? (
           <>
-            <ArrowDown className="w-4 h-4" />
-            Decrescente
+            <ArrowDown className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Decrescente</span>
+            <span className="sm:hidden">↓</span>
           </>
         ) : (
           <>
-            <ArrowUp className="w-4 h-4" />
-            Crescente
+            <ArrowUp className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Crescente</span>
+            <span className="sm:hidden">↑</span>
           </>
         )}
       </Button>

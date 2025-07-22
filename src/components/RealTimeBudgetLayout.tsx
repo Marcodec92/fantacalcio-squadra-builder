@@ -32,8 +32,8 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
 }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-8">
-      {/* Budget Controls */}
-      <div className="lg:col-span-1 space-y-4 sm:space-y-8 slide-in-left order-2 lg:order-1">
+      {/* Budget Controls - Order changed for mobile: budget controls come first */}
+      <div className="lg:col-span-1 space-y-4 sm:space-y-8 slide-in-left order-1 lg:order-1">
         {/* Budget Selector */}
         <div className="pulse-glow">
           <BudgetSelector 
@@ -59,8 +59,8 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
         />
       </div>
 
-      {/* Squad Grid */}
-      <div className="lg:col-span-3 slide-in-right order-1 lg:order-2">
+      {/* Squad Grid - Now comes after budget controls on mobile */}
+      <div className="lg:col-span-3 slide-in-right order-2 lg:order-2">
         <div className="glass-card p-4 sm:p-8 shadow-2xl">
           <RealTimeSquadGrid
             selections={selections}
