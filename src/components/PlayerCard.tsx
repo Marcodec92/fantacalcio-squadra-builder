@@ -104,27 +104,28 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                     }} />
                   )}
                 </div>
-                {/* MFV allineato orizzontalmente al nome (solo desktop) */}
-                <div className="hidden sm:block glass-card px-4 py-2 text-base font-bold text-gradient ml-8">
+                {/* MFV spostato ancora più a destra (solo desktop) */}
+                <div className="hidden sm:block glass-card px-4 py-2 text-base font-bold text-gradient ml-16">
                   MFV: {player.fmv.toFixed(2)}
                 </div>
               </div>
               <div className="text-sm sm:text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
               
-              {/* Ruolo e Fascia allineati orizzontalmente (desktop) */}
-              <div className="flex items-center gap-2 mt-1">
+              {/* Ruolo (desktop e mobile) */}
+              <div className="mt-1">
                 <div className="glass-card px-2 py-1 sm:px-3 text-xs sm:text-sm font-semibold text-gradient-secondary inline-block">
                   {player.role}
                 </div>
-                {/* Fascia allineata verticalmente al ruolo (solo desktop) */}
-                <div className="hidden sm:block">
-                  <div className="transform scale-125">
-                    <TierSelect 
-                      roleCategory={player.roleCategory} 
-                      value={player.tier} 
-                      readonly 
-                    />
-                  </div>
+              </div>
+              
+              {/* Fascia sotto il ruolo, allineata a sinistra (solo desktop) */}
+              <div className="hidden sm:block mt-1">
+                <div className="transform scale-125 origin-left">
+                  <TierSelect 
+                    roleCategory={player.roleCategory} 
+                    value={player.tier} 
+                    readonly 
+                  />
                 </div>
               </div>
               
