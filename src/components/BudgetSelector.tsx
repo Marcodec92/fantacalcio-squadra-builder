@@ -19,8 +19,8 @@ const BudgetSelector: React.FC<BudgetSelectorProps> = ({
   ];
 
   return (
-    <Card className="p-6 shadow-xl bg-white/70 backdrop-blur-sm border-0 rounded-3xl">
-      <h3 className="text-xl font-bold mb-4 text-center text-gradient">
+    <Card className="glass-card p-4 sm:p-6 shadow-xl rounded-2xl sm:rounded-3xl">
+      <h3 className="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-center text-gradient">
         💰 Seleziona Budget Massimo
       </h3>
       
@@ -28,25 +28,25 @@ const BudgetSelector: React.FC<BudgetSelectorProps> = ({
         value={selectedBudget.toString()} 
         onValueChange={(value) => onBudgetChange(parseInt(value))}
       >
-        <SelectTrigger className="w-full h-12 bg-white/80 border-2 border-white/30 rounded-2xl text-gray-800 font-medium hover:bg-white/90 transition-colors">
+        <SelectTrigger className="w-full h-10 sm:h-12 glass-button border-white/20 rounded-xl sm:rounded-2xl text-foreground font-medium hover:border-white/30 transition-colors">
           <SelectValue placeholder="Seleziona budget" />
         </SelectTrigger>
-        <SelectContent className="bg-white border-2 border-white/30 rounded-2xl shadow-xl backdrop-blur-sm z-50">
+        <SelectContent className="glass-card border-white/20 rounded-xl sm:rounded-2xl shadow-xl backdrop-blur-xl z-[100]">
           {budgetOptions.map(({ value, label, emoji, description }) => (
             <SelectItem 
               key={value} 
               value={value.toString()}
-              className="cursor-pointer hover:bg-gray-100 focus:bg-gray-100 rounded-xl my-1 mx-1 text-gray-800 font-medium"
+              className="cursor-pointer hover:bg-white/10 focus:bg-white/10 rounded-lg sm:rounded-xl my-1 mx-1 text-foreground font-medium touch-manipulation"
             >
               <div className="flex items-center justify-between w-full">
-                <div className="flex items-center space-x-3">
-                  <span className="text-2xl">{emoji}</span>
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <span className="text-lg sm:text-2xl">{emoji}</span>
                   <div>
-                    <p className="font-semibold text-gray-800">{label}</p>
-                    <p className="text-sm text-gray-600">{description}</p>
+                    <p className="font-semibold text-foreground text-sm sm:text-base">{label}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{description}</p>
                   </div>
                 </div>
-                <div className="text-lg font-bold text-primary ml-4">
+                <div className="text-base sm:text-lg font-bold text-primary ml-2 sm:ml-4">
                   {value}
                 </div>
               </div>

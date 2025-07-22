@@ -31,9 +31,9 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
   onBudgetChange
 }) => {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-8">
       {/* Budget Controls */}
-      <div className="lg:col-span-1 space-y-8 slide-in-left">
+      <div className="lg:col-span-1 space-y-4 sm:space-y-8 slide-in-left order-2 lg:order-1">
         {/* Budget Selector */}
         <div className="pulse-glow">
           <BudgetSelector 
@@ -43,8 +43,8 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
         </div>
 
         {/* Total Budget Wheel */}
-        <div className="glass-card p-8 shadow-xl pulse-glow">
-          <h3 className="text-xl font-bold mb-6 text-center text-gradient">Budget Totale</h3>
+        <div className="glass-card p-4 sm:p-8 shadow-xl pulse-glow">
+          <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6 text-center text-gradient">Budget Totale</h3>
           <RealTimeBudgetWheel 
             totalCredits={totalCredits}
             maxBudget={maxBudget}
@@ -60,8 +60,8 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
       </div>
 
       {/* Squad Grid */}
-      <div className="lg:col-span-3 slide-in-right">
-        <div className="glass-card p-8 shadow-2xl">
+      <div className="lg:col-span-3 slide-in-right order-1 lg:order-2">
+        <div className="glass-card p-4 sm:p-8 shadow-2xl">
           <RealTimeSquadGrid
             selections={selections}
             onPositionClick={onPositionClick}

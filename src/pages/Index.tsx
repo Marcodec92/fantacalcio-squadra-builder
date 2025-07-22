@@ -231,8 +231,8 @@ const Index = () => {
       {/* Header */}
       <div className="glass-card border-b border-white/10 backdrop-blur-2xl sticky top-0 z-50 slide-in-up">
         <div className="max-w-7xl mx-auto px-6 py-0.5 flex items-center justify-between min-h-[32px]">
-          <div className="flex items-center space-x-4 slide-in-left">
-            <div className="w-40 h-40 flex items-center justify-center">
+          <div className="flex items-center space-x-2 sm:space-x-4 slide-in-left">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 flex items-center justify-center">
               <img 
                 src="/lovable-uploads/d669915b-abe9-409e-9866-7642ab7cdd29.png" 
                 alt="App Logo" 
@@ -240,42 +240,45 @@ const Index = () => {
               />
             </div>
           </div>
-          <div className="flex items-center gap-3 slide-in-right">
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-3 slide-in-right flex-wrap">
             <Button
               onClick={() => navigate('/fanta-team')}
-              className="glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-2 text-sm"
+              className="glass-button gradient-primary text-white shadow-lg hover:shadow-2xl font-medium px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 text-xs sm:text-sm"
               size="sm"
             >
-              <Timer className="w-4 h-4 mr-2" />
-              Fanta Team
+              <Timer className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Fanta Team</span>
+              <span className="sm:hidden">Team</span>
             </Button>
             <Button
               onClick={() => navigate('/team-prediction')}
-              className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-2 text-sm"
+              className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 text-xs sm:text-sm"
               size="sm"
             >
-              <Zap className="w-4 h-4 mr-2" />
-              Team Prediction
+              <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Team Prediction</span>
+              <span className="sm:hidden">Pred</span>
             </Button>
             <Button
               variant="outline"
               onClick={signOut}
-              className="glass-button border-white/20 hover:border-white/30 font-medium px-4 py-2 text-sm"
+              className="glass-button border-white/20 hover:border-white/30 font-medium px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm"
               size="sm"
             >
-              Logout
+              <span className="hidden sm:inline">Logout</span>
+              <span className="sm:hidden">Exit</span>
             </Button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6 mt-8">
+      <div className="max-w-7xl mx-auto p-3 sm:p-6 mt-4 sm:mt-8">
         <div className="glass-card shadow-2xl overflow-hidden fade-in-scale">
           <Tabs value={selectedRole} onValueChange={(value) => setSelectedRole(value as PlayerRole)} className="w-full">
-            <div className="glass-card border-b border-white/10 p-8">
+            <div className="glass-card border-b border-white/10 p-4 sm:p-8">
               {/* CSV Upload Section */}
-              <div className="mb-8">
+              <div className="mb-4 sm:mb-8">
                 <Card className="glass-card p-6 shadow-xl">
                   <div className="flex items-center justify-between">
                     <div>
@@ -338,51 +341,51 @@ const Index = () => {
                 </Card>
               </div>
 
-              <TabsList className="grid grid-cols-4 gap-4 max-w-4xl mx-auto h-auto bg-transparent p-0">
+              <TabsList className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 max-w-4xl mx-auto h-auto bg-transparent p-0">
                 <TabsTrigger 
                   value="Portiere" 
-                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <Shield className="w-6 h-6" />
-                    <span>Portieri</span>
-                    <span className="text-xs opacity-75">({getPlayerCountByRole('Portiere')} giocatori)</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
+                    <Shield className="w-4 h-4 sm:w-6 sm:h-6" />
+                    <span className="text-xs sm:text-sm">Portieri</span>
+                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Portiere')})</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Difensore"
-                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-secondary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <Shield className="w-6 h-6" />
-                    <span>Difensori</span>
-                    <span className="text-xs opacity-75">({getPlayerCountByRole('Difensore')} giocatori)</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
+                    <Shield className="w-4 h-4 sm:w-6 sm:h-6" />
+                    <span className="text-xs sm:text-sm">Difensori</span>
+                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Difensore')})</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Centrocampista"
-                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-accent data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <Sparkles className="w-6 h-6" />
-                    <span>Centrocampisti</span>
-                    <span className="text-xs opacity-75">({getPlayerCountByRole('Centrocampista')} giocatori)</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
+                    <Sparkles className="w-4 h-4 sm:w-6 sm:h-6" />
+                    <span className="text-xs sm:text-sm">Centrocampisti</span>
+                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Centrocampista')})</span>
                   </div>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="Attaccante"
-                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-6 rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
+                  className="glass-button data-[state=active]:gradient-primary data-[state=active]:text-white data-[state=active]:shadow-lg p-3 sm:p-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-300 hover:scale-105 h-auto"
                 >
-                  <div className="flex flex-col items-center space-y-2">
-                    <Target className="w-6 h-6" />
-                    <span>Attaccanti</span>
-                    <span className="text-xs opacity-75">({getPlayerCountByRole('Attaccante')} giocatori)</span>
+                  <div className="flex flex-col items-center space-y-1 sm:space-y-2">
+                    <Target className="w-4 h-4 sm:w-6 sm:h-6" />
+                    <span className="text-xs sm:text-sm">Attaccanti</span>
+                    <span className="text-[10px] sm:text-xs opacity-75">({getPlayerCountByRole('Attaccante')})</span>
                   </div>
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <div className="p-8">
+            <div className="p-4 sm:p-8">
               {(['Portiere', 'Difensore', 'Centrocampista', 'Attaccante'] as PlayerRole[]).map((role) => (
                 <TabsContent key={role} value={role} className="mt-0 fade-in-scale">
                   <PlayersList

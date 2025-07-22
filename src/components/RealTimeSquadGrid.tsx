@@ -31,7 +31,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "🛡️",
       role: "Difensore" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6, 7, 8],
-      columns: 4,
+      columns: 2, // Changed from 4 to 2 for mobile
       gradient: "from-green-600 to-emerald-600"
     },
     {
@@ -39,7 +39,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "⚡",
       role: "Centrocampista" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6, 7, 8],
-      columns: 4,
+      columns: 2, // Changed from 4 to 2 for mobile  
       gradient: "from-purple-600 to-pink-600"
     },
     {
@@ -47,16 +47,16 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "🎯",
       role: "Attaccante" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6],
-      columns: 3,
+      columns: 2, // Changed from 3 to 2 for mobile
       gradient: "from-red-600 to-orange-600"
     }
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 sm:space-y-8">
       {roleConfig.map(({ title, emoji, role, slots, columns, gradient }) => (
         <div key={role}>
-          <h3 className={`text-xl font-bold mb-4 flex items-center text-gray-800 bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
+          <h3 className={`text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center text-foreground bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
             {emoji} {title}
           </h3>
           <RealTimeRoleSection
