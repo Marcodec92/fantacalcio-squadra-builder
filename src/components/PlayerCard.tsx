@@ -171,7 +171,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           </div>
 
           {/* Budget compatto sotto il nome - SOLO BUDGET */}
-          <div className="relative">
+          <div className="relative mt-2 sm:mt-4">
             <div className="flex gap-2 text-xs h-8"> {/* Altezza fissa - SOLO BUDGET */}
               <div 
                 className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors min-w-[120px]"
