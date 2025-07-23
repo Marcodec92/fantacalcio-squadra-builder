@@ -3,7 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Trash2, Edit, Check, X, Star, Zap } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Trash2, Edit, Check, X, Star, Zap, ChevronDown } from "lucide-react";
 import TeamSelect from './TeamSelect';
 import RoleSelect from './RoleSelect';
 import CostCalculator from './CostCalculator';
@@ -29,6 +30,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
   const [isEditing, setIsEditing] = useState(isNewPlayer);
   const [editedPlayer, setEditedPlayer] = useState<Player>(player);
   const [showBudgetBreakdown, setShowBudgetBreakdown] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   console.log('🚨 PLAYER CARD RENDERING!!! 🚨', {
     playerName: player?.name,
@@ -92,331 +94,327 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
 
   if (!isEditing) {
     return (
-      <div className="glass-card p-2 sm:p-4 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
-        <div className="space-y-2 sm:space-y-3">
-          {/* Header con nome e azioni in alto */}
-          <div className="flex justify-between items-start gap-2">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 sm:gap-4">
-                <div className="font-bold text-lg sm:text-2xl text-gradient leading-tight break-words flex items-center gap-2">
-                  {player.name} {player.surname}
-                  {player.isFavorite && (
-                    <Star className="w-4 h-4 sm:w-6 sm:h-6 fill-yellow-400 text-yellow-400" style={{
-                      filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5))'
-                    }} />
-                  )}
-                </div>
-                {/* MFV spostato ancora più a destra (solo desktop) */}
-                <div className="hidden sm:block glass-card px-4 py-2 text-base font-bold text-gradient ml-16">
-                  MFV: {player.fmv.toFixed(2)}
-                </div>
-              </div>
-              <div className="text-sm sm:text-lg text-muted-foreground mt-1 font-medium">{player.team}</div>
-              
-              {/* Ruolo (desktop e mobile) */}
-              <div className="mt-1 sm:mt-3">
-                <div className="glass-card px-2 py-1 sm:px-3 text-xs sm:text-sm font-semibold text-gradient-secondary inline-block">
-                  {player.role}
-                </div>
-              </div>
-              
-              {/* Fascia sotto il ruolo, allineata a sinistra (solo desktop) */}
-              <div className="hidden sm:block mt-3">
-                <div className="transform scale-125 origin-left">
-                  <TierSelect 
-                    roleCategory={player.roleCategory} 
-                    value={player.tier} 
-                    readonly 
-                  />
-                </div>
-              </div>
-              
-              {/* Fascia sotto il ruolo (solo mobile) */}
-              <div className="sm:hidden mt-1">
-                <div className="transform scale-90 origin-left">
-                  <TierSelect 
-                    roleCategory={player.roleCategory} 
-                    value={player.tier} 
-                    readonly 
-                  />
-                </div>
-              </div>
-            </div>
-            {/* Azioni e MFV allineati verticalmente (mobile) */}
-            <div className="flex flex-col gap-1 sm:flex-row sm:gap-2 shrink-0">
-              {/* Bottoni in alto (mobile) */}
-              <div className="flex gap-1 sm:gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsEditing(true)}
-                  className="glass-button border-white/20 hover:border-white/30 h-8 w-8 sm:h-auto sm:w-auto px-2 sm:px-3"
-                >
-                  <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDelete(player.id)}
-                  className="glass-button border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 h-8 w-8 sm:h-auto sm:w-auto px-2 sm:px-3"
-                >
-                  <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                </Button>
-              </div>
-              {/* MFV sotto i bottoni (solo mobile) */}
-              <div className="glass-card px-2 py-1 text-xs font-bold text-gradient sm:hidden">
-                MFV: {player.fmv.toFixed(2)}
-              </div>
-            </div>
-          </div>
-
-          {/* Budget compatto sotto il nome - SOLO BUDGET */}
-          <div className="relative mt-2 sm:mt-4">
-            <div className="flex gap-2 text-xs h-8"> {/* Altezza fissa - SOLO BUDGET */}
-              <div 
-                className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors min-w-[120px]"
-                onClick={() => {
-                  console.log('🎯 BUDGET CLICKED!!!', player.name);
-                  setShowBudgetBreakdown(!showBudgetBreakdown);
-                }}
-                title="Clicca per vedere breakdown crediti"
-              >
-                {player.costPercentage}% del budget
-              </div>
-            </div>
-            {/* Breakdown posizionato più vicino al budget percentage */}
-            {showBudgetBreakdown && (
-              <div className="absolute top-0 left-[140px] z-10 flex gap-2 animate-slide-in-right">
-                <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
-                  {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
-                </div>
-                <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
-                  {calculateCreditBreakdown(player.costPercentage).credits500} su 500 cr.
-                </div>
-                <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-red-500 to-rose-600 shadow-lg">
-                  {calculateCreditBreakdown(player.costPercentage).credits650} su 650 cr.
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Layout ottimizzato: tutte le 4 sezioni allineate orizzontalmente su desktop */}
-          <div className="space-y-2 sm:space-y-0">
-            {/* Layout mobile: 2x2 grid */}
-            <div className="sm:hidden space-y-2">
-              {/* Prima riga: Statistiche e Expected */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  {isGoalkeeper ? (
-                    <div className="glass-card p-2">
-                      <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
-                      <div className="text-xs space-y-1">
-                        <div className="flex justify-between">
-                          <span className="text-xs">Gol subiti:</span>
-                          <span className="font-bold text-red-400 text-xs">{player.goalsConceded}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs">Rigori parati:</span>
-                          <span className="font-bold text-green-400 text-xs">{player.penaltiesSaved}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs">Cartellini:</span>
-                          <span className="font-bold text-yellow-400 text-xs">{player.yellowCards}</span>
-                        </div>
-                        <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
-                          <span className="text-sm font-bold">Bonus Totali:</span>
-                          <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="glass-card p-2">
-                      <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
-                      <div className="text-xs space-y-1">
-                        <div className="flex justify-between">
-                          <span className="text-xs">Gol:</span>
-                          <span className="font-bold text-gradient-accent text-xs">{player.goals}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs">Assist:</span>
-                          <span className="font-bold text-gradient-secondary text-xs">{player.assists}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs">Malus:</span>
-                          <span className="font-bold text-red-400 text-xs">{player.malus}</span>
-                        </div>
-                        <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
-                          <span className="text-sm font-bold">Bonus Totali:</span>
-                          <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <div className="glass-card p-2">
-                    <div className="text-xs font-medium text-gradient mb-1">
-                      {isGoalkeeper ? 'Gol subiti a partita' : 'Expected'}
-                    </div>
-                    <div className="text-xs space-y-1">
-                      {isGoalkeeper ? (
-                        <div className="flex items-center justify-center">
-                          <Zap className="w-3 h-3 mr-2 text-blue-400" />
-                          <span className="font-bold text-gradient text-sm">
-                            {player.xP.toFixed(2)}
-                          </span>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="flex justify-between">
-                            <span className="text-xs">xG:</span>
-                            <span className="font-semibold text-xs">{player.xG.toFixed(2)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-xs">xA:</span>
-                            <span className="font-semibold text-xs">{player.xA.toFixed(2)}</span>
-                          </div>
-                        </>
+      <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
+        <div className="glass-card hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] fade-in-scale">
+          {/* Header compatto - sempre visibile */}
+          <CollapsibleTrigger asChild>
+            <div className="p-2 sm:p-4 cursor-pointer">
+              <div className="flex justify-between items-center gap-2">
+                {/* Info principale */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                    <div className="font-bold text-lg sm:text-xl text-gradient leading-tight break-words flex items-center gap-2">
+                      {player.name} {player.surname}
+                      {player.isFavorite && (
+                        <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" style={{
+                          filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5))'
+                        }} />
                       )}
                     </div>
+                    <div className="text-sm sm:text-base text-muted-foreground font-medium">
+                      {player.team}
+                    </div>
+                    <div className="glass-card px-2 py-1 text-xs sm:text-sm font-semibold text-gradient-secondary">
+                      {player.role}
+                    </div>
+                    <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
+                      MFV: {player.fmv.toFixed(2)}
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              {/* Seconda riga: Titolarità e Plus */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <div className="glass-card p-2">
-                    <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
-                    <OwnershipProgress value={player.ownership} readonly />
-                  </div>
-                </div>
-                <div>
-                  <div className="glass-card p-2">
-                    <div className="text-xs font-medium text-gradient mb-1">Plus</div>
-                    <PlusCategoriesSelector 
-                      selected={player.plusCategories} 
-                      onChange={() => {}} 
-                      readonly 
-                    />
-                  </div>
+                
+                {/* Azioni e indicatore espansione */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsEditing(true);
+                    }}
+                    className="glass-button border-white/20 hover:border-white/30 h-8 w-8 sm:h-auto sm:w-auto px-2 sm:px-3"
+                  >
+                    <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(player.id);
+                    }}
+                    className="glass-button border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 h-8 w-8 sm:h-auto sm:w-auto px-2 sm:px-3"
+                  >
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  </Button>
+                  <ChevronDown 
+                    className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${
+                      isExpanded ? 'rotate-180' : ''
+                    }`} 
+                  />
                 </div>
               </div>
             </div>
+          </CollapsibleTrigger>
 
-            {/* Layout desktop: tutte e 4 le sezioni allineate orizzontalmente */}
-            <div className="hidden sm:grid sm:grid-cols-4 gap-4">
-              {/* Statistiche */}
-              <div>
-                {isGoalkeeper ? (
-                  <div className="glass-card p-3">
-                    <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
-                    <div className="text-sm space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-xs">Gol subiti:</span>
-                        <span className="font-bold text-red-400 text-sm">{player.goalsConceded}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-xs">Rigori parati:</span>
-                        <span className="font-bold text-green-400 text-sm">{player.penaltiesSaved}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-xs">Cartellini:</span>
-                        <span className="font-bold text-yellow-400 text-sm">{player.yellowCards}</span>
-                      </div>
-                      <div className="flex justify-between border-t border-white/10 pt-1 mt-2">
-                        <span className="text-sm font-bold text-gradient">Bonus Totali:</span>
-                        <span className={`font-bold text-base ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                          {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
-                        </span>
-                      </div>
-                    </div>
+          {/* Contenuto espandibile */}
+          <CollapsibleContent className="animate-accordion-down">
+            <div className="px-2 sm:px-4 pb-2 sm:pb-4 space-y-3">
+              
+              {/* Budget con breakdown */}
+              <div className="relative">
+                <div className="flex gap-2 text-xs h-8">
+                  <div 
+                    className="glass-card px-2 py-1 text-xs text-muted-foreground cursor-pointer hover:bg-blue-100/20 transition-colors min-w-[120px]"
+                    onClick={() => {
+                      console.log('🎯 BUDGET CLICKED!!!', player.name);
+                      setShowBudgetBreakdown(!showBudgetBreakdown);
+                    }}
+                    title="Clicca per vedere breakdown crediti"
+                  >
+                    {player.costPercentage}% del budget
                   </div>
-                ) : (
-                  <div className="glass-card p-3">
-                    <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
-                    <div className="text-sm space-y-1">
-                      <div className="flex justify-between">
-                        <span className="text-xs">Gol:</span>
-                        <span className="font-bold text-gradient-accent text-sm">{player.goals}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-xs">Assist:</span>
-                        <span className="font-bold text-gradient-secondary text-sm">{player.assists}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-xs">Malus:</span>
-                        <span className="font-bold text-red-400 text-sm">{player.malus}</span>
-                      </div>
-                      <div className="flex justify-between border-t border-white/10 pt-1 mt-2">
-                        <span className="text-sm font-bold text-gradient">Bonus Totali:</span>
-                        <span className={`font-bold text-base ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                          {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
-                        </span>
-                      </div>
+                </div>
+                {showBudgetBreakdown && (
+                  <div className="absolute top-0 left-[140px] z-10 flex gap-2 animate-slide-in-right">
+                    <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+                      {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
+                    </div>
+                    <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+                      {calculateCreditBreakdown(player.costPercentage).credits500} su 500 cr.
+                    </div>
+                    <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-red-500 to-rose-600 shadow-lg">
+                      {calculateCreditBreakdown(player.costPercentage).credits650} su 650 cr.
                     </div>
                   </div>
                 )}
               </div>
-              
-              {/* Expected/Performance */}
-              <div>
-                <div className="glass-card p-3">
-                  <div className="text-xs font-medium text-gradient mb-1">
-                    {isGoalkeeper ? 'Gol subiti a partita' : 'Expected'}
-                  </div>
-                  <div className="text-sm space-y-1">
+
+              {/* Fascia tier */}
+              <div className="mt-2">
+                <TierSelect 
+                  roleCategory={player.roleCategory} 
+                  value={player.tier} 
+                  readonly 
+                />
+              </div>
+
+              {/* Statistiche dettagliate - solo desktop/tablet per ora */}
+              <div className="hidden sm:block">
+                <div className="grid grid-cols-4 gap-4">
+                  {/* Statistiche */}
+                  <div>
                     {isGoalkeeper ? (
-                      <div className="flex items-center justify-center">
-                        <Zap className="w-4 h-4 mr-2 text-blue-400" />
-                        <span className="font-bold text-gradient text-base">
-                          {player.xP.toFixed(2)}
-                        </span>
+                      <div className="glass-card p-3">
+                        <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
+                        <div className="text-sm space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-xs">Gol subiti:</span>
+                            <span className="font-bold text-red-400 text-sm">{player.goalsConceded}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Rigori parati:</span>
+                            <span className="font-bold text-green-400 text-sm">{player.penaltiesSaved}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Cartellini:</span>
+                            <span className="font-bold text-yellow-400 text-sm">{player.yellowCards}</span>
+                          </div>
+                          <div className="flex justify-between border-t border-white/10 pt-1 mt-2">
+                            <span className="text-sm font-bold text-gradient">Bonus Totali:</span>
+                            <span className={`font-bold text-base ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     ) : (
-                      <>
-                        <div className="flex justify-between">
-                          <span className="text-xs">xG:</span>
-                          <span className="font-semibold text-sm">{player.xG.toFixed(2)}</span>
+                      <div className="glass-card p-3">
+                        <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
+                        <div className="text-sm space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-xs">Gol:</span>
+                            <span className="font-bold text-gradient-accent text-sm">{player.goals}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Assist:</span>
+                            <span className="font-bold text-gradient-secondary text-sm">{player.assists}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Malus:</span>
+                            <span className="font-bold text-red-400 text-sm">{player.malus}</span>
+                          </div>
+                          <div className="flex justify-between border-t border-white/10 pt-1 mt-2">
+                            <span className="text-sm font-bold text-gradient">Bonus Totali:</span>
+                            <span className={`font-bold text-base ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-xs">xA:</span>
-                          <span className="font-semibold text-sm">{player.xA.toFixed(2)}</span>
-                        </div>
-                      </>
+                      </div>
                     )}
+                  </div>
+                  
+                  {/* Expected/Performance */}
+                  <div>
+                    <div className="glass-card p-3">
+                      <div className="text-xs font-medium text-gradient mb-1">
+                        {isGoalkeeper ? 'Gol subiti a partita' : 'Expected'}
+                      </div>
+                      <div className="text-sm space-y-1">
+                        {isGoalkeeper ? (
+                          <div className="flex items-center justify-center">
+                            <Zap className="w-4 h-4 mr-2 text-blue-400" />
+                            <span className="font-bold text-gradient text-base">
+                              {player.xP.toFixed(2)}
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex justify-between">
+                              <span className="text-xs">xG:</span>
+                              <span className="font-semibold text-sm">{player.xG.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs">xA:</span>
+                              <span className="font-semibold text-sm">{player.xA.toFixed(2)}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Titolarità */}
+                  <div>
+                    <div className="glass-card p-3">
+                      <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
+                      <OwnershipProgress value={player.ownership} readonly />
+                    </div>
+                  </div>
+                  
+                  {/* Plus */}
+                  <div>
+                    <div className="glass-card p-3">
+                      <div className="text-xs font-medium text-gradient mb-1">Plus</div>
+                      <PlusCategoriesSelector 
+                        selected={player.plusCategories} 
+                        onChange={() => {}} 
+                        readonly 
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Titolarità */}
-              <div>
-                <div className="glass-card p-3">
-                  <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
-                  <OwnershipProgress value={player.ownership} readonly />
+
+              {/* Layout mobile compatto per le statistiche */}
+              <div className="sm:hidden space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    {isGoalkeeper ? (
+                      <div className="glass-card p-2">
+                        <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
+                        <div className="text-xs space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-xs">Gol subiti:</span>
+                            <span className="font-bold text-red-400 text-xs">{player.goalsConceded}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Rigori parati:</span>
+                            <span className="font-bold text-green-400 text-xs">{player.penaltiesSaved}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Cartellini:</span>
+                            <span className="font-bold text-yellow-400 text-xs">{player.yellowCards}</span>
+                          </div>
+                          <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
+                            <span className="text-sm font-bold">Bonus Totali:</span>
+                            <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="glass-card p-2">
+                        <div className="text-xs font-medium text-gradient mb-1">Statistiche</div>
+                        <div className="text-xs space-y-1">
+                          <div className="flex justify-between">
+                            <span className="text-xs">Gol:</span>
+                            <span className="font-bold text-gradient-accent text-xs">{player.goals}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Assist:</span>
+                            <span className="font-bold text-gradient-secondary text-xs">{player.assists}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-xs">Malus:</span>
+                            <span className="font-bold text-red-400 text-xs">{player.malus}</span>
+                          </div>
+                          <div className="flex justify-between border-t border-white/10 pt-1 mt-1">
+                            <span className="text-sm font-bold">Bonus Totali:</span>
+                            <span className={`font-bold text-sm ${bonusTotal >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {bonusTotal >= 0 ? '+' : ''}{bonusTotal.toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <div className="glass-card p-2">
+                      <div className="text-xs font-medium text-gradient mb-1">
+                        {isGoalkeeper ? 'Gol subiti a partita' : 'Expected'}
+                      </div>
+                      <div className="text-xs space-y-1">
+                        {isGoalkeeper ? (
+                          <div className="flex items-center justify-center">
+                            <Zap className="w-3 h-3 mr-2 text-blue-400" />
+                            <span className="font-bold text-gradient text-sm">
+                              {player.xP.toFixed(2)}
+                            </span>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex justify-between">
+                              <span className="text-xs">xG:</span>
+                              <span className="font-semibold text-xs">{player.xG.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-xs">xA:</span>
+                              <span className="font-semibold text-xs">{player.xA.toFixed(2)}</span>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              
-              {/* Plus */}
-              <div>
-                <div className="glass-card p-3">
-                  <div className="text-xs font-medium text-gradient mb-1">Plus</div>
-                  <PlusCategoriesSelector 
-                    selected={player.plusCategories} 
-                    onChange={() => {}} 
-                    readonly 
-                  />
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <div className="glass-card p-2">
+                      <div className="text-xs font-medium text-gradient mb-1">Titolarità</div>
+                      <OwnershipProgress value={player.ownership} readonly />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="glass-card p-2">
+                      <div className="text-xs font-medium text-gradient mb-1">Plus</div>
+                      <PlusCategoriesSelector 
+                        selected={player.plusCategories} 
+                        onChange={() => {}} 
+                        readonly 
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </CollapsibleContent>
         </div>
-      </div>
+      </Collapsible>
     );
   }
 
