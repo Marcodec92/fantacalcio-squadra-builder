@@ -102,25 +102,51 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
               <div className="flex justify-between items-center gap-2">
                 {/* Info principale */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-                    <div className="font-bold text-lg sm:text-xl text-gradient leading-tight break-words flex items-center gap-2">
-                      {player.name} {player.surname}
-                      {player.isFavorite && (
-                        <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" style={{
-                          filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5))'
-                        }} />
-                      )}
+                  {isExpanded ? (
+                    // Layout verticale quando espanso
+                    <div className="space-y-3">
+                      <div className="font-bold text-lg sm:text-xl text-gradient leading-tight break-words flex items-center gap-2">
+                        {player.name} {player.surname}
+                        {player.isFavorite && (
+                          <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" style={{
+                            filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5))'
+                          }} />
+                        )}
+                      </div>
+                      <div className="flex flex-col items-start gap-2 pl-2">
+                        <div className="text-sm sm:text-base text-muted-foreground font-medium">
+                          Squadra: {player.team}
+                        </div>
+                        <div className="glass-card px-2 py-1 text-xs sm:text-sm font-semibold text-gradient-secondary">
+                          Ruolo: {player.role}
+                        </div>
+                        <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
+                          MFV: {player.fmv.toFixed(2)}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm sm:text-base text-muted-foreground font-medium">
-                      {player.team}
+                  ) : (
+                    // Layout orizzontale quando chiuso
+                    <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+                      <div className="font-bold text-lg sm:text-xl text-gradient leading-tight break-words flex items-center gap-2">
+                        {player.name} {player.surname}
+                        {player.isFavorite && (
+                          <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" style={{
+                            filter: 'drop-shadow(0 0 4px rgba(251, 191, 36, 0.5))'
+                          }} />
+                        )}
+                      </div>
+                      <div className="text-sm sm:text-base text-muted-foreground font-medium">
+                        {player.team}
+                      </div>
+                      <div className="glass-card px-2 py-1 text-xs sm:text-sm font-semibold text-gradient-secondary">
+                        {player.role}
+                      </div>
+                      <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
+                        MFV: {player.fmv.toFixed(2)}
+                      </div>
                     </div>
-                    <div className="glass-card px-2 py-1 text-xs sm:text-sm font-semibold text-gradient-secondary">
-                      {player.role}
-                    </div>
-                    <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
-                      MFV: {player.fmv.toFixed(2)}
-                    </div>
-                  </div>
+                  )}
                 </div>
                 
                 {/* Azioni e indicatore espansione */}
