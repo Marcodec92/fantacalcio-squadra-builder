@@ -9,7 +9,7 @@ export type SpecificRole =
 
 export type Team = 
   | 'Atalanta' | 'Bologna' | 'Cagliari' | 'Como' | 'Cremonese' | 'Fiorentina'
-  | 'Genoa' | 'Hellas Verona' | 'Inter' | 'Juventus' | 'Lazio' | 'Lecce'
+  | 'Genoa' | 'Inter' | 'Juventus' | 'Lazio' | 'Lecce'
   | 'Milan' | 'Napoli' | 'Parma' | 'Pisa' | 'Roma' | 'Sassuolo' | 'Torino' | 'Udinese' | 'Verona';
 
 export type PlusCategory = 'Under 21' | 'Under 19' | 'Rigorista' | 'Calci piazzati' | 'Assistman' | 'Goleador' | 'Pararigori';

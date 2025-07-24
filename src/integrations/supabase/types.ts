@@ -214,7 +214,6 @@ export type Database = {
         | "Cremonese"
         | "Fiorentina"
         | "Genoa"
-        | "Hellas Verona"
         | "Inter"
         | "Juventus"
         | "Lazio"
@@ -387,7 +386,6 @@ export const Constants = {
         "Cremonese",
         "Fiorentina",
         "Genoa",
-        "Hellas Verona",
         "Inter",
         "Juventus",
         "Lazio",

@@ -5,8 +5,8 @@ import { Team } from '@/types/Player';
 
 const teams: Team[] = [
   'Atalanta', 'Bologna', 'Cagliari', 'Como', 'Cremonese', 'Fiorentina',
-  'Genoa', 'Hellas Verona', 'Inter', 'Juventus', 'Lazio', 'Lecce',
-  'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese'
+  'Genoa', 'Inter', 'Juventus', 'Lazio', 'Lecce',
+  'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese', 'Verona'
 ];
 
 interface TeamSelectProps {

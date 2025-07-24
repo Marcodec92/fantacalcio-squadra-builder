@@ -55,8 +55,8 @@ export const useCSVPlayers = () => {
   const validateTeamName = (teamName: string): Team | null => {
     const validTeams: Team[] = [
       'Atalanta', 'Bologna', 'Cagliari', 'Como', 'Cremonese', 'Fiorentina',
-      'Genoa', 'Hellas Verona', 'Inter', 'Juventus', 'Lazio', 'Lecce',
-      'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese'
+      'Genoa', 'Inter', 'Juventus', 'Lazio', 'Lecce',
+      'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese', 'Verona'
     ];
     
     // Try exact match first
