@@ -26,7 +26,7 @@ interface PlayerFiltersProps {
 const teams: Team[] = [
   'Atalanta', 'Bologna', 'Cagliari', 'Como', 'Cremonese', 'Fiorentina',
   'Genoa', 'Hellas Verona', 'Inter', 'Juventus', 'Lazio', 'Lecce',
-  'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese'
+  'Milan', 'Napoli', 'Parma', 'Pisa', 'Roma', 'Sassuolo', 'Torino', 'Udinese', 'Verona'
 ];
 
 const goalkeeperTiers = ['1ª fascia', '2ª fascia', '3ª fascia'];
