@@ -115,10 +115,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                       </div>
                       <div className="flex flex-col items-start gap-2 pl-2">
                         <div className="text-sm sm:text-base text-muted-foreground font-medium">
-                          Squadra: {player.team}
+                          {player.team}
                         </div>
                         <div className="glass-card px-2 py-1 text-xs sm:text-sm font-semibold text-gradient-secondary">
-                          Ruolo: {player.role}
+                          {player.role}
                         </div>
                         <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
                           MFV: {player.fmv.toFixed(2)}
