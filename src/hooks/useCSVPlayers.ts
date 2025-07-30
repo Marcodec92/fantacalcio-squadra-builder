@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { PlayerRole, SpecificRole, Team } from '@/types/Player';
+import { useCSVDatabaseSync } from './useCSVDatabaseSync';
 
 const CSV_STORAGE_KEY = 'csvPlayers';
 
@@ -19,6 +20,7 @@ export const useCSVPlayers = () => {
   const { user } = useAuth();
   const [csvPlayers, setCsvPlayers] = useState<CSVPlayer[]>([]);
   const [loading, setLoading] = useState(false);
+  const { syncDatabaseWithCSV } = useCSVDatabaseSync();
 
   // Carica i CSV players dal localStorage all'avvio
   useEffect(() => {
@@ -198,7 +200,22 @@ export const useCSVPlayers = () => {
           setCsvPlayers(players);
           console.log('✅ CSV parsato e salvato:', players.length, 'giocatori');
           console.log('💾 CSV salvato nel localStorage per persistenza');
-          toast.success(`${players.length} giocatori CSV caricati e salvati`);
+          
+          // Avvia sincronizzazione automatica del database
+          if (user) {
+            console.log('🔄 Avvio sincronizzazione automatica del database...');
+            setLoading(true);
+            const syncSuccess = await syncDatabaseWithCSV(players);
+            setLoading(false);
+            
+            if (syncSuccess) {
+              toast.success(`${players.length} giocatori CSV caricati e database sincronizzato automaticamente!`);
+            } else {
+              toast.success(`${players.length} giocatori CSV caricati. Sincronizzazione database fallita.`);
+            }
+          } else {
+            toast.success(`${players.length} giocatori CSV caricati e salvati`);
+          }
         } else {
           toast.error('Nessun giocatore trovato nel file CSV. Controlla il formato del file.');
         }
