@@ -33,8 +33,8 @@ export const useCSVDatabaseSync = () => {
     }
   };
 
-  // Funzione per identificare un giocatore (nome + cognome)
-  const getPlayerKey = (name: string, surname: string) => `${name.trim().toLowerCase()}_${surname.trim().toLowerCase()}`;
+  // Funzione per identificare un giocatore (solo cognome per CSV)
+  const getPlayerKey = (name: string, surname: string) => surname.trim().toLowerCase();
 
   const syncDatabaseWithCSV = async (csvPlayers: CSVPlayer[]) => {
     if (!user) {
@@ -87,19 +87,23 @@ export const useCSVDatabaseSync = () => {
         const existingPlayer = existingPlayersMap.get(key);
 
         if (existingPlayer) {
-          // Giocatore esiste: controlla se serve aggiornamento
-          const needsUpdate = existingPlayer.team !== csvPlayer.team;
+          // Giocatore esiste: controlla se serve aggiornamento (team diverso)
+          const currentTeam = existingPlayer.team || '';
+          const newTeam = csvPlayer.team || '';
+          const needsUpdate = currentTeam !== newTeam;
           
           if (needsUpdate) {
-            console.log(`🔄 Aggiornamento necessario per ${csvPlayer.name} ${csvPlayer.surname}: ${existingPlayer.team} → ${csvPlayer.team}`);
+            console.log(`🔄 Aggiornamento necessario per ${csvPlayer.surname}: ${currentTeam} → ${newTeam}`);
             playersToUpdate.push({
               id: existingPlayer.id,
               team: csvPlayer.team
             });
+          } else {
+            console.log(`✅ Giocatore ${csvPlayer.surname} già aggiornato (team: ${currentTeam})`);
           }
         } else {
           // Giocatore nuovo: aggiungi
-          console.log(`➕ Nuovo giocatore da aggiungere: ${csvPlayer.name} ${csvPlayer.surname}`);
+          console.log(`➕ Nuovo giocatore da aggiungere: ${csvPlayer.surname} (team: ${csvPlayer.team})`);
           playersToAdd.push({
             user_id: user.id,
             name: csvPlayer.name,
@@ -130,7 +134,7 @@ export const useCSVDatabaseSync = () => {
       existingPlayers?.forEach(existingPlayer => {
         const key = getPlayerKey(existingPlayer.name, existingPlayer.surname);
         if (!csvPlayersMap.has(key)) {
-          console.log(`🗑️ Giocatore da eliminare: ${existingPlayer.name} ${existingPlayer.surname}`);
+          console.log(`🗑️ Giocatore da eliminare: ${existingPlayer.surname} (team: ${existingPlayer.team})`);
           playersToDelete.push(existingPlayer.id);
         }
       });

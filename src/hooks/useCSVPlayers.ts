@@ -165,12 +165,21 @@ export const useCSVPlayers = () => {
 
       // Il CSV contiene solo cognomi
       const cognome = cognomeGiocatore.trim();
+      
+      // Valida e normalizza il nome della squadra
+      const teamName = squadra.trim();
+      const validatedTeam = validateTeamName(teamName);
+      
+      if (!validatedTeam) {
+        console.log(`⚠️ Squadra non valida "${teamName}" per giocatore ${cognome}, riga saltata`);
+        continue;
+      }
 
       const player: CSVPlayer = {
         id: `csv-${i}-${cognome.replace(/\s+/g, '-')}`,
         name: '', // Nome vuoto perché il CSV contiene solo cognomi
         surname: cognome,
-        team: squadra.trim(),
+        team: validatedTeam,
         role: playerRole,
         credits: 0
       };
