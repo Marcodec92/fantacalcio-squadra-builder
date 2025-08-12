@@ -385,27 +385,45 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           
           // Nome giocatore - ben leggibile
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(8); // Leggermente ridotto per adattarsi alla nuova larghezza
+          doc.setFontSize(7); // Ridotto per fare spazio ai crediti
           doc.setTextColor(30, 30, 30);
           const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
-          const truncatedName = playerName.length > 12 ? playerName.substring(0, 12) + '...' : playerName; // Aumentato limite caratteri
-          doc.text(truncatedName, x + 2, y + 10);
+          const truncatedName = playerName.length > 10 ? playerName.substring(0, 10) + '...' : playerName;
+          doc.text(truncatedName, x + 2, y + 8);
           
           // Team - ben leggibile
           doc.setFont('helvetica', 'normal');
-          doc.setFontSize(6); // Aumentato per leggibilità
+          doc.setFontSize(5);
           doc.setTextColor(70, 70, 70);
-          doc.text(selection.player.team || '', x + 2, y + 15);
+          doc.text(selection.player.team || '', x + 2, y + 11);
           
-          // Badge crediti in basso a destra - proporzionato
-          const creditsText = `${selection.player.credits}`;
-          const creditsWidth = doc.getTextWidth(creditsText) + 5;
+          // Calcolo della percentuale di budget basata sui crediti salvati
+          // Assumiamo che i crediti salvati si riferiscano al budget corrente (500 di default)
+          const savedCredits = selection.player.credits || 0;
+          const percentage = savedCredits > 0 ? (savedCredits / 500) * 100 : 0;
+          
+          // Calcolo crediti per i tre scenari di budget
+          const credits300 = Math.round((percentage / 100) * 300);
+          const credits500 = Math.round((percentage / 100) * 500);
+          const credits650 = Math.round((percentage / 100) * 650);
+          
+          // Crediti per 300, 500, 650 - compatti
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(4);
+          doc.setTextColor(50, 50, 50);
+          doc.text(`300: ${credits300}`, x + 2, y + 14);
+          doc.text(`500: ${credits500}`, x + 16, y + 14);
+          doc.text(`650: ${credits650}`, x + 30, y + 14);
+          
+          // Badge percentuale in basso a destra
+          const percentageText = `${percentage.toFixed(1)}%`;
+          const percentageWidth = doc.getTextWidth(percentageText) + 3;
           doc.setFillColor(50, 50, 50);
-          doc.roundedRect(x + cardWidth - creditsWidth - 2, y + cardHeight - 8, creditsWidth, 6, 1, 1, 'F');
+          doc.roundedRect(x + cardWidth - percentageWidth - 1, y + cardHeight - 6, percentageWidth, 4, 1, 1, 'F');
           
-          doc.setFontSize(7);
+          doc.setFontSize(5);
           doc.setTextColor(255, 255, 255);
-          doc.text(creditsText, x + cardWidth - creditsWidth, y + cardHeight - 4);
+          doc.text(percentageText, x + cardWidth - percentageWidth + 1, y + cardHeight - 3);
           
         } else {
           // Slot vuoto - design tratteggiato
@@ -439,10 +457,21 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     // Footer con totale crediti - spazio ultra ridotto
     yPosition += 1; // Ridotto da 2 a 1
     
-    // Calcoli per le statistiche per ruolo
-    const totalCredits = selections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
+    // Calcoli per i tre scenari di budget
     const filledSlots = selections.filter(s => s.player).length;
     const totalSlots = roles.reduce((sum, role) => sum + roleConfig[role].slots.length, 0);
+    
+    // Calcolo totali per i tre budget
+    let total300 = 0, total500 = 0, total650 = 0;
+    selections.forEach(sel => {
+      if (sel.player) {
+        const savedCredits = sel.player.credits || 0;
+        const percentage = savedCredits > 0 ? (savedCredits / 500) * 100 : 0;
+        total300 += Math.round((percentage / 100) * 300);
+        total500 += Math.round((percentage / 100) * 500);
+        total650 += Math.round((percentage / 100) * 650);
+      }
+    });
     
     // Infografica spesa per ruolo - più compatta
     doc.setFontSize(9); // Ridotto da 10
@@ -455,14 +484,26 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     const roleStats = roles.map(role => {
       const config = roleConfig[role];
       const roleSelections = selections.filter(s => s.role_category === role && s.player);
-      const roleCredits = roleSelections.reduce((sum, sel) => sum + (sel.player?.credits || 0), 0);
-      const rolePercentage = totalCredits > 0 ? (roleCredits / totalCredits * 100) : 0;
+      
+      // Calcola crediti per i tre scenari
+      let role300 = 0, role500 = 0, role650 = 0;
+      roleSelections.forEach(sel => {
+        const savedCredits = sel.player?.credits || 0;
+        const percentage = savedCredits > 0 ? (savedCredits / 500) * 100 : 0;
+        role300 += Math.round((percentage / 100) * 300);
+        role500 += Math.round((percentage / 100) * 500);
+        role650 += Math.round((percentage / 100) * 650);
+      });
+      
+      const rolePercentage500 = total500 > 0 ? (role500 / total500 * 100) : 0;
       
       return {
         role,
         name: config.name,
-        credits: roleCredits,
-        percentage: rolePercentage,
+        credits300: role300,
+        credits500: role500,
+        credits650: role650,
+        percentage: rolePercentage500,
         color: config.color,
         players: roleSelections.length,
         maxPlayers: config.slots.length
@@ -495,11 +536,11 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       doc.setTextColor(stat.color[0], stat.color[1], stat.color[2]);
       doc.text(stat.name, x + 2, y + 3);
       
-      // Crediti spesi - compatto
+      // Crediti spesi - compatto per budget 500
       doc.setFontSize(6);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(255, 255, 255);
-      doc.text(`${stat.credits} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 6);
+      doc.text(`${stat.credits500} crediti (${stat.percentage.toFixed(1)}%)`, x + 2, y + 6);
       
       // Giocatori selezionati - compatto
       doc.text(`${stat.players}/${stat.maxPlayers} giocatori`, x + 2, y + 9);
@@ -507,26 +548,39 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     
     yPosition += 30; // Spazio sufficiente per evitare sovrapposizioni con totale crediti
     
-    // Sezione totale crediti con design moderno - ben dimensionata
+    // Sezione totale crediti per i tre scenari - design moderno espanso
     doc.setFillColor(50, 50, 50);
-    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'F'); // Ripristinato dimensioni adeguate
+    doc.roundedRect(20, yPosition - 5, 170, 35, 3, 3, 'F'); // Espanso per contenere i tre totali
     
     // Bordo dorato per il totale
     doc.setDrawColor(255, 215, 0);
     doc.setLineWidth(1);
-    doc.roundedRect(40, yPosition - 5, 130, 20, 3, 3, 'S');
+    doc.roundedRect(20, yPosition - 5, 170, 35, 3, 3, 'S');
     
-    // Testo totale crediti - ben leggibile
-    doc.setFontSize(14); // Ripristinato per leggibilità
+    // Titolo totale crediti
+    doc.setFontSize(12);
     doc.setTextColor(255, 215, 0);
     doc.text('TOTALE CREDITI', 105, yPosition + 3, { align: 'center' });
     
-    doc.setFontSize(18); // Ripristinato per importanza
+    // I tre totali affiancati
+    doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
-    doc.text(`${totalCredits}`, 105, yPosition + 10, { align: 'center' });
+    doc.text(`Budget 300: ${total300}`, 35, yPosition + 12, { align: 'left' });
+    doc.text(`Budget 500: ${total500}`, 105, yPosition + 12, { align: 'center' });
+    doc.text(`Budget 650: ${total650}`, 175, yPosition + 12, { align: 'right' });
+    
+    // Percentuali di utilizzo
+    doc.setFontSize(7);
+    doc.setTextColor(180, 180, 180);
+    const perc300 = total300 > 0 ? ((total300 / 300) * 100).toFixed(1) : '0';
+    const perc500 = total500 > 0 ? ((total500 / 500) * 100).toFixed(1) : '0';
+    const perc650 = total650 > 0 ? ((total650 / 650) * 100).toFixed(1) : '0';
+    doc.text(`(${perc300}%)`, 35, yPosition + 18, { align: 'left' });
+    doc.text(`(${perc500}%)`, 105, yPosition + 18, { align: 'center' });
+    doc.text(`(${perc650}%)`, 175, yPosition + 18, { align: 'right' });
     
     // Info slot riempiti - ben spaziato
-    yPosition += 25; // Spazio adeguato
+    yPosition += 40; // Spazio adeguato dopo la sezione crediti espansa
     doc.setFontSize(10); // Ripristinato per leggibilità
     doc.setTextColor(180, 180, 180);
     doc.text(`Giocatori selezionati: ${filledSlots}/${totalSlots}`, 105, yPosition, { align: 'center' });
