@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,6 +25,7 @@ interface PlayerCardProps {
 }
 
 const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) => {
+  const isMobile = useIsMobile();
   // Determina se questo è un nuovo giocatore appena creato
   const isNewPlayer = player.name === 'Nuovo' && player.surname === 'Giocatore' && player.costPercentage === 0;
   
@@ -573,28 +576,57 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
           />
         </div>
 
-        <div className="flex gap-6">
-          <div className="flex-1">
-            <Label>Categorie Plus</Label>
-            <PlusCategoriesSelector
-              selected={editedPlayer.plusCategories}
-              onChange={(categories) => updateField('plusCategories', categories)}
-              playerRole={editedPlayer.roleCategory}
-            />
+        {/* Mobile layout - stacked */}
+        {isMobile ? (
+          <div className="space-y-4">
+            <div>
+              <Label>Categorie Plus</Label>
+              <div className="mt-2">
+                <PlusCategoriesSelector
+                  selected={editedPlayer.plusCategories}
+                  onChange={(categories) => updateField('plusCategories', categories)}
+                  playerRole={editedPlayer.roleCategory}
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="editFavorite"
+                checked={editedPlayer.isFavorite}
+                onChange={(e) => updateField('isFavorite', e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <Label htmlFor="editFavorite" className="text-sm font-medium cursor-pointer">
+                Aggiungi ai preferiti
+              </Label>
+            </div>
           </div>
-          <div className="flex items-center space-x-2 pt-8">
-            <input
-              type="checkbox"
-              id="editFavorite"
-              checked={editedPlayer.isFavorite}
-              onChange={(e) => updateField('isFavorite', e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-            />
-            <Label htmlFor="editFavorite" className="text-sm font-medium cursor-pointer">
-              Aggiungi ai preferiti
-            </Label>
+        ) : (
+          /* Desktop layout - side by side */
+          <div className="flex gap-6">
+            <div className="flex-1">
+              <Label>Categorie Plus</Label>
+              <PlusCategoriesSelector
+                selected={editedPlayer.plusCategories}
+                onChange={(categories) => updateField('plusCategories', categories)}
+                playerRole={editedPlayer.roleCategory}
+              />
+            </div>
+            <div className="flex items-center space-x-2 pt-8">
+              <input
+                type="checkbox"
+                id="editFavorite"
+                checked={editedPlayer.isFavorite}
+                onChange={(e) => updateField('isFavorite', e.target.checked)}
+                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+              />
+              <Label htmlFor="editFavorite" className="text-sm font-medium cursor-pointer">
+                Aggiungi ai preferiti
+              </Label>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="flex gap-4 pt-6 border-t border-white/10">
           <Button 
