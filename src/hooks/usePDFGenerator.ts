@@ -372,58 +372,52 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setLineWidth(1);
           doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'S');
           
-          // Etichetta slot in alto a sinistra - ridimensionata proporzionalmente
+          // Etichetta slot ridotta - area P1 più piccola
           doc.setFillColor(config.color[0], config.color[1], config.color[2]);
-          doc.roundedRect(x + 1, y + 1, 10, 5, 1, 1, 'F'); // Aumentata dimensione
+          doc.roundedRect(x + 1, y + 1, 6, 4, 1, 1, 'F'); // Ridotta dimensione
           
-          doc.setFontSize(5); // Aumentato font per leggibilità
+          doc.setFontSize(4); // Ridotto per area più piccola
           doc.setTextColor(255, 255, 255);
           const roleAbbrev = role === 'Portiere' ? 'P' : 
                             role === 'Difensore' ? 'D' : 
                             role === 'Centrocampista' ? 'C' : 'A';
-          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 4);
+          doc.text(`${roleAbbrev}${slot}`, x + 1.5, y + 3.5);
           
-          // Nome giocatore - ben leggibile
+          // Cognome e squadra a sinistra
           doc.setFont('helvetica', 'bold');
-          doc.setFontSize(7); // Ridotto per fare spazio ai crediti
+          doc.setFontSize(8); // Cognome più grande
           doc.setTextColor(30, 30, 30);
-          const playerName = `${selection.player.name} ${selection.player.surname}`.trim();
-          const truncatedName = playerName.length > 10 ? playerName.substring(0, 10) + '...' : playerName;
-          doc.text(truncatedName, x + 2, y + 8);
+          const surname = selection.player.surname || '';
+          doc.text(surname, x + 2, y + 9);
           
-          // Team - ben leggibile
+          // Team sotto il cognome
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(5);
           doc.setTextColor(70, 70, 70);
-          doc.text(selection.player.team || '', x + 2, y + 11);
+          doc.text(selection.player.team || '', x + 2, y + 12);
           
-          // Calcolo della percentuale di budget basata sui crediti salvati
-          // Assumiamo che i crediti salvati si riferiscano al budget corrente (500 di default)
-          const savedCredits = selection.player.credits || 0;
-          const percentage = savedCredits > 0 ? (savedCredits / 500) * 100 : 0;
+          // Calcolo della percentuale di budget corretta dal database
+          const budgetPercentage = (selection.player as any).costPercentage || 0;
           
-          // Calcolo crediti per i tre scenari di budget
-          const credits300 = Math.round((percentage / 100) * 300);
-          const credits500 = Math.round((percentage / 100) * 500);
-          const credits650 = Math.round((percentage / 100) * 650);
+          // Calcolo crediti per i tre scenari di budget basati sulla percentuale corretta
+          const credits300 = Math.round((budgetPercentage / 100) * 300);
+          const credits500 = Math.round((budgetPercentage / 100) * 500);
+          const credits650 = Math.round((budgetPercentage / 100) * 650);
           
-          // Crediti per 300, 500, 650 - compatti
+          // Percentuale principale grande a destra
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8);
+          doc.setTextColor(config.color[0], config.color[1], config.color[2]);
+          const percentageText = `${budgetPercentage.toFixed(1)}%`;
+          doc.text(percentageText, x + cardWidth - 15, y + 6);
+          
+          // Tre ipotesi di crediti in verticale sotto la percentuale
           doc.setFont('helvetica', 'normal');
           doc.setFontSize(4);
           doc.setTextColor(50, 50, 50);
-          doc.text(`300: ${credits300}`, x + 2, y + 14);
-          doc.text(`500: ${credits500}`, x + 16, y + 14);
-          doc.text(`650: ${credits650}`, x + 30, y + 14);
-          
-          // Badge percentuale in basso a destra
-          const percentageText = `${percentage.toFixed(1)}%`;
-          const percentageWidth = doc.getTextWidth(percentageText) + 3;
-          doc.setFillColor(50, 50, 50);
-          doc.roundedRect(x + cardWidth - percentageWidth - 1, y + cardHeight - 6, percentageWidth, 4, 1, 1, 'F');
-          
-          doc.setFontSize(5);
-          doc.setTextColor(255, 255, 255);
-          doc.text(percentageText, x + cardWidth - percentageWidth + 1, y + cardHeight - 3);
+          doc.text(`300: ${credits300}`, x + cardWidth - 15, y + 9);
+          doc.text(`500: ${credits500}`, x + cardWidth - 15, y + 12);
+          doc.text(`650: ${credits650}`, x + cardWidth - 15, y + 15);
           
         } else {
           // Slot vuoto - design tratteggiato
@@ -461,15 +455,14 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     const filledSlots = selections.filter(s => s.player).length;
     const totalSlots = roles.reduce((sum, role) => sum + roleConfig[role].slots.length, 0);
     
-    // Calcolo totali per i tre budget
+    // Calcolo totali per i tre budget usando la percentuale corretta
     let total300 = 0, total500 = 0, total650 = 0;
     selections.forEach(sel => {
       if (sel.player) {
-        const savedCredits = sel.player.credits || 0;
-        const percentage = savedCredits > 0 ? (savedCredits / 500) * 100 : 0;
-        total300 += Math.round((percentage / 100) * 300);
-        total500 += Math.round((percentage / 100) * 500);
-        total650 += Math.round((percentage / 100) * 650);
+        const budgetPercentage = (sel.player as any).costPercentage || 0;
+        total300 += Math.round((budgetPercentage / 100) * 300);
+        total500 += Math.round((budgetPercentage / 100) * 500);
+        total650 += Math.round((budgetPercentage / 100) * 650);
       }
     });
     
@@ -485,14 +478,13 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const config = roleConfig[role];
       const roleSelections = selections.filter(s => s.role_category === role && s.player);
       
-      // Calcola crediti per i tre scenari
+      // Calcola crediti per i tre scenari usando la percentuale corretta
       let role300 = 0, role500 = 0, role650 = 0;
       roleSelections.forEach(sel => {
-        const savedCredits = sel.player?.credits || 0;
-        const percentage = savedCredits > 0 ? (savedCredits / 500) * 100 : 0;
-        role300 += Math.round((percentage / 100) * 300);
-        role500 += Math.round((percentage / 100) * 500);
-        role650 += Math.round((percentage / 100) * 650);
+        const budgetPercentage = (sel.player as any)?.costPercentage || 0;
+        role300 += Math.round((budgetPercentage / 100) * 300);
+        role500 += Math.round((budgetPercentage / 100) * 500);
+        role650 += Math.round((budgetPercentage / 100) * 650);
       });
       
       const rolePercentage500 = total500 > 0 ? (role500 / total500 * 100) : 0;
