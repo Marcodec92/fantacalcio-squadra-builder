@@ -1,10 +1,11 @@
 import { jsPDF } from 'jspdf';
 import { Player, PlayerRole } from '@/types/Player';
 import { RealTimeSelection } from '@/pages/RealTimeBuilder';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UsePDFGeneratorReturn {
   generateDatabasePDF: (players: Player[]) => void;
-  generateTeamPDF: (selections: RealTimeSelection[], teamName: string) => void;
+  generateTeamPDF: (selections: RealTimeSelection[], teamName: string) => Promise<void>;
 }
 
 export const usePDFGenerator = (): UsePDFGeneratorReturn => {
@@ -244,7 +245,31 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.save('database-giocatori.pdf');
   };
 
-  const generateTeamPDF = (selections: RealTimeSelection[], teamName: string) => {
+  const generateTeamPDF = async (selections: RealTimeSelection[], teamName: string) => {
+    // Pre-carica tutte le percentuali dal database prima di generare il PDF
+    const playerPercentages = new Map<string, number>();
+    
+    for (const selection of selections) {
+      if (selection.player) {
+        const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}-${selection.role_category}`;
+        try {
+          const { data: players } = await supabase
+            .from('players')
+            .select('cost_percentage')
+            .ilike('name', `%${selection.player.name || ''}%`)
+            .ilike('surname', `%${selection.player.surname}%`)
+            .eq('team', selection.player.team as any)
+            .eq('role_category', selection.role_category as any);
+          
+          if (players && players.length > 0) {
+            playerPercentages.set(key, players[0].cost_percentage);
+          }
+        } catch (error) {
+          console.error('Errore ricerca giocatore:', error);
+        }
+      }
+    }
+    
     const doc = new jsPDF();
     
     // Imposta sfondo con gradiente (simula il design glassmorphism)
@@ -396,15 +421,12 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setTextColor(70, 70, 70);
           doc.text(selection.player.team || '', x + 2, y + 12);
           
-          // Calcolo della percentuale di budget
-          // Nel Real Time Builder, i giocatori possono avere costPercentage (dal database) o credits (dai CSV)
-          let budgetPercentage = 0;
-          if ((selection.player as any).costPercentage !== undefined) {
-            // Usa costPercentage dal database
-            budgetPercentage = (selection.player as any).costPercentage;
-          } else if (selection.player.credits > 0) {
-            // Calcola percentuale dai crediti salvati nel Real Time Builder
-            // Assume che i crediti siano stati calcolati su base 500 (budget di default)
+          // Ottieni la percentuale dal database pre-caricato
+          const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}-${selection.role_category}`;
+          let budgetPercentage = playerPercentages.get(key) || 0;
+          
+          // Se non trovata nel database, usa i crediti come fallback
+          if (budgetPercentage === 0 && selection.player.credits > 0) {
             budgetPercentage = (selection.player.credits / 500) * 100;
           }
           
@@ -468,12 +490,14 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     let total300 = 0, total500 = 0, total650 = 0;
     selections.forEach(sel => {
       if (sel.player) {
-        let budgetPercentage = 0;
-        if ((sel.player as any).costPercentage !== undefined) {
-          budgetPercentage = (sel.player as any).costPercentage;
-        } else if (sel.player.credits > 0) {
+        const key = `${sel.player.name}-${sel.player.surname}-${sel.player.team}-${sel.role_category}`;
+        let budgetPercentage = playerPercentages.get(key) || 0;
+        
+        // Se non trovata nel database, usa i crediti come fallback
+        if (budgetPercentage === 0 && sel.player.credits > 0) {
           budgetPercentage = (sel.player.credits / 500) * 100;
         }
+        
         total300 += Math.round((budgetPercentage / 100) * 300);
         total500 += Math.round((budgetPercentage / 100) * 500);
         total650 += Math.round((budgetPercentage / 100) * 650);
@@ -495,12 +519,14 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       // Calcola crediti per i tre scenari usando la percentuale corretta
       let role300 = 0, role500 = 0, role650 = 0;
       roleSelections.forEach(sel => {
-        let budgetPercentage = 0;
-        if ((sel.player as any).costPercentage !== undefined) {
-          budgetPercentage = (sel.player as any).costPercentage;
-        } else if (sel.player.credits > 0) {
+        const key = `${sel.player.name}-${sel.player.surname}-${sel.player.team}-${sel.role_category}`;
+        let budgetPercentage = playerPercentages.get(key) || 0;
+        
+        // Se non trovata nel database, usa i crediti come fallback
+        if (budgetPercentage === 0 && sel.player.credits > 0) {
           budgetPercentage = (sel.player.credits / 500) * 100;
         }
+        
         role300 += Math.round((budgetPercentage / 100) * 300);
         role500 += Math.round((budgetPercentage / 100) * 500);
         role650 += Math.round((budgetPercentage / 100) * 650);

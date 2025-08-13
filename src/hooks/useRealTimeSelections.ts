@@ -16,31 +16,19 @@ export const useRealTimeSelections = () => {
     try {
       setLoading(true);
       
-        // Cerca il giocatore nel database per ottenere la percentuale di budget
-        const { data: dbPlayer } = await supabase
-          .from('players')
-          .select('cost_percentage')
-          .eq('user_id', user.id)
-          .eq('name', selection.player.name || '')
-          .eq('surname', selection.player.surname)
-          .eq('team', selection.player.team as any)
-          .eq('role_category', selection.role_category as any)
-          .single();
-
-        const { error } = await supabase
-          .from('realtime_selections')
-          .upsert({
-            user_id: user.id,
-            position_slot: selection.position_slot,
-            role_category: selection.role_category,
-            player_name: selection.player.name,
-            player_surname: selection.player.surname,
-            player_team: selection.player.team,
-            credits: selection.player.credits,
-            cost_percentage: dbPlayer?.cost_percentage || 0
-          }, {
-            onConflict: 'user_id,position_slot,role_category'
-          });
+      const { error } = await supabase
+        .from('realtime_selections')
+        .upsert({
+          user_id: user.id,
+          position_slot: selection.position_slot,
+          role_category: selection.role_category,
+          player_name: selection.player.name,
+          player_surname: selection.player.surname,
+          player_team: selection.player.team,
+          credits: selection.player.credits
+        }, {
+          onConflict: 'user_id,position_slot,role_category'
+        });
 
       if (error) {
         console.error('Errore nel salvataggio selezione:', error);
@@ -85,8 +73,7 @@ export const useRealTimeSelections = () => {
           surname: selection.player_surname,
           team: selection.player_team || '',
           role: selection.role_category,
-          credits: selection.credits,
-          costPercentage: selection.cost_percentage || 0
+          credits: selection.credits
         } as any
       }));
 
