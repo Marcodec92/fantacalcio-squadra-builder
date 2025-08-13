@@ -396,10 +396,19 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setTextColor(70, 70, 70);
           doc.text(selection.player.team || '', x + 2, y + 12);
           
-          // Calcolo della percentuale di budget corretta dal database
-          const budgetPercentage = (selection.player as any).costPercentage || 0;
+          // Calcolo della percentuale di budget
+          // Nel Real Time Builder, i giocatori possono avere costPercentage (dal database) o credits (dai CSV)
+          let budgetPercentage = 0;
+          if ((selection.player as any).costPercentage !== undefined) {
+            // Usa costPercentage dal database
+            budgetPercentage = (selection.player as any).costPercentage;
+          } else if (selection.player.credits > 0) {
+            // Calcola percentuale dai crediti salvati nel Real Time Builder
+            // Assume che i crediti siano stati calcolati su base 500 (budget di default)
+            budgetPercentage = (selection.player.credits / 500) * 100;
+          }
           
-          // Calcolo crediti per i tre scenari di budget basati sulla percentuale corretta
+          // Calcolo crediti per i tre scenari di budget basati sulla percentuale
           const credits300 = Math.round((budgetPercentage / 100) * 300);
           const credits500 = Math.round((budgetPercentage / 100) * 500);
           const credits650 = Math.round((budgetPercentage / 100) * 650);
@@ -459,7 +468,12 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     let total300 = 0, total500 = 0, total650 = 0;
     selections.forEach(sel => {
       if (sel.player) {
-        const budgetPercentage = (sel.player as any).costPercentage || 0;
+        let budgetPercentage = 0;
+        if ((sel.player as any).costPercentage !== undefined) {
+          budgetPercentage = (sel.player as any).costPercentage;
+        } else if (sel.player.credits > 0) {
+          budgetPercentage = (sel.player.credits / 500) * 100;
+        }
         total300 += Math.round((budgetPercentage / 100) * 300);
         total500 += Math.round((budgetPercentage / 100) * 500);
         total650 += Math.round((budgetPercentage / 100) * 650);
@@ -481,7 +495,12 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       // Calcola crediti per i tre scenari usando la percentuale corretta
       let role300 = 0, role500 = 0, role650 = 0;
       roleSelections.forEach(sel => {
-        const budgetPercentage = (sel.player as any)?.costPercentage || 0;
+        let budgetPercentage = 0;
+        if ((sel.player as any).costPercentage !== undefined) {
+          budgetPercentage = (sel.player as any).costPercentage;
+        } else if (sel.player.credits > 0) {
+          budgetPercentage = (sel.player.credits / 500) * 100;
+        }
         role300 += Math.round((budgetPercentage / 100) * 300);
         role500 += Math.round((budgetPercentage / 100) * 500);
         role650 += Math.round((budgetPercentage / 100) * 650);
