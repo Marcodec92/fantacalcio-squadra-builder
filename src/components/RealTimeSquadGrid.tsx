@@ -31,7 +31,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "🛡️",
       role: "Difensore" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6, 7, 8],
-      columns: 2, // Changed from 4 to 2 for mobile
+      columns: 4,
       gradient: "from-green-600 to-emerald-600"
     },
     {
@@ -39,7 +39,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "⚡",
       role: "Centrocampista" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6, 7, 8],
-      columns: 2, // Changed from 4 to 2 for mobile  
+      columns: 4,
       gradient: "from-purple-600 to-pink-600"
     },
     {
@@ -47,7 +47,7 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
       emoji: "🎯",
       role: "Attaccante" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6],
-      columns: 2, // Changed from 3 to 2 for mobile
+      columns: 3,
       gradient: "from-red-600 to-orange-600"
     }
   ];
