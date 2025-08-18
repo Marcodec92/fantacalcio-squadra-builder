@@ -149,7 +149,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                         MFV: {player.fmv.toFixed(2)}
                       </div>
                       <div className="glass-card px-2 py-1 text-sm font-bold text-blue-600">
-                        {player.costPercentage}%
+                        Budget: {player.costPercentage}%
                       </div>
                     </div>
                   )}
