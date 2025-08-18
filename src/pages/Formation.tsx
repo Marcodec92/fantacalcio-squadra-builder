@@ -93,26 +93,11 @@ const Formation = () => {
       positions.push({ role: "Attaccante", index: i });
     }
 
-    // Auto-assegna giocatori alle posizioni
-    const usedPlayerIds = new Set<string>();
-    const filledPositions = positions.map(pos => {
-      const availablePlayer = allPlayers.find(p => 
-        p.role === pos.role && !usedPlayerIds.has(p.id)
-      );
-      
-      if (availablePlayer) {
-        usedPlayerIds.add(availablePlayer.id);
-        return { ...pos, player: availablePlayer };
-      }
-      
-      return pos;
-    });
-
-    setLineupPlayers(filledPositions);
+    // Lascia tutti gli slot vuoti - l'utente sceglierà manualmente
+    setLineupPlayers(positions);
     
-    // Resto in panchina
-    const bench = allPlayers.filter(p => !usedPlayerIds.has(p.id));
-    setBenchPlayers(bench);
+    // Tutti i giocatori vanno in panchina inizialmente
+    setBenchPlayers(allPlayers);
   };
 
   const handleFormationChange = (formationName: string) => {
@@ -128,27 +113,40 @@ const Formation = () => {
     initializeFormation(formation, allPlayers);
   };
 
-  const swapPlayerWithBench = (positionIndex: number, benchPlayerIndex: number) => {
-    const newLineup = [...lineupPlayers];
-    const newBench = [...benchPlayers];
-    
-    const currentPlayer = newLineup[positionIndex].player;
-    const benchPlayer = newBench[benchPlayerIndex];
+
+  const handleSlotClick = (positionIndex: number) => {
+    // Se lo slot ha già un giocatore, rimuovilo e rimettilo in panchina
+    const currentPlayer = lineupPlayers[positionIndex].player;
+    if (currentPlayer) {
+      const newLineup = [...lineupPlayers];
+      newLineup[positionIndex] = { ...newLineup[positionIndex], player: undefined };
+      setLineupPlayers(newLineup);
+      setBenchPlayers([...benchPlayers, currentPlayer]);
+    }
+  };
+
+  const handleBenchPlayerClick = (benchPlayerIndex: number, targetRole: PlayerRole) => {
+    const benchPlayer = benchPlayers[benchPlayerIndex];
     
     // Verifica che i ruoli corrispondano
-    if (newLineup[positionIndex].role !== benchPlayer.role) {
-      return; // Non permette il cambio se i ruoli non corrispondono
+    if (benchPlayer.role !== targetRole) {
+      return;
     }
     
-    newLineup[positionIndex] = { ...newLineup[positionIndex], player: benchPlayer };
+    // Trova il primo slot vuoto per questo ruolo
+    const targetSlotIndex = lineupPlayers.findIndex(pos => 
+      pos.role === targetRole && !pos.player
+    );
     
-    if (currentPlayer) {
-      newBench[benchPlayerIndex] = currentPlayer;
-    } else {
-      newBench.splice(benchPlayerIndex, 1);
-    }
+    if (targetSlotIndex === -1) return; // Nessuno slot vuoto disponibile
     
+    // Sposta il giocatore dalla panchina al campo
+    const newLineup = [...lineupPlayers];
+    newLineup[targetSlotIndex] = { ...newLineup[targetSlotIndex], player: benchPlayer };
     setLineupPlayers(newLineup);
+    
+    // Rimuovi dalla panchina
+    const newBench = benchPlayers.filter((_, index) => index !== benchPlayerIndex);
     setBenchPlayers(newBench);
   };
 
@@ -253,22 +251,41 @@ const Formation = () => {
         </div>
 
         {/* Campo da calcio */}
-        <Card className="glass-card mb-6 p-4" style={{ minHeight: '500px' }}>
-          <div className="relative w-full h-96 bg-green-600/20 rounded-lg border-2 border-white/30" style={{ 
-            backgroundImage: `
-              linear-gradient(90deg, rgba(255,255,255,0.1) 50%, transparent 50%),
-              linear-gradient(rgba(255,255,255,0.1) 50%, transparent 50%)
-            `,
-            backgroundSize: '40px 40px'
+        <Card className="glass-card mb-6 p-6" style={{ minHeight: '600px' }}>
+          <div className="relative w-full h-[500px] rounded-lg border-4 border-white overflow-hidden" style={{ 
+            background: `
+              linear-gradient(to bottom, 
+                #2d5a2d 0%, 
+                #3a7a3a 20%, 
+                #2d5a2d 40%, 
+                #3a7a3a 60%, 
+                #2d5a2d 80%, 
+                #3a7a3a 100%
+              )
+            `
           }}>
+            {/* Linee del campo */}
+            <div className="absolute inset-0">
+              {/* Linea di metà campo */}
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform -translate-y-0.5"></div>
+              {/* Cerchio di centrocampo */}
+              <div className="absolute top-1/2 left-1/2 w-24 h-24 border-2 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+              {/* Area di rigore */}
+              <div className="absolute bottom-0 left-1/2 w-32 h-16 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
+              {/* Area piccola */}
+              <div className="absolute bottom-0 left-1/2 w-16 h-8 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
+            </div>
             {/* Portiere */}
             {roleGroups.Portiere.map((pos, index) => (
               <div
                 key={`gk-${index}`}
-                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
               >
-                <div className="glass-card p-2 text-center min-w-16 cursor-pointer hover:scale-105 transition-transform">
-                  <div className="w-8 h-8 mx-auto mb-1 bg-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-black">
+                <div 
+                  className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
+                  onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
+                >
+                  <div className="w-10 h-10 mx-auto mb-2 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
                     P
                   </div>
                   {pos.player ? (
@@ -277,7 +294,7 @@ const Formation = () => {
                       <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
                     </div>
                   ) : (
-                    <div className="text-xs text-muted-foreground">Vuoto</div>
+                    <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
                   )}
                 </div>
               </div>
@@ -286,17 +303,20 @@ const Formation = () => {
             {/* Difensori */}
             {roleGroups.Difensore.map((pos, index) => {
               const total = roleGroups.Difensore.length;
-              const spacing = 80 / (total + 1);
-              const leftPos = 10 + spacing * (index + 1);
+              const spacing = 70 / (total + 1);
+              const leftPos = 15 + spacing * (index + 1);
               
               return (
                 <div
                   key={`def-${index}`}
-                  className="absolute bottom-20 transform -translate-x-1/2 -translate-y-1/2"
+                  className="absolute bottom-24 transform -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${leftPos}%` }}
                 >
-                  <div className="glass-card p-2 text-center min-w-16 cursor-pointer hover:scale-105 transition-transform">
-                    <div className="w-8 h-8 mx-auto mb-1 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                  <div 
+                    className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
+                    onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
+                  >
+                    <div className="w-10 h-10 mx-auto mb-2 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                       D
                     </div>
                     {pos.player ? (
@@ -305,7 +325,7 @@ const Formation = () => {
                         <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
                       </div>
                     ) : (
-                      <div className="text-xs text-muted-foreground">Vuoto</div>
+                      <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
                     )}
                   </div>
                 </div>
@@ -315,17 +335,20 @@ const Formation = () => {
             {/* Centrocampisti */}
             {roleGroups.Centrocampista.map((pos, index) => {
               const total = roleGroups.Centrocampista.length;
-              const spacing = 80 / (total + 1);
-              const leftPos = 10 + spacing * (index + 1);
+              const spacing = 70 / (total + 1);
+              const leftPos = 15 + spacing * (index + 1);
               
               return (
                 <div
                   key={`mid-${index}`}
-                  className="absolute bottom-40 transform -translate-x-1/2 -translate-y-1/2"
+                  className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${leftPos}%` }}
                 >
-                  <div className="glass-card p-2 text-center min-w-16 cursor-pointer hover:scale-105 transition-transform">
-                    <div className="w-8 h-8 mx-auto mb-1 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                  <div 
+                    className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
+                    onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
+                  >
+                    <div className="w-10 h-10 mx-auto mb-2 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                       C
                     </div>
                     {pos.player ? (
@@ -334,7 +357,7 @@ const Formation = () => {
                         <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
                       </div>
                     ) : (
-                      <div className="text-xs text-muted-foreground">Vuoto</div>
+                      <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
                     )}
                   </div>
                 </div>
@@ -344,17 +367,20 @@ const Formation = () => {
             {/* Attaccanti */}
             {roleGroups.Attaccante.map((pos, index) => {
               const total = roleGroups.Attaccante.length;
-              const spacing = 80 / (total + 1);
-              const leftPos = 10 + spacing * (index + 1);
+              const spacing = 70 / (total + 1);
+              const leftPos = 15 + spacing * (index + 1);
               
               return (
                 <div
                   key={`att-${index}`}
-                  className="absolute bottom-60 transform -translate-x-1/2 -translate-y-1/2"
+                  className="absolute top-20 transform -translate-x-1/2 -translate-y-1/2"
                   style={{ left: `${leftPos}%` }}
                 >
-                  <div className="glass-card p-2 text-center min-w-16 cursor-pointer hover:scale-105 transition-transform">
-                    <div className="w-8 h-8 mx-auto mb-1 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                  <div 
+                    className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
+                    onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
+                  >
+                    <div className="w-10 h-10 mx-auto mb-2 bg-red-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                       A
                     </div>
                     {pos.player ? (
@@ -363,7 +389,7 @@ const Formation = () => {
                         <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
                       </div>
                     ) : (
-                      <div className="text-xs text-muted-foreground">Vuoto</div>
+                      <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
                     )}
                   </div>
                 </div>
@@ -375,10 +401,14 @@ const Formation = () => {
         {/* Panchina */}
         <Card className="glass-card p-4">
           <h3 className="text-lg font-bold mb-4 text-gradient">Panchina ({benchPlayers.length} giocatori)</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
             {benchPlayers.map((player, index) => (
-              <div key={player.id} className="glass-card p-3 text-center cursor-pointer hover:scale-105 transition-transform">
-                <div className={`w-8 h-8 mx-auto mb-2 rounded-full flex items-center justify-center text-xs font-bold text-white ${
+              <div 
+                key={player.id} 
+                className="glass-card p-3 text-center cursor-pointer hover:scale-105 transition-transform border-2 hover:border-primary/50"
+                onClick={() => handleBenchPlayerClick(index, player.role)}
+              >
+                <div className={`w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center text-sm font-bold text-white ${
                   player.role === 'Portiere' ? 'bg-yellow-500 text-black' :
                   player.role === 'Difensore' ? 'bg-green-500' :
                   player.role === 'Centrocampista' ? 'bg-blue-500' :
