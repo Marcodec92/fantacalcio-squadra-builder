@@ -71,9 +71,9 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     
     // Budget percentages compatto - usa il campo costPercentage del giocatore
     const costPercentage = player.costPercentage || 0;
-    const credits300 = ((costPercentage / 100) * 300).toFixed(1);
-    const credits500 = ((costPercentage / 100) * 500).toFixed(1);
-    const credits650 = ((costPercentage / 100) * 650).toFixed(1);
+    const credits300 = Math.ceil((costPercentage / 100) * 300);
+    const credits500 = Math.ceil((costPercentage / 100) * 500);
+    const credits650 = Math.ceil((costPercentage / 100) * 650);
     doc.setFontSize(5);
     doc.setTextColor(180, 180, 180);
     const budgetX = x + width * 0.35; // 35% della larghezza
