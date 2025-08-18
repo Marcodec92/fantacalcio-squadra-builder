@@ -160,7 +160,7 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                           Budget: {player.costPercentage}%
                         </div>
                         {showBudgetBreakdown && (
-                          <div className="absolute top-8 left-0 z-10 flex gap-1 animate-slide-in-right">
+                          <div className="absolute top-0 left-full ml-2 z-10 flex gap-1 animate-slide-in-right">
                             <div className="text-xs px-2 py-1 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg whitespace-nowrap">
                               {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
                             </div>
