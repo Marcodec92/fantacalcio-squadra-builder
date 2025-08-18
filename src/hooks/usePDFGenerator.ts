@@ -252,17 +252,21 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     for (const selection of selections) {
       if (selection.player) {
         try {
+          // Query migliorata per gestire duplicati e trovare il record con la percentuale più alta
           const { data: players } = await supabase
             .from('players')
-            .select('cost_percentage')
-            .eq('name', selection.player.name)
+            .select('cost_percentage, name, surname, team')
             .eq('surname', selection.player.surname)
-            .eq('team', selection.player.team as any);
+            .eq('team', selection.player.team as any)
+            .order('cost_percentage', { ascending: false })
+            .order('name', { ascending: false, nullsFirst: false });
           
           if (players && players.length > 0) {
+            // Prende il primo record (quello con percentuale più alta e name più completo)
+            const bestMatch = players[0];
             const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}`;
-            playerPercentages.set(key, players[0].cost_percentage);
-            console.log(`Caricata percentuale per ${selection.player.name} ${selection.player.surname}: ${players[0].cost_percentage}%`);
+            playerPercentages.set(key, bestMatch.cost_percentage);
+            console.log(`Caricata percentuale per ${selection.player.surname} (${selection.player.team}): ${bestMatch.cost_percentage}%`);
           } else {
             console.warn(`Giocatore non trovato nel database: ${selection.player.name} ${selection.player.surname} (${selection.player.team})`);
           }
