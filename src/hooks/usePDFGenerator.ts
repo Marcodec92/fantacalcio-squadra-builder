@@ -79,7 +79,8 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     doc.setTextColor(180, 180, 180);
     const budgetX = x + width * 0.35; // 35% della larghezza
     doc.text('Budget:', budgetX, y + 2);
-    doc.text(`${costPercentage}% | ${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, budgetX, y + 6);
+    doc.text(`Principale: ${costPercentage}%`, budgetX, y + 5);
+    doc.text(`${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, budgetX, y + 8);
     
     // Statistiche compatte per ruolo - posizione proporzionale
     const statsX = x + width * 0.58; // 58% della larghezza
