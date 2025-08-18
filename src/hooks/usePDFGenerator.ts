@@ -167,7 +167,7 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       const rolePlayers = players
         .filter(p => p.roleCategory === role)
         .sort((a, b) => {
-          // 1. Ordinamento per fascia (tier) dalla 1ª alla 6ª
+          // 1. Ordinamento per fascia (tier) dalla 1ª alla 8ª
           const getTierNumber = (tier: string) => {
             if (!tier) return 999; // Mette i giocatori senza tier alla fine
             const match = tier.match(/(\d+)/);
