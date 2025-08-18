@@ -120,7 +120,14 @@ const Formation = () => {
       const newLineup = [...lineupPlayers];
       newLineup[positionIndex] = { ...newLineup[positionIndex], player: undefined };
       setLineupPlayers(newLineup);
-      setBenchPlayers([...benchPlayers, currentPlayer]);
+      
+      // Inserisci il giocatore nella panchina mantenendo l'ordine gerarchico
+      const newBench = [...benchPlayers, currentPlayer];
+      const sortedBench = newBench.sort((a, b) => {
+        const roleOrder = { "Portiere": 0, "Difensore": 1, "Centrocampista": 2, "Attaccante": 3 };
+        return roleOrder[a.role] - roleOrder[b.role];
+      });
+      setBenchPlayers(sortedBench);
     }
   };
 
@@ -271,11 +278,11 @@ const Formation = () => {
                   <div className="absolute bottom-0 left-1/2 w-16 h-8 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
                 </div>
 
-                {/* Portiere */}
+                {/* Portiere - Settore 1 */}
                 {roleGroups.Portiere.map((pos, index) => (
                   <div
                     key={`gk-${index}`}
-                    className="absolute bottom-6 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="absolute bottom-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
                   >
@@ -298,7 +305,7 @@ const Formation = () => {
                   </div>
                 ))}
 
-                {/* Difensori */}
+                {/* Difensori - Settore 2 */}
                 {roleGroups.Difensore.map((pos, index) => {
                   const total = roleGroups.Difensore.length;
                   let leftPos = 50;
@@ -306,15 +313,15 @@ const Formation = () => {
                   if (total === 3) {
                     leftPos = [25, 50, 75][index];
                   } else if (total === 4) {
-                    leftPos = [20, 40, 60, 80][index];
+                    leftPos = [18, 38, 62, 82][index];
                   } else if (total === 5) {
-                    leftPos = [15, 30, 50, 70, 85][index];
+                    leftPos = [12, 28, 50, 72, 88][index];
                   }
                   
                   return (
                     <div
                       key={`def-${index}`}
-                      className="absolute bottom-32 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-160 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
@@ -339,7 +346,7 @@ const Formation = () => {
                   );
                 })}
 
-                {/* Centrocampisti */}
+                {/* Centrocampisti - Settore 3 */}
                 {roleGroups.Centrocampista.map((pos, index) => {
                   const total = roleGroups.Centrocampista.length;
                   let leftPos = 50;
@@ -347,15 +354,15 @@ const Formation = () => {
                   if (total === 3) {
                     leftPos = [25, 50, 75][index];
                   } else if (total === 4) {
-                    leftPos = [20, 40, 60, 80][index];
+                    leftPos = [18, 38, 62, 82][index];
                   } else if (total === 5) {
-                    leftPos = [15, 30, 50, 70, 85][index];
+                    leftPos = [12, 28, 50, 72, 88][index];
                   }
                   
                   return (
                     <div
                       key={`mid-${index}`}
-                      className="absolute bottom-56 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-320 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
@@ -380,7 +387,7 @@ const Formation = () => {
                   );
                 })}
 
-                {/* Attaccanti */}
+                {/* Attaccanti - Settore 4 */}
                 {roleGroups.Attaccante.map((pos, index) => {
                   const total = roleGroups.Attaccante.length;
                   let leftPos = 50;
@@ -396,7 +403,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`att-${index}`}
-                      className="absolute bottom-80 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-480 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
@@ -428,15 +435,15 @@ const Formation = () => {
           <div className="w-full lg:w-80 lg:flex-shrink-0">
             <Card className="glass-card p-4 h-fit">
               <h3 className="text-lg font-bold mb-4 text-gradient">Panchina ({benchPlayers.length} giocatori)</h3>
-              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              <div className="grid grid-cols-3 gap-2 max-h-[600px] overflow-y-auto">
                 {benchPlayers.map((player, index) => (
                   <div 
                     key={player.id} 
-                    className="glass-card p-3 cursor-move hover:scale-105 transition-transform border-2 hover:border-primary/50 flex items-center space-x-3"
+                    className="glass-card p-2 cursor-move hover:scale-105 transition-transform border-2 hover:border-primary/50 flex flex-col items-center text-center"
                     draggable
                     onDragStart={(e) => handleDragStart(e, player, true, index)}
                   >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0 ${
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white mb-1 ${
                       player.role === 'Portiere' ? 'bg-yellow-500 text-black' :
                       player.role === 'Difensore' ? 'bg-green-500' :
                       player.role === 'Centrocampista' ? 'bg-blue-500' :
@@ -444,11 +451,9 @@ const Formation = () => {
                     }`}>
                       {player.role.charAt(0)}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold truncate">{player.name} {player.surname}</div>
-                      <div className="text-muted-foreground text-sm truncate">{player.team}</div>
-                      <div className="text-muted-foreground text-sm">{player.credits} crediti</div>
-                    </div>
+                    <div className="text-xs font-semibold truncate w-full">{player.surname}</div>
+                    <div className="text-muted-foreground text-[10px] truncate w-full">{player.team}</div>
+                    <div className="text-muted-foreground text-[10px]">{player.credits}cr</div>
                   </div>
                 ))}
               </div>
