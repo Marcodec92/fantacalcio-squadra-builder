@@ -316,7 +316,9 @@ const Formation = () => {
                     onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
                   >
                     <div 
-                      className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
+                      className={`glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 flex flex-col justify-center ${
+                        pos.player ? 'border-solid border-white/60' : 'border-dashed border-white/40'
+                      }`}
                       onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
                     >
                       <div className="w-10 h-10 mx-auto mb-2 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
@@ -355,10 +357,12 @@ const Formation = () => {
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
                     >
-                      <div 
-                        className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
-                        onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
-                      >
+                       <div 
+                         className={`glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 flex flex-col justify-center ${
+                           pos.player ? 'border-solid border-white/60' : 'border-dashed border-white/40'
+                         }`}
+                         onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
+                       >
                         <div className="w-10 h-10 mx-auto mb-2 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                           D
                         </div>
@@ -396,10 +400,12 @@ const Formation = () => {
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
                     >
-                      <div 
-                        className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
-                        onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
-                      >
+                       <div 
+                         className={`glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 flex flex-col justify-center ${
+                           pos.player ? 'border-solid border-white/60' : 'border-dashed border-white/40'
+                         }`}
+                         onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
+                       >
                         <div className="w-10 h-10 mx-auto mb-2 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                           C
                         </div>
@@ -437,10 +443,12 @@ const Formation = () => {
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
                     >
-                      <div 
-                        className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
-                        onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
-                      >
+                       <div 
+                         className={`glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 flex flex-col justify-center ${
+                           pos.player ? 'border-solid border-white/60' : 'border-dashed border-white/40'
+                         }`}
+                         onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
+                       >
                         <div className="w-10 h-10 mx-auto mb-2 bg-red-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                           A
                         </div>
