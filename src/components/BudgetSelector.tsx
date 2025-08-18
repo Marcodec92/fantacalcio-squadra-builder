@@ -13,9 +13,9 @@ const BudgetSelector: React.FC<BudgetSelectorProps> = ({
   onBudgetChange
 }) => {
   const budgetOptions = [
-    { value: 300, label: '300 Crediti', emoji: '🥉', description: 'Budget Base' },
-    { value: 500, label: '500 Crediti', emoji: '🥈', description: 'Budget Standard' },
-    { value: 650, label: '650 Crediti', emoji: '🥇', description: 'Budget Premium' }
+    { value: 300, label: '300 Crediti', emoji: '🥉' },
+    { value: 500, label: '500 Crediti', emoji: '🥈' },
+    { value: 650, label: '650 Crediti', emoji: '🥇' }
   ];
 
   return (
@@ -32,23 +32,15 @@ const BudgetSelector: React.FC<BudgetSelectorProps> = ({
           <SelectValue placeholder="Seleziona budget" />
         </SelectTrigger>
         <SelectContent className="glass-card border-white/20 rounded-xl sm:rounded-2xl shadow-xl backdrop-blur-xl z-[100] min-w-[280px] sm:min-w-[320px] bg-background/95">
-          {budgetOptions.map(({ value, label, emoji, description }) => (
+          {budgetOptions.map(({ value, label, emoji }) => (
             <SelectItem 
               key={value} 
               value={value.toString()}
               className="cursor-pointer hover:bg-white/10 focus:bg-white/10 rounded-lg sm:rounded-xl my-1 mx-1 text-foreground font-medium touch-manipulation p-2 sm:p-3"
             >
-              <div className="flex items-center justify-between w-full min-w-0">
-                <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
-                  <span className="text-lg sm:text-2xl flex-shrink-0">{emoji}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-foreground text-sm sm:text-base truncate">{label}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground truncate">{description}</p>
-                  </div>
-                </div>
-                <div className="text-base sm:text-lg font-bold text-primary ml-2 sm:ml-4 flex-shrink-0">
-                  {value}
-                </div>
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <span className="text-lg sm:text-2xl flex-shrink-0">{emoji}</span>
+                <p className="font-semibold text-foreground text-sm sm:text-base">{label}</p>
               </div>
             </SelectItem>
           ))}
