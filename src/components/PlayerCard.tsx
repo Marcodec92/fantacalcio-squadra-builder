@@ -148,7 +148,14 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                       <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
                         MFV: {player.fmv.toFixed(2)}
                       </div>
-                      <div className="glass-card px-2 py-1 text-sm font-bold text-blue-600">
+                      <div 
+                        className="glass-card px-2 py-1 text-sm font-bold text-blue-600 cursor-pointer hover:bg-blue-100/20 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowBudgetBreakdown(!showBudgetBreakdown);
+                        }}
+                        title="Clicca per vedere breakdown crediti"
+                      >
                         Budget: {player.costPercentage}%
                       </div>
                     </div>
