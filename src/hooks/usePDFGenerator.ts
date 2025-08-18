@@ -246,22 +246,21 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
   };
 
   const generateTeamPDF = async (selections: RealTimeSelection[], teamName: string) => {
-    // Pre-carica tutte le percentuali dal database prima di generare il PDF
+    // Pre-carica le percentuali dal database per tutti i giocatori selezionati
     const playerPercentages = new Map<string, number>();
     
     for (const selection of selections) {
       if (selection.player) {
-        const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}-${selection.role_category}`;
         try {
           const { data: players } = await supabase
             .from('players')
             .select('cost_percentage')
-            .ilike('name', `%${selection.player.name || ''}%`)
-            .ilike('surname', `%${selection.player.surname}%`)
-            .eq('team', selection.player.team as any)
-            .eq('role_category', selection.role_category as any);
+            .ilike('name', selection.player.name)
+            .ilike('surname', selection.player.surname)
+            .eq('team', selection.player.team as any);
           
           if (players && players.length > 0) {
+            const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}`;
             playerPercentages.set(key, players[0].cost_percentage);
           }
         } catch (error) {
@@ -421,8 +420,8 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           doc.setTextColor(70, 70, 70);
           doc.text(selection.player.team || '', x + 2, y + 12);
           
-          // Ottieni la percentuale dal database pre-caricato
-          const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}-${selection.role_category}`;
+          // Recupera la percentuale budget dal database pre-caricato
+          const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}`;
           let budgetPercentage = playerPercentages.get(key) || 0;
           
           // Se non trovata nel database, usa i crediti come fallback
@@ -490,7 +489,8 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     let total300 = 0, total500 = 0, total650 = 0;
     selections.forEach(sel => {
       if (sel.player) {
-        const key = `${sel.player.name}-${sel.player.surname}-${sel.player.team}-${sel.role_category}`;
+        // Recupera la percentuale budget dal database pre-caricato
+        const key = `${sel.player.name}-${sel.player.surname}-${sel.player.team}`;
         let budgetPercentage = playerPercentages.get(key) || 0;
         
         // Se non trovata nel database, usa i crediti come fallback
@@ -519,7 +519,8 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
       // Calcola crediti per i tre scenari usando la percentuale corretta
       let role300 = 0, role500 = 0, role650 = 0;
       roleSelections.forEach(sel => {
-        const key = `${sel.player.name}-${sel.player.surname}-${sel.player.team}-${sel.role_category}`;
+        // Recupera la percentuale budget dal database pre-caricato
+        const key = `${sel.player.name}-${sel.player.surname}-${sel.player.team}`;
         let budgetPercentage = playerPercentages.get(key) || 0;
         
         // Se non trovata nel database, usa i crediti come fallback
