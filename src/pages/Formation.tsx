@@ -243,7 +243,7 @@ const Formation = () => {
         </div>
 
         {/* Layout principale: Campo e Panchina affiancati */}
-        <div className="flex flex-col xl:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Campo da calcio */}
           <div className="flex-1">
             <Card className="glass-card p-6" style={{ minHeight: '600px' }}>
@@ -425,7 +425,7 @@ const Formation = () => {
           </div>
 
           {/* Panchina */}
-          <div className="w-full xl:w-80">
+          <div className="w-full lg:w-80 lg:flex-shrink-0">
             <Card className="glass-card p-4 h-fit">
               <h3 className="text-lg font-bold mb-4 text-gradient">Panchina ({benchPlayers.length} giocatori)</h3>
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
