@@ -33,7 +33,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
       emoji: "🛡️",
       role: "Difensore" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6, 7, 8],
-      columns: 4,
+      columns: 3,
       gradient: "from-green-600 to-emerald-600"
     },
     {
@@ -41,7 +41,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
       emoji: "⚡",
       role: "Centrocampista" as PlayerRole,
       slots: [1, 2, 3, 4, 5, 6, 7, 8],
-      columns: 4,
+      columns: 3,
       gradient: "from-purple-600 to-pink-600"
     },
     {
