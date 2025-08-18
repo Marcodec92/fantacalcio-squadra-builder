@@ -40,7 +40,7 @@ const RealTimeRoleSection: React.FC<RealTimeRoleSectionProps> = ({
   };
 
   return (
-    <div className={`grid gap-4`} style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+    <>
       {slots.map(slot => (
         <RealTimePositionCard
           key={slot}
@@ -53,7 +53,7 @@ const RealTimeRoleSection: React.FC<RealTimeRoleSectionProps> = ({
           onUpdateCredits={onUpdateCredits}
         />
       ))}
-    </div>
+    </>
   );
 };
 

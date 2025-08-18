@@ -53,7 +53,7 @@ const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
   };
 
   return (
-    <Card className="glass-card p-3 sm:p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 relative group min-h-[100px] sm:min-h-[120px]">
+    <Card className="glass-card p-3 sm:p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 relative group h-[120px] sm:h-[140px] w-full flex flex-col justify-center">
       {player ? (
         <>
           <Button

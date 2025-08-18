@@ -53,21 +53,29 @@ const RealTimeSquadGrid: React.FC<RealTimeSquadGridProps> = ({
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {roleConfig.map(({ title, emoji, role, slots, columns, gradient }) => (
-        <div key={role}>
-          <h3 className={`text-lg sm:text-xl font-bold mb-3 sm:mb-4 flex items-center text-foreground bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
+        <div key={role} className="w-full">
+          <h3 className={`text-lg sm:text-xl font-bold mb-4 flex items-center text-foreground bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>
             {emoji} {title}
           </h3>
-          <RealTimeRoleSection
-            role={role}
-            slots={slots}
-            columns={columns}
-            selections={selections}
-            onPositionClick={onPositionClick}
-            onRemovePlayer={onRemovePlayer}
-            onUpdateCredits={onUpdateCredits}
-          />
+          <div 
+            className="grid gap-3 sm:gap-4 w-full"
+            style={{ 
+              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+              gridTemplateRows: role === 'Portiere' ? 'repeat(1, 1fr)' : 'repeat(2, 1fr)'
+            }}
+          >
+            <RealTimeRoleSection
+              role={role}
+              slots={slots}
+              columns={columns}
+              selections={selections}
+              onPositionClick={onPositionClick}
+              onRemovePlayer={onRemovePlayer}
+              onUpdateCredits={onUpdateCredits}
+            />
+          </div>
         </div>
       ))}
     </div>
