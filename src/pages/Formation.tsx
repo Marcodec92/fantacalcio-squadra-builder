@@ -278,11 +278,11 @@ const Formation = () => {
                   <div className="absolute bottom-0 left-1/2 w-16 h-8 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
                 </div>
 
-                {/* Portiere - Settore 1 */}
+                {/* Portiere - Bottom sector */}
                 {roleGroups.Portiere.map((pos, index) => (
                   <div
                     key={`gk-${index}`}
-                    className="absolute bottom-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
                   >
@@ -321,7 +321,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`def-${index}`}
-                      className="absolute bottom-160 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-28 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
@@ -362,7 +362,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`mid-${index}`}
-                      className="absolute bottom-320 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-64 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
@@ -403,7 +403,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`att-${index}`}
-                      className="absolute bottom-480 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-96 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
