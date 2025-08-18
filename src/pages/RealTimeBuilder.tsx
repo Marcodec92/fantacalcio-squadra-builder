@@ -179,12 +179,22 @@ const RealTimeBuilder = () => {
           </div>
         </div>
 
-        {/* Nome squadra */}
-        <div className="mb-4 sm:mb-8">
-          <TeamNameInput
-            teamName={teamName}
-            onTeamNameChange={handleTeamNameChange}
-          />
+        {/* Nome squadra e bottone formazione */}
+        <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div className="flex-1">
+            <TeamNameInput
+              teamName={teamName}
+              onTeamNameChange={handleTeamNameChange}
+            />
+          </div>
+          {selections.length >= 11 && (
+            <Button
+              onClick={() => navigate('/formation')}
+              className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-4 sm:px-6 py-3 text-sm sm:text-base"
+            >
+              Schiera la tua squadra
+            </Button>
+          )}
         </div>
 
         {/* Stato CSV con persistenza */}
