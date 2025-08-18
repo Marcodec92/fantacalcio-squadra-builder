@@ -148,15 +148,30 @@ const PlayerCard: React.FC<PlayerCardProps> = ({ player, onUpdate, onDelete }) =
                       <div className="glass-card px-2 py-1 text-sm font-bold text-gradient">
                         MFV: {player.fmv.toFixed(2)}
                       </div>
-                      <div 
-                        className="glass-card px-2 py-1 text-sm font-bold text-blue-600 cursor-pointer hover:bg-blue-100/20 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowBudgetBreakdown(!showBudgetBreakdown);
-                        }}
-                        title="Clicca per vedere breakdown crediti"
-                      >
-                        Budget: {player.costPercentage}%
+                      <div className="relative">
+                        <div 
+                          className="glass-card px-2 py-1 text-sm font-bold text-blue-600 cursor-pointer hover:bg-blue-100/20 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowBudgetBreakdown(!showBudgetBreakdown);
+                          }}
+                          title="Clicca per vedere breakdown crediti"
+                        >
+                          Budget: {player.costPercentage}%
+                        </div>
+                        {showBudgetBreakdown && (
+                          <div className="absolute top-0 left-full ml-2 z-10 flex gap-2 animate-slide-in-right">
+                            <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
+                              {calculateCreditBreakdown(player.costPercentage).credits300} su 300 cr.
+                            </div>
+                            <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+                              {calculateCreditBreakdown(player.costPercentage).credits500} su 500 cr.
+                            </div>
+                            <div className="text-xs px-3 py-2 rounded-lg font-medium text-white bg-gradient-to-br from-red-500 to-rose-600 shadow-lg">
+                              {calculateCreditBreakdown(player.costPercentage).credits650} su 650 cr.
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
