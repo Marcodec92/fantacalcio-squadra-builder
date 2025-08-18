@@ -131,6 +131,26 @@ const Formation = () => {
     }
   };
 
+  const handleResetFormation = () => {
+    // Raccogli tutti i giocatori dai titolari
+    const allFieldPlayers = lineupPlayers
+      .filter(p => p.player)
+      .map(p => p.player!);
+    
+    // Aggiungi ai giocatori già in panchina e ordina per ruolo
+    const allPlayers = [...benchPlayers, ...allFieldPlayers];
+    const sortedPlayers = allPlayers.sort((a, b) => {
+      const roleOrder = { "Portiere": 0, "Difensore": 1, "Centrocampista": 2, "Attaccante": 3 };
+      return roleOrder[a.role] - roleOrder[b.role];
+    });
+    
+    // Svuota tutti gli slot del campo
+    const emptyLineup = lineupPlayers.map(pos => ({ ...pos, player: undefined }));
+    
+    setLineupPlayers(emptyLineup);
+    setBenchPlayers(sortedPlayers);
+  };
+
   const handleDragStart = (e: React.DragEvent, player: LineupPlayer, fromBench: boolean, benchIndex?: number) => {
     e.dataTransfer.setData('player', JSON.stringify(player));
     e.dataTransfer.setData('fromBench', fromBench.toString());
@@ -232,20 +252,29 @@ const Formation = () => {
 
         {/* Selezione modulo */}
         <div className="glass-card mb-6 p-4">
-          <div className="flex items-center space-x-4">
-            <label className="text-sm font-medium text-muted-foreground">Moduli:</label>
-            <Select value={selectedFormation.name} onValueChange={handleFormationChange}>
-              <SelectTrigger className="w-32 glass-button">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {formations.map(formation => (
-                  <SelectItem key={formation.name} value={formation.name}>
-                    {formation.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <label className="text-sm font-medium text-muted-foreground">Moduli:</label>
+              <Select value={selectedFormation.name} onValueChange={handleFormationChange}>
+                <SelectTrigger className="w-32 glass-button">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {formations.map(formation => (
+                    <SelectItem key={formation.name} value={formation.name}>
+                      {formation.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              variant="destructive"
+              onClick={handleResetFormation}
+              className="px-4 py-2 text-sm font-medium"
+            >
+              Reset Formazione
+            </Button>
           </div>
         </div>
 
