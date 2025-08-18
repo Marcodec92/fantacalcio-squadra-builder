@@ -187,12 +187,13 @@ const RealTimeBuilder = () => {
               onTeamNameChange={handleTeamNameChange}
             />
           </div>
-          {selections.length >= 11 && (
+          {csvPlayers.length > 0 && (
             <Button
               onClick={() => navigate('/formation')}
               className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-4 sm:px-6 py-3 text-sm sm:text-base"
+              disabled={selections.length < 11}
             >
-              Schiera la tua squadra
+              Schiera la tua squadra {selections.length < 11 && `(${selections.length}/11)`}
             </Button>
           )}
         </div>
