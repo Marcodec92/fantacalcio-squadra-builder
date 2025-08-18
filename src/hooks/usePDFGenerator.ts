@@ -255,13 +255,16 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
           const { data: players } = await supabase
             .from('players')
             .select('cost_percentage')
-            .ilike('name', selection.player.name)
-            .ilike('surname', selection.player.surname)
+            .eq('name', selection.player.name)
+            .eq('surname', selection.player.surname)
             .eq('team', selection.player.team as any);
           
           if (players && players.length > 0) {
             const key = `${selection.player.name}-${selection.player.surname}-${selection.player.team}`;
             playerPercentages.set(key, players[0].cost_percentage);
+            console.log(`Caricata percentuale per ${selection.player.name} ${selection.player.surname}: ${players[0].cost_percentage}%`);
+          } else {
+            console.warn(`Giocatore non trovato nel database: ${selection.player.name} ${selection.player.surname} (${selection.player.team})`);
           }
         } catch (error) {
           console.error('Errore ricerca giocatore:', error);
