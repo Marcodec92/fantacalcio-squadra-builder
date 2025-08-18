@@ -164,7 +164,37 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     
     roles.forEach((role) => {
       const config = roleConfig[role];
-      const rolePlayers = players.filter(p => p.roleCategory === role);
+      const rolePlayers = players
+        .filter(p => p.roleCategory === role)
+        .sort((a, b) => {
+          // 1. Ordinamento per fascia (tier) dalla 1ª alla 6ª
+          const getTierNumber = (tier: string) => {
+            if (!tier) return 999; // Mette i giocatori senza tier alla fine
+            const match = tier.match(/(\d+)/);
+            return match ? parseInt(match[1]) : 999;
+          };
+          
+          const tierA = getTierNumber(a.tier || '');
+          const tierB = getTierNumber(b.tier || '');
+          
+          if (tierA !== tierB) {
+            return tierA - tierB;
+          }
+          
+          // 2. Ordinamento per percentuale di budget (dalla più alta alla più bassa)
+          const costA = a.costPercentage || 0;
+          const costB = b.costPercentage || 0;
+          
+          if (costA !== costB) {
+            return costB - costA; // Ordine decrescente
+          }
+          
+          // 3. Ordinamento alfabetico (dalla A alla Z)
+          const nameA = `${a.name || ''} ${a.surname || ''}`.trim().toLowerCase();
+          const nameB = `${b.name || ''} ${b.surname || ''}`.trim().toLowerCase();
+          
+          return nameA.localeCompare(nameB);
+        });
       
       if (rolePlayers.length > 0) {
         // Header del ruolo con forme più compatte
