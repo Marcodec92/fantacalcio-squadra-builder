@@ -71,16 +71,15 @@ export const usePDFGenerator = (): UsePDFGeneratorReturn => {
     
     // Budget percentages compatto - usa il campo costPercentage del giocatore
     const costPercentage = player.costPercentage || 0;
-    const fmv = player.fmv || 0;
-    const budget300 = fmv > 0 ? ((fmv / 300) * 100).toFixed(1) : '0';
-    const budget500 = fmv > 0 ? ((fmv / 500) * 100).toFixed(1) : '0';
-    const budget650 = fmv > 0 ? ((fmv / 650) * 100).toFixed(1) : '0';
+    const credits300 = ((costPercentage / 100) * 300).toFixed(1);
+    const credits500 = ((costPercentage / 100) * 500).toFixed(1);
+    const credits650 = ((costPercentage / 100) * 650).toFixed(1);
     doc.setFontSize(5);
     doc.setTextColor(180, 180, 180);
     const budgetX = x + width * 0.35; // 35% della larghezza
     doc.text('Budget:', budgetX, y + 2);
     doc.text(`Principale: ${costPercentage}%`, budgetX, y + 5);
-    doc.text(`${budget300}%(300) ${budget500}%(500) ${budget650}%(650)`, budgetX, y + 8);
+    doc.text(`${credits300}cr(300) ${credits500}cr(500) ${credits650}cr(650)`, budgetX, y + 8);
     
     // Statistiche compatte per ruolo - posizione proporzionale
     const statsX = x + width * 0.58; // 58% della larghezza
