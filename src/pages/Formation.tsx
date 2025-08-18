@@ -246,8 +246,8 @@ const Formation = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Campo da calcio */}
           <div className="flex-1">
-            <Card className="glass-card p-6" style={{ minHeight: '600px' }}>
-              <div className="relative w-full h-[500px] rounded-lg border-4 border-white overflow-hidden" style={{ 
+            <Card className="glass-card p-6" style={{ minHeight: '700px' }}>
+              <div className="relative w-full h-[600px] rounded-lg border-4 border-white overflow-hidden" style={{
                 background: `
                   linear-gradient(to bottom, 
                     #2d5a2d 0%, 
@@ -275,7 +275,7 @@ const Formation = () => {
                 {roleGroups.Portiere.map((pos, index) => (
                   <div
                     key={`gk-${index}`}
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    className="absolute bottom-12 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                     onDragOver={handleDragOver}
                     onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
                   >
@@ -314,7 +314,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`def-${index}`}
-                      className="absolute bottom-28 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute bottom-36 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
@@ -355,7 +355,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`mid-${index}`}
-                      className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute top-2/3 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
@@ -396,7 +396,7 @@ const Formation = () => {
                   return (
                     <div
                       key={`att-${index}`}
-                      className="absolute top-20 transform -translate-x-1/2 -translate-y-1/2"
+                      className="absolute top-24 transform -translate-x-1/2 -translate-y-1/2"
                       style={{ left: `${leftPos}%` }}
                       onDragOver={handleDragOver}
                       onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
@@ -428,7 +428,7 @@ const Formation = () => {
           <div className="w-full lg:w-80 lg:flex-shrink-0">
             <Card className="glass-card p-4 h-fit">
               <h3 className="text-lg font-bold mb-4 text-gradient">Panchina ({benchPlayers.length} giocatori)</h3>
-              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
                 {benchPlayers.map((player, index) => (
                   <div 
                     key={player.id} 
