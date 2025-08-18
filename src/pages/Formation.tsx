@@ -113,7 +113,6 @@ const Formation = () => {
     initializeFormation(formation, allPlayers);
   };
 
-
   const handleSlotClick = (positionIndex: number) => {
     // Se lo slot ha già un giocatore, rimuovilo e rimettilo in panchina
     const currentPlayer = lineupPlayers[positionIndex].player;
@@ -125,29 +124,50 @@ const Formation = () => {
     }
   };
 
-  const handleBenchPlayerClick = (benchPlayerIndex: number, targetRole: PlayerRole) => {
-    const benchPlayer = benchPlayers[benchPlayerIndex];
+  const handleDragStart = (e: React.DragEvent, player: LineupPlayer, fromBench: boolean, benchIndex?: number) => {
+    e.dataTransfer.setData('player', JSON.stringify(player));
+    e.dataTransfer.setData('fromBench', fromBench.toString());
+    if (benchIndex !== undefined) {
+      e.dataTransfer.setData('benchIndex', benchIndex.toString());
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent, targetSlotIndex: number) => {
+    e.preventDefault();
+    
+    const playerData = e.dataTransfer.getData('player');
+    const fromBench = e.dataTransfer.getData('fromBench') === 'true';
+    const benchIndex = parseInt(e.dataTransfer.getData('benchIndex'));
+    
+    if (!playerData) return;
+    
+    const draggedPlayer: LineupPlayer = JSON.parse(playerData);
+    const targetSlot = lineupPlayers[targetSlotIndex];
     
     // Verifica che i ruoli corrispondano
-    if (benchPlayer.role !== targetRole) {
+    if (draggedPlayer.role !== targetSlot.role) {
       return;
     }
     
-    // Trova il primo slot vuoto per questo ruolo
-    const targetSlotIndex = lineupPlayers.findIndex(pos => 
-      pos.role === targetRole && !pos.player
-    );
+    // Se lo slot è già occupato, non fare nulla
+    if (targetSlot.player) {
+      return;
+    }
     
-    if (targetSlotIndex === -1) return; // Nessuno slot vuoto disponibile
-    
-    // Sposta il giocatore dalla panchina al campo
-    const newLineup = [...lineupPlayers];
-    newLineup[targetSlotIndex] = { ...newLineup[targetSlotIndex], player: benchPlayer };
-    setLineupPlayers(newLineup);
-    
-    // Rimuovi dalla panchina
-    const newBench = benchPlayers.filter((_, index) => index !== benchPlayerIndex);
-    setBenchPlayers(newBench);
+    if (fromBench) {
+      // Sposta dalla panchina al campo
+      const newLineup = [...lineupPlayers];
+      newLineup[targetSlotIndex] = { ...newLineup[targetSlotIndex], player: draggedPlayer };
+      setLineupPlayers(newLineup);
+      
+      // Rimuovi dalla panchina
+      const newBench = benchPlayers.filter((_, index) => index !== benchIndex);
+      setBenchPlayers(newBench);
+    }
   };
 
   if (!user) {
@@ -167,34 +187,6 @@ const Formation = () => {
       </div>
     );
   }
-
-  const getPositionStyle = (role: PlayerRole, index: number, total: number) => {
-    const baseStyle = "absolute transform -translate-x-1/2 -translate-y-1/2";
-    
-    if (role === "Portiere") {
-      return `${baseStyle} bottom-4 left-1/2`;
-    }
-    
-    if (role === "Difensore") {
-      const spacing = 100 / (total + 1);
-      const leftPos = spacing * (index + 1);
-      return `${baseStyle} bottom-20 left-[${leftPos}%]`;
-    }
-    
-    if (role === "Centrocampista") {
-      const spacing = 100 / (total + 1);
-      const leftPos = spacing * (index + 1);
-      return `${baseStyle} bottom-40 left-[${leftPos}%]`;
-    }
-    
-    if (role === "Attaccante") {
-      const spacing = 100 / (total + 1);
-      const leftPos = spacing * (index + 1);
-      return `${baseStyle} bottom-60 left-[${leftPos}%]`;
-    }
-    
-    return baseStyle;
-  };
 
   const roleGroups = {
     Portiere: lineupPlayers.filter(p => p.role === "Portiere"),
@@ -225,7 +217,7 @@ const Formation = () => {
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gradient mb-2 sm:mb-3">
                 Schiera la tua squadra
               </h1>
-              <p className="text-muted-foreground font-medium text-sm sm:text-base lg:text-lg">Disponi i giocatori in campo</p>
+              <p className="text-muted-foreground font-medium text-sm sm:text-base lg:text-lg">Trascina i giocatori dalla panchina al campo</p>
             </div>
             <div className="w-32"></div>
           </div>
@@ -250,181 +242,219 @@ const Formation = () => {
           </div>
         </div>
 
-        {/* Campo da calcio */}
-        <Card className="glass-card mb-6 p-6" style={{ minHeight: '600px' }}>
-          <div className="relative w-full h-[500px] rounded-lg border-4 border-white overflow-hidden" style={{ 
-            background: `
-              linear-gradient(to bottom, 
-                #2d5a2d 0%, 
-                #3a7a3a 20%, 
-                #2d5a2d 40%, 
-                #3a7a3a 60%, 
-                #2d5a2d 80%, 
-                #3a7a3a 100%
-              )
-            `
-          }}>
-            {/* Linee del campo */}
-            <div className="absolute inset-0">
-              {/* Linea di metà campo */}
-              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform -translate-y-0.5"></div>
-              {/* Cerchio di centrocampo */}
-              <div className="absolute top-1/2 left-1/2 w-24 h-24 border-2 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
-              {/* Area di rigore */}
-              <div className="absolute bottom-0 left-1/2 w-32 h-16 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
-              {/* Area piccola */}
-              <div className="absolute bottom-0 left-1/2 w-16 h-8 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
-            </div>
-            {/* Portiere */}
-            {roleGroups.Portiere.map((pos, index) => (
-              <div
-                key={`gk-${index}`}
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              >
-                <div 
-                  className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
-                  onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
-                >
-                  <div className="w-10 h-10 mx-auto mb-2 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
-                    P
-                  </div>
-                  {pos.player ? (
-                    <div className="text-xs">
-                      <div className="font-semibold">{pos.player.surname}</div>
-                      <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
-                  )}
+        {/* Layout principale: Campo e Panchina affiancati */}
+        <div className="flex flex-col xl:flex-row gap-6">
+          {/* Campo da calcio */}
+          <div className="flex-1">
+            <Card className="glass-card p-6" style={{ minHeight: '600px' }}>
+              <div className="relative w-full h-[500px] rounded-lg border-4 border-white overflow-hidden" style={{ 
+                background: `
+                  linear-gradient(to bottom, 
+                    #2d5a2d 0%, 
+                    #3a7a3a 20%, 
+                    #2d5a2d 40%, 
+                    #3a7a3a 60%, 
+                    #2d5a2d 80%, 
+                    #3a7a3a 100%
+                  )
+                `
+              }}>
+                {/* Linee del campo */}
+                <div className="absolute inset-0">
+                  {/* Linea di metà campo */}
+                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-white transform -translate-y-0.5"></div>
+                  {/* Cerchio di centrocampo */}
+                  <div className="absolute top-1/2 left-1/2 w-24 h-24 border-2 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                  {/* Area di rigore */}
+                  <div className="absolute bottom-0 left-1/2 w-32 h-16 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
+                  {/* Area piccola */}
+                  <div className="absolute bottom-0 left-1/2 w-16 h-8 border-2 border-white border-b-0 transform -translate-x-1/2"></div>
                 </div>
+
+                {/* Portiere */}
+                {roleGroups.Portiere.map((pos, index) => (
+                  <div
+                    key={`gk-${index}`}
+                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
+                  >
+                    <div 
+                      className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
+                      onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Portiere" && p.index === index))}
+                    >
+                      <div className="w-10 h-10 mx-auto mb-2 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
+                        P
+                      </div>
+                      {pos.player ? (
+                        <div className="text-xs">
+                          <div className="font-semibold truncate">{pos.player.surname}</div>
+                          <div className="text-muted-foreground text-[10px] truncate">{pos.player.team}</div>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground">Drop here</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Difensori */}
+                {roleGroups.Difensore.map((pos, index) => {
+                  const total = roleGroups.Difensore.length;
+                  let leftPos = 50;
+                  
+                  if (total === 3) {
+                    leftPos = [25, 50, 75][index];
+                  } else if (total === 4) {
+                    leftPos = [20, 40, 60, 80][index];
+                  } else if (total === 5) {
+                    leftPos = [15, 30, 50, 70, 85][index];
+                  }
+                  
+                  return (
+                    <div
+                      key={`def-${index}`}
+                      className="absolute bottom-28 transform -translate-x-1/2 -translate-y-1/2"
+                      style={{ left: `${leftPos}%` }}
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
+                    >
+                      <div 
+                        className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
+                        onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
+                      >
+                        <div className="w-10 h-10 mx-auto mb-2 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                          D
+                        </div>
+                        {pos.player ? (
+                          <div className="text-xs">
+                            <div className="font-semibold truncate">{pos.player.surname}</div>
+                            <div className="text-muted-foreground text-[10px] truncate">{pos.player.team}</div>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">Drop here</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Centrocampisti */}
+                {roleGroups.Centrocampista.map((pos, index) => {
+                  const total = roleGroups.Centrocampista.length;
+                  let leftPos = 50;
+                  
+                  if (total === 3) {
+                    leftPos = [25, 50, 75][index];
+                  } else if (total === 4) {
+                    leftPos = [20, 40, 60, 80][index];
+                  } else if (total === 5) {
+                    leftPos = [15, 30, 50, 70, 85][index];
+                  }
+                  
+                  return (
+                    <div
+                      key={`mid-${index}`}
+                      className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                      style={{ left: `${leftPos}%` }}
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
+                    >
+                      <div 
+                        className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
+                        onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
+                      >
+                        <div className="w-10 h-10 mx-auto mb-2 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                          C
+                        </div>
+                        {pos.player ? (
+                          <div className="text-xs">
+                            <div className="font-semibold truncate">{pos.player.surname}</div>
+                            <div className="text-muted-foreground text-[10px] truncate">{pos.player.team}</div>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">Drop here</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Attaccanti */}
+                {roleGroups.Attaccante.map((pos, index) => {
+                  const total = roleGroups.Attaccante.length;
+                  let leftPos = 50;
+                  
+                  if (total === 1) {
+                    leftPos = 50;
+                  } else if (total === 2) {
+                    leftPos = [35, 65][index];
+                  } else if (total === 3) {
+                    leftPos = [25, 50, 75][index];
+                  }
+                  
+                  return (
+                    <div
+                      key={`att-${index}`}
+                      className="absolute top-20 transform -translate-x-1/2 -translate-y-1/2"
+                      style={{ left: `${leftPos}%` }}
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
+                    >
+                      <div 
+                        className="glass-card p-3 text-center w-20 h-24 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40 flex flex-col justify-center"
+                        onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
+                      >
+                        <div className="w-10 h-10 mx-auto mb-2 bg-red-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                          A
+                        </div>
+                        {pos.player ? (
+                          <div className="text-xs">
+                            <div className="font-semibold truncate">{pos.player.surname}</div>
+                            <div className="text-muted-foreground text-[10px] truncate">{pos.player.team}</div>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">Drop here</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-
-            {/* Difensori */}
-            {roleGroups.Difensore.map((pos, index) => {
-              const total = roleGroups.Difensore.length;
-              const spacing = 70 / (total + 1);
-              const leftPos = 15 + spacing * (index + 1);
-              
-              return (
-                <div
-                  key={`def-${index}`}
-                  className="absolute bottom-24 transform -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: `${leftPos}%` }}
-                >
-                  <div 
-                    className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
-                    onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Difensore" && p.index === index))}
-                  >
-                    <div className="w-10 h-10 mx-auto mb-2 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
-                      D
-                    </div>
-                    {pos.player ? (
-                      <div className="text-xs">
-                        <div className="font-semibold">{pos.player.surname}</div>
-                        <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
-                      </div>
-                    ) : (
-                      <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Centrocampisti */}
-            {roleGroups.Centrocampista.map((pos, index) => {
-              const total = roleGroups.Centrocampista.length;
-              const spacing = 70 / (total + 1);
-              const leftPos = 15 + spacing * (index + 1);
-              
-              return (
-                <div
-                  key={`mid-${index}`}
-                  className="absolute top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: `${leftPos}%` }}
-                >
-                  <div 
-                    className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
-                    onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Centrocampista" && p.index === index))}
-                  >
-                    <div className="w-10 h-10 mx-auto mb-2 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
-                      C
-                    </div>
-                    {pos.player ? (
-                      <div className="text-xs">
-                        <div className="font-semibold">{pos.player.surname}</div>
-                        <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
-                      </div>
-                    ) : (
-                      <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* Attaccanti */}
-            {roleGroups.Attaccante.map((pos, index) => {
-              const total = roleGroups.Attaccante.length;
-              const spacing = 70 / (total + 1);
-              const leftPos = 15 + spacing * (index + 1);
-              
-              return (
-                <div
-                  key={`att-${index}`}
-                  className="absolute top-20 transform -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: `${leftPos}%` }}
-                >
-                  <div 
-                    className="glass-card p-3 text-center min-w-20 cursor-pointer hover:scale-105 transition-transform border-2 border-dashed border-white/40"
-                    onClick={() => handleSlotClick(lineupPlayers.findIndex(p => p.role === "Attaccante" && p.index === index))}
-                  >
-                    <div className="w-10 h-10 mx-auto mb-2 bg-red-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
-                      A
-                    </div>
-                    {pos.player ? (
-                      <div className="text-xs">
-                        <div className="font-semibold">{pos.player.surname}</div>
-                        <div className="text-muted-foreground text-[10px]">{pos.player.team}</div>
-                      </div>
-                    ) : (
-                      <div className="text-xs text-muted-foreground">Clicca per<br/>selezionare</div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+            </Card>
           </div>
-        </Card>
 
-        {/* Panchina */}
-        <Card className="glass-card p-4">
-          <h3 className="text-lg font-bold mb-4 text-gradient">Panchina ({benchPlayers.length} giocatori)</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {benchPlayers.map((player, index) => (
-              <div 
-                key={player.id} 
-                className="glass-card p-3 text-center cursor-pointer hover:scale-105 transition-transform border-2 hover:border-primary/50"
-                onClick={() => handleBenchPlayerClick(index, player.role)}
-              >
-                <div className={`w-10 h-10 mx-auto mb-2 rounded-full flex items-center justify-center text-sm font-bold text-white ${
-                  player.role === 'Portiere' ? 'bg-yellow-500 text-black' :
-                  player.role === 'Difensore' ? 'bg-green-500' :
-                  player.role === 'Centrocampista' ? 'bg-blue-500' :
-                  'bg-red-500'
-                }`}>
-                  {player.role.charAt(0)}
-                </div>
-                <div className="text-xs">
-                  <div className="font-semibold">{player.surname}</div>
-                  <div className="text-muted-foreground text-[10px]">{player.team}</div>
-                  <div className="text-muted-foreground text-[10px]">{player.credits}cr</div>
-                </div>
+          {/* Panchina */}
+          <div className="w-full xl:w-80">
+            <Card className="glass-card p-4 h-fit">
+              <h3 className="text-lg font-bold mb-4 text-gradient">Panchina ({benchPlayers.length} giocatori)</h3>
+              <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                {benchPlayers.map((player, index) => (
+                  <div 
+                    key={player.id} 
+                    className="glass-card p-3 cursor-move hover:scale-105 transition-transform border-2 hover:border-primary/50 flex items-center space-x-3"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, player, true, index)}
+                  >
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0 ${
+                      player.role === 'Portiere' ? 'bg-yellow-500 text-black' :
+                      player.role === 'Difensore' ? 'bg-green-500' :
+                      player.role === 'Centrocampista' ? 'bg-blue-500' :
+                      'bg-red-500'
+                    }`}>
+                      {player.role.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold truncate">{player.name} {player.surname}</div>
+                      <div className="text-muted-foreground text-sm truncate">{player.team}</div>
+                      <div className="text-muted-foreground text-sm">{player.credits} crediti</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </Card>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
