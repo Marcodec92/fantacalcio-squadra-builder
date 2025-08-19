@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import SquadBuilder from "./pages/SquadBuilder";
 import RealTimeBuilder from "./pages/RealTimeBuilder";
 import Formation from "./pages/Formation";
+import TeamPredictionFormation from "./pages/TeamPredictionFormation";
 import NotFound from "./pages/NotFound";
 
 // Create QueryClient with proper default options
@@ -34,6 +35,7 @@ const App: React.FC = () => (
             <Route path="/team-prediction" element={<SquadBuilder />} />
             <Route path="/fanta-team" element={<RealTimeBuilder />} />
             <Route path="/formation" element={<Formation />} />
+            <Route path="/team-prediction-formation" element={<TeamPredictionFormation />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

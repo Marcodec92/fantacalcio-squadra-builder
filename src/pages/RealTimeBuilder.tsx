@@ -246,17 +246,31 @@ const RealTimeBuilder = () => {
 
         {/* Budget and Squad Layout - Solo se ci sono giocatori CSV */}
         {csvPlayers.length > 0 && (
-          <RealTimeBudgetLayout
-            totalCredits={totalCredits}
-            maxBudget={maxBudget}
-            selectedCount={selections.length}
-            roleCredits={roleCredits}
-            selections={selections}
-            onPositionClick={handlePositionClick}
-            onRemovePlayer={handleRemovePlayer}
-            onUpdateCredits={handleUpdateCredits}
-            onBudgetChange={handleBudgetChange}
-          />
+          <>
+            <RealTimeBudgetLayout
+              totalCredits={totalCredits}
+              maxBudget={maxBudget}
+              selectedCount={selections.length}
+              roleCredits={roleCredits}
+              selections={selections}
+              onPositionClick={handlePositionClick}
+              onRemovePlayer={handleRemovePlayer}
+              onUpdateCredits={handleUpdateCredits}
+              onBudgetChange={handleBudgetChange}
+            />
+            
+            {/* Bottone Schiera la tua formazione */}
+            {selections.length >= 11 && (
+              <div className="mt-8 text-center">
+                <Button
+                  onClick={() => navigate('/team-prediction-formation')}
+                  className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-6 py-3 text-base"
+                >
+                  Schiera la tua formazione
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {/* CSV Player Selection Modal */}
