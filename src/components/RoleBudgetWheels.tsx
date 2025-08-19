@@ -79,18 +79,18 @@ const RoleBudgetWheels: React.FC<RoleBudgetWheelsProps> = ({
             </div>
           </div>
           
-          <div className="text-xs text-gray-600">
+          <div className="text-xs text-white/90">
             {count}/{maxCount}
           </div>
-          <div className="text-xs text-gray-500 capitalize">
+          <div className="text-xs text-white/80 capitalize">
             {role}
           </div>
-          <div className="text-xs text-gray-600 mt-2 space-y-1">
+          <div className="text-xs text-white/90 mt-2 space-y-1">
             <div className="font-medium">Spesa stimata:</div>
             <div className="space-y-0.5">
-              <div>300cr: {Math.round((budget / 100) * 300)}</div>
-              <div>500cr: {Math.round((budget / 100) * 500)}</div>
-              <div>650cr: {Math.round((budget / 100) * 650)}</div>
+              <div>300cr: <span className="font-bold">{Math.round((budget / 100) * 300)}</span></div>
+              <div>500cr: <span className="font-bold">{Math.round((budget / 100) * 500)}</span></div>
+              <div>650cr: <span className="font-bold">{Math.round((budget / 100) * 650)}</span></div>
             </div>
           </div>
         </div>
