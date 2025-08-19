@@ -161,6 +161,64 @@ export const useSquadSelections = () => {
     clearAllSelectionsMutation.mutate();
   };
 
+  // Move player between slots mutation
+  const movePlayerMutation = useMutation({
+    mutationFn: async ({ 
+      fromSlot, 
+      fromRole, 
+      toSlot, 
+      toRole 
+    }: { 
+      fromSlot: number; 
+      fromRole: PlayerRole; 
+      toSlot: number; 
+      toRole: PlayerRole; 
+    }) => {
+      if (!user) throw new Error('User not authenticated');
+      
+      // Find the selection to move
+      const selectionToMove = squadSelections.find(
+        s => s.position_slot === fromSlot && s.role_category === fromRole
+      );
+      
+      if (!selectionToMove) throw new Error('Selection not found');
+      
+      // Check if target slot is empty
+      const targetSlotOccupied = squadSelections.find(
+        s => s.position_slot === toSlot && s.role_category === toRole
+      );
+      
+      if (targetSlotOccupied) throw new Error('Target slot is occupied');
+      
+      // Update the selection with new position
+      const { data, error } = await supabase
+        .from('squad_selections')
+        .update({ 
+          position_slot: toSlot,
+          role_category: toRole
+        })
+        .eq('id', selectionToMove.id)
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as SquadSelection;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['squadSelections', user?.id] });
+      toast.success('Giocatore spostato!');
+    },
+    onError: (error) => {
+      console.error('Error moving player:', error);
+      toast.error('Errore nello spostamento del giocatore');
+    },
+  });
+
+  const movePlayer = (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => {
+    movePlayerMutation.mutate({ fromSlot, fromRole, toSlot, toRole });
+  };
+
   return {
     squadSelections,
     isLoading,
@@ -169,5 +227,6 @@ export const useSquadSelections = () => {
     updateSelection,
     deleteSelection,
     clearAllSelections,
+    movePlayer,
   };
 };

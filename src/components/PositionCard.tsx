@@ -16,6 +16,7 @@ interface PositionCardProps {
   selection: SquadSelection | null;
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (selectionId: string) => void;
+  onPlayerMove?: (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => void;
   calculateBonusTotal: (player: Player) => number;
 }
 
@@ -27,6 +28,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
   selection,
   onPositionClick,
   onRemovePlayer,
+  onPlayerMove,
   calculateBonusTotal
 }) => {
   const [editingPercentage, setEditingPercentage] = useState<string | null>(null);
@@ -99,14 +101,51 @@ const PositionCard: React.FC<PositionCardProps> = ({
     e.stopPropagation();
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    if (player && selection && onPlayerMove) {
+      e.dataTransfer.setData('application/json', JSON.stringify({
+        slot,
+        role,
+        player,
+        selection
+      }));
+      e.dataTransfer.effectAllowed = 'move';
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!player && onPlayerMove) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (!player && onPlayerMove) {
+      e.preventDefault();
+      try {
+        const dragData = JSON.parse(e.dataTransfer.getData('application/json'));
+        if (dragData.slot !== slot || dragData.role !== role) {
+          onPlayerMove(dragData.slot, dragData.role, slot, role);
+        }
+      } catch (error) {
+        console.error('Errore nel parsing dei dati drag and drop:', error);
+      }
+    }
+  };
+
   return (
     <Card 
       className={`p-2 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 min-h-[120px] flex flex-col backdrop-blur-sm border-0 relative group ${
         player 
-          ? 'bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 shadow-md ring-1 ring-emerald-200/50' 
-          : 'bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:via-indigo-50 hover:to-blue-100'
+          ? 'bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 shadow-md ring-1 ring-emerald-200/50' + (onPlayerMove ? ' cursor-move' : '')
+          : 'bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:via-indigo-50 hover:to-blue-100' + (onPlayerMove && !player ? ' border-dashed border-white/20 hover:border-white/40' : '')
       }`}
       onClick={() => onPositionClick(slot, role)}
+      draggable={!!(player && onPlayerMove)}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
     >
       <div className="h-full flex flex-col">
         <div className="text-xs font-bold text-gray-700 mb-1 px-2 py-1 bg-white/70 rounded-lg shadow-sm text-center">

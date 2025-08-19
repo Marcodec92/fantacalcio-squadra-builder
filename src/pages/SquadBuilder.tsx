@@ -20,7 +20,7 @@ const SquadBuilder = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { players, isLoading: playersLoading, calculateBonusTotal } = usePlayers();
-  const { squadSelections, addSelection, updateSelection, deleteSelection, clearAllSelections, isLoading: squadLoading } = useSquadSelections();
+  const { squadSelections, addSelection, updateSelection, deleteSelection, clearAllSelections, movePlayer, isLoading: squadLoading } = useSquadSelections();
   const { generateTeamPDF } = usePDFGenerator();
   
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -269,6 +269,7 @@ const SquadBuilder = () => {
                 players={players}
                 onPositionClick={handlePositionClick}
                 onRemovePlayer={(selectionId) => deleteSelection(selectionId)}
+                onPlayerMove={movePlayer}
                 calculateBonusTotal={calculateBonusTotal}
               />
             </div>

@@ -9,6 +9,7 @@ interface SquadGridProps {
   players: Player[];
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (selectionId: string) => void;
+  onPlayerMove?: (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => void;
   calculateBonusTotal: (player: Player) => number;
 }
 
@@ -17,6 +18,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
   players,
   onPositionClick,
   onRemovePlayer,
+  onPlayerMove,
   calculateBonusTotal
 }) => {
   const roleConfig = [
@@ -69,6 +71,7 @@ const SquadGrid: React.FC<SquadGridProps> = ({
             squadSelections={squadSelections}
             onPositionClick={onPositionClick}
             onRemovePlayer={onRemovePlayer}
+            onPlayerMove={onPlayerMove}
             calculateBonusTotal={calculateBonusTotal}
           />
         </div>

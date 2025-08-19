@@ -12,6 +12,7 @@ interface RoleSectionProps {
   squadSelections: SquadSelection[];
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (selectionId: string) => void;
+  onPlayerMove?: (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => void;
   calculateBonusTotal: (player: Player) => number;
 }
 
@@ -23,6 +24,7 @@ const RoleSection: React.FC<RoleSectionProps> = ({
   squadSelections,
   onPositionClick,
   onRemovePlayer,
+  onPlayerMove,
   calculateBonusTotal
 }) => {
   const getPlayerForPosition = (slot: number, role: PlayerRole) => {
@@ -61,6 +63,7 @@ const RoleSection: React.FC<RoleSectionProps> = ({
           selection={getSelectionForPosition(slot, role)}
           onPositionClick={onPositionClick}
           onRemovePlayer={onRemovePlayer}
+          onPlayerMove={onPlayerMove}
           calculateBonusTotal={calculateBonusTotal}
         />
       ))}
