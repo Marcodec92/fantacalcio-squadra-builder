@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { useRealTimeSelections } from '@/hooks/useRealTimeSelections';
-import { RealTimeSelection } from '@/pages/RealTimeBuilder';
+import { useSquadSelections } from '@/hooks/useSquadSelections';
+import { usePlayers } from '@/hooks/usePlayers';
 import { PlayerRole } from '@/types/Player';
 
 interface FormationConfig {
@@ -46,31 +46,31 @@ const TeamPredictionFormation = () => {
   const [selectedFormation, setSelectedFormation] = useState<FormationConfig>(formations[0]);
   const [lineupPlayers, setLineupPlayers] = useState<FieldPosition[]>([]);
   const [benchPlayers, setBenchPlayers] = useState<LineupPlayer[]>([]);
-  const [selections, setSelections] = useState<RealTimeSelection[]>([]);
-  const { loadSelections } = useRealTimeSelections();
+  const { squadSelections } = useSquadSelections();
+  const { players = [] } = usePlayers();
 
   useEffect(() => {
-    const loadData = async () => {
-      const savedSelections = await loadSelections();
-      setSelections(savedSelections);
-      
+    if (squadSelections.length > 0 && players.length > 0) {
       // Converti le selezioni in giocatori
-      const players: LineupPlayer[] = savedSelections
-        .filter(s => s.player)
-        .map(s => ({
-          id: s.player!.id,
-          name: s.player!.name,
-          surname: s.player!.surname,
-          team: s.player!.team,
-          role: s.player!.role,
-          credits: s.player!.credits
-        }));
+      const selectedPlayers: LineupPlayer[] = squadSelections
+        .map(selection => {
+          const player = players.find(p => p.id === selection.player_id);
+          if (!player) return null;
+          
+          return {
+            id: player.id,
+            name: player.name,
+            surname: player.surname,
+            team: player.team || '',
+            role: player.roleCategory,
+            credits: 0 // I giocatori della Team Prediction non hanno crediti
+          };
+        })
+        .filter(Boolean) as LineupPlayer[];
       
-      initializeFormation(selectedFormation, players);
-    };
-    
-    loadData();
-  }, []);
+      initializeFormation(selectedFormation, selectedPlayers);
+    }
+  }, [squadSelections, players, selectedFormation]);
 
   const initializeFormation = (formation: FormationConfig, allPlayers: LineupPlayer[]) => {
     const positions: FieldPosition[] = [];
