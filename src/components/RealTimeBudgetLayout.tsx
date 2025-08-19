@@ -16,6 +16,7 @@ interface RealTimeBudgetLayoutProps {
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
   onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
+  onPlayerMove?: (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => void;
   onBudgetChange: (budget: number) => void;
 }
 
@@ -28,6 +29,7 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
   onPositionClick,
   onRemovePlayer,
   onUpdateCredits,
+  onPlayerMove,
   onBudgetChange
 }) => {
   return (
@@ -72,6 +74,7 @@ const RealTimeBudgetLayout: React.FC<RealTimeBudgetLayoutProps> = ({
             onPositionClick={onPositionClick}
             onRemovePlayer={onRemovePlayer}
             onUpdateCredits={onUpdateCredits}
+            onPlayerMove={onPlayerMove}
           />
         </div>
       </div>

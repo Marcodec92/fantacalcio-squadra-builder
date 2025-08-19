@@ -12,6 +12,7 @@ interface RealTimeRoleSectionProps {
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
   onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
+  onPlayerMove?: (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => void;
 }
 
 const RealTimeRoleSection: React.FC<RealTimeRoleSectionProps> = ({
@@ -21,7 +22,8 @@ const RealTimeRoleSection: React.FC<RealTimeRoleSectionProps> = ({
   selections,
   onPositionClick,
   onRemovePlayer,
-  onUpdateCredits
+  onUpdateCredits,
+  onPlayerMove
 }) => {
   const getSelectionForPosition = (slot: number, role: PlayerRole) => {
     return selections.find(
@@ -51,6 +53,7 @@ const RealTimeRoleSection: React.FC<RealTimeRoleSectionProps> = ({
           onPositionClick={onPositionClick}
           onRemovePlayer={onRemovePlayer}
           onUpdateCredits={onUpdateCredits}
+          onPlayerMove={onPlayerMove}
         />
       ))}
     </div>

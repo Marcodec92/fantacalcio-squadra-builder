@@ -15,6 +15,7 @@ interface RealTimePositionCardProps {
   onPositionClick: (slot: number, role: PlayerRole) => void;
   onRemovePlayer: (slot: number, role: PlayerRole) => void;
   onUpdateCredits: (slot: number, role: PlayerRole, newCredits: number) => void;
+  onPlayerMove?: (fromSlot: number, fromRole: PlayerRole, toSlot: number, toRole: PlayerRole) => void;
 }
 
 const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
@@ -24,7 +25,8 @@ const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
   selection,
   onPositionClick,
   onRemovePlayer,
-  onUpdateCredits
+  onUpdateCredits,
+  onPlayerMove
 }) => {
   const [editingCredits, setEditingCredits] = useState(false);
   const [tempCredits, setTempCredits] = useState<string>('');
@@ -52,8 +54,46 @@ const RealTimePositionCard: React.FC<RealTimePositionCardProps> = ({
     setTempCredits('');
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    if (player && onPlayerMove) {
+      e.dataTransfer.setData('application/json', JSON.stringify({
+        slot,
+        role,
+        player
+      }));
+      e.dataTransfer.effectAllowed = 'move';
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!player && onPlayerMove) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    if (!player && onPlayerMove) {
+      e.preventDefault();
+      try {
+        const dragData = JSON.parse(e.dataTransfer.getData('application/json'));
+        if (dragData.slot !== slot || dragData.role !== role) {
+          onPlayerMove(dragData.slot, dragData.role, slot, role);
+        }
+      } catch (error) {
+        console.error('Errore nel parsing dei dati drag and drop:', error);
+      }
+    }
+  };
+
   return (
-    <Card className="glass-card p-3 sm:p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 relative group h-[120px] sm:h-[140px] w-full flex flex-col justify-center">
+    <Card 
+      className={`glass-card p-3 sm:p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 relative group h-[120px] sm:h-[140px] w-full flex flex-col justify-center ${!player && onPlayerMove ? 'border-2 border-dashed border-white/20 hover:border-white/40' : ''} ${player && onPlayerMove ? 'cursor-move' : ''}`}
+      draggable={!!(player && onPlayerMove)}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       {player ? (
         <>
           <Button

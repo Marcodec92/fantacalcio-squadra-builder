@@ -50,6 +50,7 @@ const RealTimeBuilder = () => {
     handlePlayerSelect,
     handleRemovePlayer,
     handleUpdateCredits,
+    handlePlayerMove,
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections,
@@ -256,6 +257,7 @@ const RealTimeBuilder = () => {
               onPositionClick={handlePositionClick}
               onRemovePlayer={handleRemovePlayer}
               onUpdateCredits={handleUpdateCredits}
+              onPlayerMove={handlePlayerMove}
               onBudgetChange={handleBudgetChange}
             />
             

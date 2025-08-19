@@ -161,6 +161,51 @@ export const useRealTimeBuilder = () => {
     await dbClearAllSelections();
   };
 
+  const handlePlayerMove = async (
+    fromSlot: number, 
+    fromRole: PlayerRole, 
+    toSlot: number, 
+    toRole: PlayerRole
+  ) => {
+    // Trova la selezione da spostare
+    const playerToMove = selections.find(
+      s => s.position_slot === fromSlot && s.role_category === fromRole
+    );
+    
+    if (!playerToMove || !playerToMove.player) return;
+
+    // Verifica che lo slot di destinazione sia vuoto
+    const targetSlotOccupied = selections.find(
+      s => s.position_slot === toSlot && s.role_category === toRole
+    );
+    
+    if (targetSlotOccupied) return;
+
+    // Rimuovi la selezione dalla posizione originale
+    await dbRemoveSelection(fromSlot, fromRole);
+    
+    // Crea la nuova selezione nella posizione di destinazione
+    const newSelection: RealTimeSelection = {
+      id: `${toRole}-${toSlot}`,
+      position_slot: toSlot,
+      role_category: toRole,
+      player: playerToMove.player
+    };
+    
+    // Aggiorna lo stato locale
+    setSelections(prev => {
+      const filtered = prev.filter(
+        s => !(s.position_slot === fromSlot && s.role_category === fromRole)
+      );
+      return [...filtered, newSelection];
+    });
+
+    // Salva la nuova selezione nel database
+    await saveSelection(newSelection);
+    
+    console.log('Giocatore spostato da:', fromSlot, fromRole, 'a:', toSlot, toRole);
+  };
+
   return {
     maxBudget,
     setMaxBudget,
@@ -185,6 +230,7 @@ export const useRealTimeBuilder = () => {
     calculateTotalCredits,
     calculateRoleCredits,
     clearSelections,
+    handlePlayerMove,
     csvPlayers,
     dbLoading
   };
