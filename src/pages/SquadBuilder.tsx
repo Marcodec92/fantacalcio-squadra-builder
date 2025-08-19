@@ -247,6 +247,18 @@ const SquadBuilder = () => {
               roleBudgets={roleBudgets}
               roleCounts={roleCounts}
             />
+
+            {/* Bottone Schiera la tua formazione */}
+            {squadSelections.length >= 11 && (
+              <div className="mt-4 text-center">
+                <Button
+                  onClick={() => navigate('/team-prediction-formation')}
+                  className="glass-button gradient-secondary text-white shadow-lg hover:shadow-2xl font-medium px-4 py-3 text-sm w-full"
+                >
+                  Schiera la tua formazione
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Squad Grid */}

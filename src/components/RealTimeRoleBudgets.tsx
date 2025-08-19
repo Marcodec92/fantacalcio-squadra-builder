@@ -60,19 +60,11 @@ const RealTimeRoleBudgets: React.FC<RealTimeRoleBudgetsProps> = ({
                 />
               </div>
               
-              <div className="text-xs text-center text-gray-500 leading-tight">
-                <div className="block sm:hidden">{percentage.toFixed(1)}%</div>
-                <div className="hidden sm:block space-y-1">
-                  <div>{percentage.toFixed(1)}% del budget totale</div>
-                  <div className="text-xs text-gray-600">
-                    <span className="font-medium">Spesa stimata:</span>
-                    <div className="flex justify-center space-x-2 mt-1">
-                      <span>300cr: {Math.round((percentage / 100) * 300)}</span>
-                      <span>500cr: {Math.round((percentage / 100) * 500)}</span>
-                      <span>650cr: {Math.round((percentage / 100) * 650)}</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="text-xs sm:text-xs text-center text-gray-500 leading-tight">
+                <span className="block sm:hidden">{percentage.toFixed(1)}%</span>
+                <span className="hidden sm:block">
+                  {percentage.toFixed(1)}% del budget totale ({maxBudget} crediti)
+                </span>
               </div>
             </div>
           );

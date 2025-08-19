@@ -85,6 +85,14 @@ const RoleBudgetWheels: React.FC<RoleBudgetWheelsProps> = ({
           <div className="text-xs text-gray-500 capitalize">
             {role}
           </div>
+          <div className="text-xs text-gray-600 mt-2 space-y-1">
+            <div className="font-medium">Spesa stimata:</div>
+            <div className="space-y-0.5">
+              <div>300cr: {Math.round((budget / 100) * 300)}</div>
+              <div>500cr: {Math.round((budget / 100) * 500)}</div>
+              <div>650cr: {Math.round((budget / 100) * 650)}</div>
+            </div>
+          </div>
         </div>
       </Card>
     );
